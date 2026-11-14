@@ -2,7 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { errorBody } from "../../api/errors.ts";
 import { ErrorSchema, errors, json } from "../../api/openapi.ts";
 import { createRouter } from "../../api/router.ts";
-import { normaliseIsbn } from "./isbn.ts";
+import { normalizeIsbn } from "../books/isbn.ts";
 import { lookupIsbn, searchBooks } from "./service.ts";
 
 const Candidate = z
@@ -46,7 +46,7 @@ export const metadataRoutes = createRouter()
       },
     }),
     async (c) => {
-      const isbn13 = normaliseIsbn(c.req.valid("param").isbn);
+      const isbn13 = normalizeIsbn(c.req.valid("param").isbn);
       if (!isbn13) {
         return c.json(errorBody("invalid_isbn", "Not a valid ISBN"), 400);
       }

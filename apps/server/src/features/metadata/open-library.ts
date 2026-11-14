@@ -1,4 +1,4 @@
-import { normaliseIsbn } from "./isbn.ts";
+import { normalizeIsbn } from "../books/isbn.ts";
 import {
   type Candidate,
   candidate,
@@ -61,7 +61,7 @@ export function parseSearch(json: { docs?: Work[] }): Candidate[] {
     const edition = work.editions?.docs?.[0];
     const title = edition?.title ?? work.title;
     if (!title) return [];
-    const isbns = (edition?.isbn ?? []).map(normaliseIsbn);
+    const isbns = (edition?.isbn ?? []).map(normalizeIsbn);
     return [
       candidate("openlibrary", title, {
         isbn13: isbns.find((isbn) => isbn !== null),

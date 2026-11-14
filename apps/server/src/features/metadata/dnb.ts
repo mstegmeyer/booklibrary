@@ -1,5 +1,5 @@
 import { DOMParser, type Element } from "@xmldom/xmldom";
-import { normaliseIsbn } from "./isbn.ts";
+import { normalizeIsbn } from "../books/isbn.ts";
 import {
   type Candidate,
   candidate,
@@ -50,7 +50,7 @@ function parseRecord(record: Element): Candidate | null {
   if (!title) return null;
   const isbns = datafields(record, "020")
     .flatMap((field) => values(field, "a"))
-    .map(normaliseIsbn);
+    .map(normalizeIsbn);
   const pages = /(\d+) (S\.|Seiten)/.exec(first(record, "300", "a") ?? "");
   return candidate("dnb", title, {
     isbn13: isbns.find((isbn) => isbn !== null),

@@ -1,6 +1,5 @@
 import { dnb } from "./dnb.ts";
 import { googleBooks } from "./google-books.ts";
-import { isGermanLanguageGroup } from "./isbn.ts";
 import { openLibrary } from "./open-library.ts";
 import { type Candidate, type Source, timeoutMs, userAgent } from "./source.ts";
 
@@ -14,6 +13,9 @@ const imageHosts = [
   "archive.org",
   "books.google.com",
 ];
+
+/** 978-3 is the registration group of the German-speaking countries. */
+const isGermanLanguageGroup = (isbn13: string) => isbn13.startsWith("9783");
 
 const withoutSlash = (url: string) => url.replace(/\/+$/, "");
 

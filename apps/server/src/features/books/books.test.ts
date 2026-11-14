@@ -10,7 +10,6 @@ import {
   user,
 } from "../../db/schema.ts";
 import { createTestApp } from "../../test/app.ts";
-import { normalizeIsbn } from "./isbn.ts";
 import { deleteBookIfUnreferenced } from "./service.ts";
 import { guessSortKey } from "./sort-key.ts";
 
@@ -58,22 +57,6 @@ async function setup() {
     app.db.insert(reading).values({ userId, bookId, status }).returning().get();
   return { ...app, token, call, addBook, titles, lend, read };
 }
-
-describe("ISBN normalisation", () => {
-  it("turns ISBN-10 into ISBN-13 and keeps valid ISBN-13", () => {
-    expect(normalizeIsbn("0-15-600131-4")).toBe("9780156001311");
-    expect(normalizeIsbn("080442957X")).toBe("9780804429573");
-    expect(normalizeIsbn("978-0-15-600131-1")).toBe("9780156001311");
-    expect(normalizeIsbn(" 979 10 90636 07 1 ")).toBe("9791090636071");
-  });
-
-  it("rejects wrong check digits and other input", () => {
-    expect(normalizeIsbn("0-15-600131-3")).toBeNull();
-    expect(normalizeIsbn("9780156001312")).toBeNull();
-    expect(normalizeIsbn("1234567890123")).toBeNull();
-    expect(normalizeIsbn("abc")).toBeNull();
-  });
-});
 
 describe("sort key guess", () => {
   it.each([

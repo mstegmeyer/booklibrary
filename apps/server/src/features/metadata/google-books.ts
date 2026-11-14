@@ -1,4 +1,4 @@
-import { normaliseIsbn } from "./isbn.ts";
+import { normalizeIsbn } from "../books/isbn.ts";
 import {
   type Candidate,
   candidate,
@@ -28,7 +28,7 @@ export function parseVolumes(json: { items?: Volume[] }): Candidate[] {
     if (!info?.title) return [];
     const isbns = (info.industryIdentifiers ?? [])
       .filter((id) => id.type === "ISBN_13" || id.type === "ISBN_10")
-      .map((id) => normaliseIsbn(id.identifier));
+      .map((id) => normalizeIsbn(id.identifier));
     return [
       candidate("googlebooks", info.title, {
         isbn13: isbns.find((isbn) => isbn !== null),
