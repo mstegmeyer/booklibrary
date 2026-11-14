@@ -16,6 +16,7 @@ export type ErrorCode =
   | "invalid_isbn"
   | "metadata_not_found"
   | "metadata_unavailable"
+  | "cover_not_found"
   | "unsupported_file"
   | "duplicate_file"
   | "format_exists"

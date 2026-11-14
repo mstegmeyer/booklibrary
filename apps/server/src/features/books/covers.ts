@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import sharp from "sharp";
 import { ApiError } from "../../api/errors.ts";
 import type { Db } from "../../db/client.ts";
-import { book } from "../../db/schema.ts";
+import { book, bookIdentifier } from "../../db/schema.ts";
+import { downloadCover, lookupIsbn } from "../metadata/service.ts";
 
 export type CoverSize = "full" | "thumb";
 
@@ -66,6 +67,41 @@ export async function saveCover(db: Db, bookId: string, image: Uint8Array) {
   await db.update(book).set({ coverPath }).where(eq(book.id, bookId));
   if (row.coverPath) await deleteCoverFiles(db, row.coverPath);
   return coverPath;
+}
+
+/**
+ * Looks up the book's ISBNs in turn and stores the first cover the catalogues
+ * have, as `saveCover` does. 404 `cover_not_found` when none has one.
+ */
+export async function lookUpCover(db: Db, bookId: string) {
+  const exists = db
+    .select({ id: book.id })
+    .from(book)
+    .where(eq(book.id, bookId))
+    .get();
+  if (!exists) throw new ApiError(404, "not_found", "Book not found");
+  const identifiers = db
+    .select({ isbn13: bookIdentifier.isbn13 })
+    .from(bookIdentifier)
+    .where(eq(bookIdentifier.bookId, bookId))
+    .orderBy(asc(bookIdentifier.isbn13))
+    .all();
+  for (const { isbn13 } of identifiers) {
+    const found = await lookupIsbn(isbn13);
+    if (typeof found === "string" || !found.coverUrl) continue;
+    try {
+      const { bytes } = await downloadCover(found.coverUrl);
+      await saveCover(db, bookId, bytes);
+      return;
+    } catch (error) {
+      console.warn(`Cover ${found.coverUrl} not stored: ${error}`);
+    }
+  }
+  throw new ApiError(
+    404,
+    "cover_not_found",
+    "No catalogue has a cover for this book",
+  );
 }
 
 export async function readCover(db: Db, bookId: string, size: CoverSize) {

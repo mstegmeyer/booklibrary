@@ -1,7 +1,7 @@
 import { existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import sharp from "sharp";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   contact,
   loan,
@@ -10,6 +10,7 @@ import {
   user,
 } from "../../db/schema.ts";
 import { createTestApp } from "../../test/app.ts";
+import { recordedResponse } from "../metadata/fixtures/recorded.ts";
 import { deleteBookIfUnreferenced } from "./service.ts";
 import { guessSortKey } from "./sort-key.ts";
 
@@ -508,6 +509,68 @@ describe("covers", () => {
     const book = await addBook({ title: "Dune" });
     const res = await uploadCover(app, token, book.id, new Blob(["text"]));
     expect(res.status).toBe(400);
+  });
+});
+
+describe("looking up a cover", () => {
+  /** The recorded catalogue answers, with an image for every cover found. */
+  async function stubCatalogues() {
+    const png = await sharp({
+      create: { width: 40, height: 60, channels: 3, background: "#2e4a62" },
+    })
+      .png()
+      .toBuffer();
+    const fetch = vi.fn(async (input: URL) => {
+      const { status, body, contentType } = recordedResponse(new URL(input));
+      return status === 200 && contentType.startsWith("image/")
+        ? new Response(new Uint8Array(png), {
+            headers: { "content-type": "image/png" },
+          })
+        : new Response(body, {
+            status,
+            headers: { "content-type": contentType },
+          });
+    });
+    vi.stubGlobal("fetch", fetch);
+    return fetch;
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("tries the book's ISBNs in turn and stores the first cover found", async () => {
+    const { call, request, token, addBook } = await setup();
+    const book = await addBook({
+      title: "Der Teepalast",
+      isbns: ["9780000000002", "9783442492114"],
+    });
+    await stubCatalogues();
+    const res = await call(`/books/${book.id}/cover/lookup`, "POST");
+    expect(res.status).toBe(200);
+    expect(res.body.coverUrl).toMatch(/^\/api\/v1\/books\/.+\/cover\?v=/);
+    const cover = await request(res.body.coverUrl, { token });
+    expect(cover.headers.get("content-type")).toBe("image/jpeg");
+  });
+
+  it("answers 404 when no catalogue has a cover", async () => {
+    const { call, addBook } = await setup();
+    const book = await addBook({ title: "Codex", isbns: ["9780000000002"] });
+    await stubCatalogues();
+    const res = await call(`/books/${book.id}/cover/lookup`, "POST");
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: { code: "cover_not_found" } });
+    expect((await call(`/books/${book.id}`)).body.coverUrl).toBeNull();
+  });
+
+  it("answers 404 for a book without ISBNs without asking anyone", async () => {
+    const { call, addBook } = await setup();
+    const book = await addBook({ title: "Codex" });
+    const fetch = await stubCatalogues();
+    const res = await call(`/books/${book.id}/cover/lookup`, "POST");
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: { code: "cover_not_found" } });
+    expect(fetch).not.toHaveBeenCalled();
   });
 });
 

@@ -16,7 +16,7 @@ import {
   sourceNames,
 } from "../metadata/source.ts";
 import { addBook } from "./add.ts";
-import { readCover, saveCover } from "./covers.ts";
+import { lookUpCover, readCover, saveCover } from "./covers.ts";
 import {
   attachFile,
   downloadName,
@@ -460,6 +460,24 @@ A file of a format the book already has is refused with 409 \`format_exists\`; s
         throw new ApiError(400, "bad_request", "The image is too large");
       }
       await saveCover(c.var.db, id, new Uint8Array(await file.arrayBuffer()));
+      await syncFiles(c.var.db, c.var.libraryDir, id, { cover: true });
+      return c.json(await getBook(c.var.db, c.var.libraryDir, id), 200);
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "post",
+      path: "/{id}/cover/lookup",
+      tags: ["Books"],
+      summary: "Look up a cover in the catalogues",
+      description:
+        "Looks up the book's ISBNs in turn, like `GET /metadata/isbn/{isbn}`, and stores the first cover found as the book's cover, also in its EPUB. 404 `cover_not_found` when no catalogue has one, also for a book without ISBNs.",
+      request: { params: BookParams },
+      responses: { 200: json(Book, "The book with its new cover"), ...errors },
+    }),
+    async (c) => {
+      const { id } = c.req.valid("param");
+      await lookUpCover(c.var.db, id);
       await syncFiles(c.var.db, c.var.libraryDir, id, { cover: true });
       return c.json(await getBook(c.var.db, c.var.libraryDir, id), 200);
     },
