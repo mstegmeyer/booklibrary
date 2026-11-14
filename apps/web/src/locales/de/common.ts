@@ -19,7 +19,6 @@ export default {
   },
   pages: {
     empty: "Hier ist noch nichts.",
-    addBook: "Bücher hinzufügen kommt bald.",
   },
   form: {
     name: "Name",

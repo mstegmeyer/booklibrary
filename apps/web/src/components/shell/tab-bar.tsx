@@ -30,7 +30,8 @@ export function TabBar() {
     >
       {tabs.slice(0, 2).map(tab)}
       <Link
-        to="/add"
+        to="/library"
+        search={{ add: true }}
         aria-label={t("nav.addBook")}
         className="mx-2.5 flex size-[46px] shrink-0 items-center justify-center rounded-full bg-accent text-white hover:bg-accent-hover hover:text-white"
       >

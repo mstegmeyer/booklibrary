@@ -19,5 +19,5 @@ test("the tab bar replaces the sidebar at phone size", async ({
   }
 
   await addBook.click();
-  await expect(page).toHaveURL(/\/add$/);
+  await expect(page.getByRole("dialog", { name: "Add a book" })).toBeVisible();
 });

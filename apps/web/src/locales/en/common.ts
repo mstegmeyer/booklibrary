@@ -17,7 +17,6 @@ const common = {
   },
   pages: {
     empty: "Nothing here yet.",
-    addBook: "Adding books is coming soon.",
   },
   form: {
     name: "Name",

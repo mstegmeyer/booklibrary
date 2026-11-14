@@ -16,5 +16,5 @@ test("a fresh instance asks for setup and then opens the empty library", async (
 
   await expect(page).toHaveURL(/\/library$/);
   await expect(page.getByRole("heading", { name: "Library" })).toBeVisible();
-  await expect(page.getByText("Nothing here yet.")).toBeVisible();
+  await expect(page.getByText("Your library is empty.")).toBeVisible();
 });

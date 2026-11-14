@@ -16,7 +16,7 @@ export function Sidebar() {
       <Link to="/library" className="px-2 no-underline">
         <Logo />
       </Link>
-      <Link to="/add" className={buttonVariants()}>
+      <Link to="/library" search={{ add: true }} className={buttonVariants()}>
         <Plus aria-hidden size={16} strokeWidth={2.25} />
         {t("nav.addBook")}
       </Link>
