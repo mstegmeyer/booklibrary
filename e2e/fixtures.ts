@@ -3,6 +3,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test as base, expect, type Page } from "@playwright/test";
+import { startMetadataStub } from "./metadata-stub.ts";
 
 const serverMain = join(import.meta.dirname, "../apps/server/dist/main.js");
 
@@ -12,12 +13,16 @@ export const admin = {
   password: "password123",
 };
 
-/** Starts the production server on a free port with an empty DATA_DIR. */
-async function startInstance() {
+/**
+ * Starts the production server on a free port with an empty DATA_DIR. Its
+ * metadata lookups go to `metadataEnv` (the stub), never to the real catalogues.
+ */
+async function startInstance(metadataEnv: Record<string, string>) {
   const dataDir = await mkdtemp(join(tmpdir(), "book-library-e2e-"));
   const server = spawn(process.execPath, [serverMain], {
     env: {
       ...process.env,
+      ...metadataEnv,
       NODE_ENV: "production",
       DATA_DIR: dataDir,
       PORT: "0",
@@ -50,9 +55,11 @@ async function stopInstance(server: ChildProcess, dataDir: string) {
 export const test = base.extend({
   // biome-ignore lint/correctness/noEmptyPattern: Playwright reads fixture dependencies from this pattern
   baseURL: async ({}, use) => {
-    const { url, server, dataDir } = await startInstance();
+    const stub = await startMetadataStub();
+    const { url, server, dataDir } = await startInstance(stub.env);
     await use(url);
     await stopInstance(server, dataDir);
+    await stub.close();
   },
 });
 

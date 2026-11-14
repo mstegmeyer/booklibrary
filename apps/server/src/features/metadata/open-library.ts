@@ -35,9 +35,6 @@ type Work = {
   editions?: { docs?: Edition[] };
 };
 
-const coverUrl = (id: number | undefined) =>
-  id ? `https://covers.openlibrary.org/b/id/${id}-L.jpg` : null;
-
 /** Response of the Books API (`/api/books?jscmd=data`). */
 export function parseBook(
   json: Record<string, Book>,
@@ -56,7 +53,12 @@ export function parseBook(
 }
 
 /** Response of the Search API; each work carries its best-matching edition. */
-export function parseSearch(json: { docs?: Work[] }): Candidate[] {
+export function parseSearch(
+  json: { docs?: Work[] },
+  coversUrl = "https://covers.openlibrary.org",
+): Candidate[] {
+  const coverUrl = (id: number | undefined) =>
+    id ? `${coversUrl}/b/id/${id}-L.jpg` : null;
   return (json.docs ?? []).flatMap((work) => {
     const edition = work.editions?.docs?.[0];
     const title = edition?.title ?? work.title;
@@ -92,7 +94,7 @@ const searchFields = [
   "editions.cover_i",
 ].join(",");
 
-export function openLibrary(baseUrl: string): Source {
+export function openLibrary(baseUrl: string, coversUrl: string): Source {
   return {
     name: "openlibrary",
     async byIsbn(isbn13) {
@@ -111,7 +113,7 @@ export function openLibrary(baseUrl: string): Source {
         limit: "10",
         fields: searchFields,
       }).toString();
-      return parseSearch(await (await get(url)).json());
+      return parseSearch(await (await get(url)).json(), coversUrl);
     },
   };
 }

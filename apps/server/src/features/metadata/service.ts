@@ -24,6 +24,9 @@ function baseUrls(env = process.env) {
     openLibrary: withoutSlash(
       env.OPEN_LIBRARY_URL || "https://openlibrary.org",
     ),
+    openLibraryCovers: withoutSlash(
+      env.OPEN_LIBRARY_COVERS_URL || "https://covers.openlibrary.org",
+    ),
     googleBooks: withoutSlash(
       env.GOOGLE_BOOKS_URL || "https://www.googleapis.com",
     ),
@@ -35,7 +38,7 @@ function sources(env = process.env) {
   const urls = baseUrls(env);
   const key = env.GOOGLE_BOOKS_API_KEY;
   return {
-    openLibrary: openLibrary(urls.openLibrary),
+    openLibrary: openLibrary(urls.openLibrary, urls.openLibraryCovers),
     // Google requires an API key for every request, so it is only asked when one is configured.
     googleBooks: key ? googleBooks(urls.googleBooks, key) : null,
     dnb: dnb(urls.dnb),

@@ -42,12 +42,13 @@ Book metadata is looked up in Open Library and the catalogue of the Deutsche
 Nationalbibliothek. Google Books needs an API key and is only asked when one is
 set. The base URLs exist so tests can point the server at a local stub.
 
-| Variable               | Default                           | Purpose                      |
-| ---------------------- | --------------------------------- | ---------------------------- |
-| `GOOGLE_BOOKS_API_KEY` | unset                             | Enables Google Books lookups |
-| `OPEN_LIBRARY_URL`     | `https://openlibrary.org`         | Open Library base URL        |
-| `GOOGLE_BOOKS_URL`     | `https://www.googleapis.com`      | Google Books base URL        |
-| `DNB_SRU_URL`          | `https://services.dnb.de/sru/dnb` | DNB SRU catalogue endpoint   |
+| Variable                  | Default                           | Purpose                      |
+| ------------------------- | --------------------------------- | ---------------------------- |
+| `GOOGLE_BOOKS_API_KEY`    | unset                             | Enables Google Books lookups |
+| `OPEN_LIBRARY_URL`        | `https://openlibrary.org`         | Open Library base URL        |
+| `OPEN_LIBRARY_COVERS_URL` | `https://covers.openlibrary.org`  | Open Library cover images    |
+| `GOOGLE_BOOKS_URL`        | `https://www.googleapis.com`      | Google Books base URL        |
+| `DNB_SRU_URL`             | `https://services.dnb.de/sru/dnb` | DNB SRU catalogue endpoint   |
 
 The container runs as the unprivileged `node` user (uid 1000). If you mount a
 host directory instead of a named volume, make sure that user can write to it.
