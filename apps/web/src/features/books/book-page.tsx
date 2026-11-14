@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -26,6 +26,8 @@ import {
   type Candidate,
   type CopyDetail,
   fromIsoDate,
+  lookUpCover,
+  refreshCatalogue,
 } from "./queries";
 
 const rowButton =
@@ -112,13 +114,18 @@ function BookHeader({
 
   return (
     <div className="flex min-w-0 gap-4 md:flex-wrap md:gap-7 xl:col-start-1">
-      <BookCover
-        id={book.id}
-        title={book.title}
-        authors={book.authors}
-        imageUrl={book.coverUrl}
-        size="page"
-      />
+      <div className="flex w-[108px] shrink-0 flex-col items-center gap-0.5 md:w-[180px]">
+        <BookCover
+          id={book.id}
+          title={book.title}
+          authors={book.authors}
+          imageUrl={book.coverUrl}
+          size="page"
+        />
+        {!book.coverUrl && book.isbns.length > 0 && (
+          <CoverLookup bookId={book.id} />
+        )}
+      </div>
       <div className="flex min-w-0 flex-[1_1_280px] flex-col gap-1 break-words pt-1 md:gap-2.5 md:pt-0">
         <h1 className="font-semibold font-serif text-2xl leading-[29px] md:text-[34px] md:leading-10">
           {book.title}
@@ -150,6 +157,37 @@ function BookHeader({
         </div>
       </div>
     </div>
+  );
+}
+
+function CoverLookup({ bookId }: { bookId: string }) {
+  const { t } = useTranslation(["books", "common"]);
+  const queryClient = useQueryClient();
+  const lookUp = useMutation({
+    mutationFn: () => lookUpCover(bookId),
+    onSuccess: () => refreshCatalogue(queryClient),
+  });
+  const notFound =
+    lookUp.error instanceof ApiError && lookUp.error.code === "cover_not_found";
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => lookUp.mutate()}
+        disabled={lookUp.isPending}
+        className="h-11 cursor-pointer whitespace-nowrap font-semibold text-accent text-sm hover:text-accent-hover disabled:cursor-default disabled:opacity-60 md:h-[34px] md:px-2"
+      >
+        {t("page.lookUpCover")}
+      </button>
+      {lookUp.error && (
+        <p
+          role="status"
+          className="text-center text-[13px] text-ink-muted leading-[18px]"
+        >
+          {notFound ? t("page.coverNotFound") : t("common:errors.generic")}
+        </p>
+      )}
+    </>
   );
 }
 

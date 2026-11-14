@@ -136,6 +136,8 @@ const books = {
     pages_other: "{{count}} pages",
     notFound: "This book is not in the library any more.",
     backToLibrary: "Back to the library",
+    lookUpCover: "Look for a cover",
+    coverNotFound: "No cover found.",
   },
   copies: {
     title: "Copies",

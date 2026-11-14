@@ -57,6 +57,9 @@ export const addEbook = (bookId: string, file: File, replace: boolean) =>
 export const fileUrl = (bookId: string, fileId: string) =>
   `/api/v1/books/${bookId}/files/${fileId}`;
 
+export const lookUpCover = (bookId: string) =>
+  unwrap(api.books[":id"].cover.lookup.$post({ param: { id: bookId } }));
+
 export async function uploadCover(bookId: string, file: File) {
   return unwrap(
     api.books[":id"].cover.$put({ param: { id: bookId }, form: { file } }),

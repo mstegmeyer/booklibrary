@@ -141,6 +141,8 @@ export default {
     pages_other: "{{count}} Seiten",
     notFound: "Dieses Buch ist nicht mehr in der Bibliothek.",
     backToLibrary: "Zurück zur Bibliothek",
+    lookUpCover: "Cover suchen",
+    coverNotFound: "Kein Cover gefunden.",
   },
   copies: {
     title: "Exemplare",
