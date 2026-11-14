@@ -1,0 +1,7 @@
+// Signing needs your own Apple developer team, which does not belong in the
+// repository. Put it in a file named Local.xcconfig next to this one, which git
+// ignores:
+//
+//   DEVELOPMENT_TEAM = ABCDE12345
+
+#include? "Local.xcconfig"

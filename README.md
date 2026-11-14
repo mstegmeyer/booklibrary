@@ -117,14 +117,20 @@ In the simulator, `http://localhost:3000` reaches a server started on the same
 Mac with `pnpm build` and `NODE_ENV=production pnpm --filter @book-library/server start`.
 The simulator has no camera, so scanning only works on a device.
 
-To put the app on your iPhone, connect it, open the project in Xcode, select
-the BookLibrary target, and under Signing & Capabilities choose your own team
-(a free Apple account works for personal use). If the bundle identifier
-`dev.stegmeyer.booklibrary` is taken for your team, change it there as well.
-Do not commit the team: Xcode writes it into `project.pbxproj`, so discard
-that change before committing. Then choose your iPhone as the run destination
-and press Run; the first time, allow the developer in Settings → General → VPN
-& Device Management.
+To put the app on your iPhone, the build has to be signed with your own Apple
+developer team (a free Apple account works for personal use). Create
+`apps/ios/Local.xcconfig`, which git ignores, with your team's id:
+
+```
+DEVELOPMENT_TEAM = ABCDE12345
+```
+
+Choosing the team in Xcode under Signing & Capabilities works as well, but
+Xcode then writes it into `project.pbxproj`; move it to `Local.xcconfig` before
+committing. If the bundle identifier `dev.stegmeyer.booklibrary` is taken for
+your team, change it under Signing & Capabilities. Then connect your iPhone,
+choose it as the run destination and press Run; the first time, allow the
+developer in Settings → General → VPN & Device Management.
 
 ## Project structure
 
