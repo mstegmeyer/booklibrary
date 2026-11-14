@@ -10,7 +10,9 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    // The Host header is kept, so Better Auth sees the dev server's origin.
-    proxy: { "/api": "http://localhost:3000" },
+    proxy: {
+      // Keeping the Host header lets Better Auth see the dev server's origin.
+      "/api": { target: "http://localhost:3000", changeOrigin: false },
+    },
   },
 });
