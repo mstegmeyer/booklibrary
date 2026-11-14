@@ -22,13 +22,64 @@ export default {
   },
   add: {
     title: "Buch hinzufügen",
+    tabs: {
+      isbn: "ISBN",
+      search: "Titelsuche",
+      manual: "Von Hand eingeben",
+    },
     thisBookIs: "Dieses Buch ist",
     inLibrary: "In unserer Bibliothek",
     shelf: "Regal",
     noLocation: "Noch kein Ort",
+    borrowedFrom: "Geliehen von",
+    borrowedShort: "Geliehen",
+    person: "Person, von der du es geliehen hast",
+    choosePerson: "Wähle, wer dir das Buch geliehen hat.",
+    readingList: "Nur auf meiner Leseliste",
+    readingListShort: "Nur Leseliste",
+    readingListHint:
+      "Es kommt auf deine Leseliste und bleibt außerhalb der Bibliothek.",
     submit: "Hinzufügen",
     submitNext: "Hinzufügen und nächstes",
     added: "„{{title}}“ wurde hinzugefügt.",
+    known: {
+      library:
+        "„{{title}}“ war schon bekannt. Es ist jetzt in eurer Bibliothek.",
+      borrowed:
+        "„{{title}}“ war schon bekannt. Es steht jetzt unter Ausgeliehen.",
+      "reading-list":
+        "„{{title}}“ war schon bekannt. Es ist jetzt auf deiner Leseliste.",
+    },
+    statusKept:
+      "„{{title}}“ war schon bekannt und hat bereits einen Lesestatus von dir. Der bleibt, wie er ist.",
+    close: "Schließen",
+  },
+  lookup: {
+    isbn: "ISBN",
+    lookUp: "Nachschlagen",
+    invalid: "Das ist keine gültige ISBN. Bitte prüfe die Ziffern.",
+    searching: "Die Kataloge werden durchsucht …",
+    notFound: "Keiner der Kataloge kennt diese ISBN.",
+    unavailable: "Die Kataloge sind gerade nicht erreichbar.",
+    tryAgain: "Erneut versuchen",
+    enterManually: "Von Hand eingeben",
+    query: "Titel oder Autor",
+    search: "Suchen",
+    results: "Suchergebnisse",
+    noResults: "Die Kataloge haben dazu nichts gefunden.",
+    foundOn: "Gefunden in: {{sources}}",
+    notRight: "Nicht das richtige Buch?",
+  },
+  sources: {
+    openlibrary: "Open Library",
+    googlebooks: "Google Books",
+    dnb: "Deutsche Nationalbibliothek",
+  },
+  same: {
+    title: "Dasselbe Buch?",
+    text: "Ein Buch mit diesem Titel und dieser Autorin oder diesem Autor ist unter einer anderen ISBN schon bekannt, etwa als andere Ausgabe.",
+    attach: "Zu diesem Buch hinzufügen",
+    separate: "Als eigenes Buch behalten",
   },
   duplicate: {
     title: "Dieses Buch ist schon in eurer Bibliothek",

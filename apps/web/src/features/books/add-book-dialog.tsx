@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Tabs } from "radix-ui";
+import { type FormEvent, type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components/ui/button";
 import { Dialog, DialogContent } from "../../components/ui/dialog";
@@ -8,8 +9,9 @@ import { FormError } from "../../components/ui/field";
 import { ApiError, api, unwrap } from "../../lib/api";
 import { useFormat } from "../../lib/format";
 import { useErrorMessage } from "../../lib/use-error-message";
-import { LocationSelect } from "../locations/location-select";
+import { useChosenName } from "../contacts/person-picker";
 import { formatPath, locationsQuery } from "../locations/queries";
+import { IsbnLookup, TitleSearch } from "./add-book-lookup";
 import { BookCover } from "./book-cover";
 import {
   BookForm,
@@ -17,22 +19,74 @@ import {
   useBookErrorMessage,
 } from "./book-form";
 import {
+  type Ownership,
+  OwnershipFieldset,
+  type OwnershipKind,
+  ownershipJson,
+} from "./ownership";
+import {
   bookQuery,
+  type Candidate,
   fromIsoDate,
   refreshCatalogue,
   uploadCover,
 } from "./queries";
 
 const lastLocationKey = "books.lastLocation";
+type Tab = "isbn" | "search" | "manual";
 type Intent = "add" | "next";
 
-/** "Add a book": manual entry for now, with the book's first copy. */
+/** The book as it is sent; `coverUrl` and `sources` come from a lookup. */
+type BookPayload = Omit<BookFormValues, "sortAs"> & {
+  coverUrl?: string;
+  sources?: Candidate["sources"];
+};
+
+type Save = {
+  payload: BookPayload;
+  cover: File | null;
+  intent: Intent;
+  /** The answer to the "Same book?" question. */
+  answer?: { attachTo: string } | { keepSeparate: true };
+};
+
+/** The server asks first: the book is in the library, or the same book exists. */
+type Question = {
+  code: "isbn_taken" | "same_book";
+  bookId: string;
+  save: Save;
+};
+
+const isQuestion = (error: Error | null) =>
+  error instanceof ApiError &&
+  (error.code === "isbn_taken" || error.code === "same_book");
+
+const fromCandidate = (candidate: Candidate): BookPayload => ({
+  title: candidate.title,
+  subtitle: candidate.subtitle,
+  authors: candidate.authors,
+  description: candidate.description,
+  pageCount: candidate.pageCount,
+  publishedYear: candidate.publishedYear,
+  language: candidate.language,
+  isbns: candidate.isbn13 ? [candidate.isbn13] : [],
+  coverUrl: candidate.coverUrl ?? undefined,
+  sources: candidate.sources,
+});
+
+const intentOf = (value: string | undefined): Intent =>
+  value === "next" ? "next" : "add";
+
+/** "Add a book": by ISBN, by a title search or by hand. */
 export function AddBookDialog({
   open,
   onOpenChange,
+  own,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Preselects how the book is owned; "In our library" otherwise. */
+  own?: Exclude<OwnershipKind, "library">;
 }) {
   const { t } = useTranslation(["books", "common"]);
   return (
@@ -40,121 +94,117 @@ export function AddBookDialog({
       <DialogContent
         title={t("add.title")}
         closeLabel={t("common:form.cancel")}
-        className="max-w-[640px]"
+        className="max-w-[640px] max-sm:inset-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-full max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:px-4"
       >
-        <AddBook onDone={() => onOpenChange(false)} />
+        <AddBook own={own} onDone={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function AddBook({ onDone }: { onDone: () => void }) {
+function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
   const { t } = useTranslation("books");
   const queryClient = useQueryClient();
   const bookErrorMessage = useBookErrorMessage();
   const { data: locations } = useQuery(locationsQuery);
-  const [formKey, setFormKey] = useState(0);
+  const [tab, setTab] = useState<Tab>("isbn");
+  const [isbnKey, setIsbnKey] = useState(0);
+  const [manual, setManual] = useState<{
+    key: number;
+    values: Partial<BookPayload>;
+  }>({ key: 0, values: {} });
+  const [ownership, setOwnership] = useState<Ownership>(() => ({
+    kind: own ?? "library",
+    locationId: localStorage.getItem(lastLocationKey) ?? "",
+    person: null,
+  }));
+  const [personMissing, setPersonMissing] = useState(false);
+  const [question, setQuestion] = useState<Question>();
   const [added, setAdded] = useState<string>();
-  const [duplicateOf, setDuplicateOf] = useState<string>();
-  const [intent, setIntent] = useState<Intent>("add");
-  const [locationId, setLocationId] = useState(
-    () => localStorage.getItem(lastLocationKey) ?? "",
-  );
+  const [notice, setNotice] = useState<string>();
+  const personName = useChosenName(ownership.person);
   // A remembered location may have been deleted since.
-  const location = locations?.some((l) => l.id === locationId)
-    ? locationId
-    : "";
-
-  const finish = async (title: string) => {
-    localStorage.setItem(lastLocationKey, location);
-    await refreshCatalogue(queryClient);
-    setDuplicateOf(undefined);
-    if (intent === "add") return onDone();
-    setAdded(title);
-    setFormKey((key) => key + 1);
+  const current = {
+    ...ownership,
+    locationId: locations?.some((l) => l.id === ownership.locationId)
+      ? ownership.locationId
+      : "",
   };
 
-  const create = useMutation({
-    mutationFn: async (input: {
-      values: BookFormValues;
-      cover: File | null;
-    }) => {
+  const finish = async (message: string, tell: boolean, intent: Intent) => {
+    localStorage.setItem(lastLocationKey, current.locationId);
+    await Promise.all([
+      refreshCatalogue(queryClient),
+      ...["reading", "loans", "contacts", "statistics"].map((key) =>
+        queryClient.invalidateQueries({ queryKey: [key] }),
+      ),
+    ]);
+    setQuestion(undefined);
+    if (intent === "add") return tell ? setNotice(message) : onDone();
+    setAdded(message);
+    startNext();
+  };
+
+  const startNext = () => {
+    setQuestion(undefined);
+    setTab("isbn");
+    setIsbnKey((key) => key + 1);
+  };
+
+  const save = useMutation({
+    mutationFn: async ({ payload, cover, answer }: Save) => {
       const book = await unwrap(
         api.books.$post({
-          json: { ...input.values, copy: { locationId: location || null } },
+          json: { ...payload, ...ownershipJson(current), ...answer },
         }),
       );
-      if (input.cover) await uploadCover(book.id, input.cover);
+      if (cover && book.outcome === "created") {
+        await uploadCover(book.id, cover);
+      }
       return book;
     },
-    onSuccess: (book) => finish(book.title),
-    onError: (error) => {
-      if (error instanceof ApiError && error.code === "isbn_taken") {
-        setDuplicateOf(String(error.details.bookId));
+    onSuccess: (book, { intent }) => {
+      const known = book.outcome === "known" || book.statusKept;
+      const message = book.statusKept
+        ? t("add.statusKept", { title: book.title })
+        : book.outcome === "known"
+          ? t(`add.known.${current.kind}`, { title: book.title })
+          : t("add.added", { title: book.title });
+      return finish(message, known, intent);
+    },
+    onError: (error, variables) => {
+      if (error instanceof ApiError && isQuestion(error)) {
+        setQuestion({
+          code: error.code as Question["code"],
+          bookId: String(error.details.bookId),
+          save: variables,
+        });
       }
     },
   });
 
-  if (duplicateOf) {
-    return (
-      <Duplicate
-        bookId={duplicateOf}
-        locationId={location}
-        onAdded={finish}
-        onSkip={() => {
-          setDuplicateOf(undefined);
-          create.reset();
-          if (intent === "add") onDone();
-          else setFormKey((key) => key + 1);
+  const submit = (payload: BookPayload, cover: File | null, intent: Intent) => {
+    if (current.kind === "borrowed" && !personName) {
+      setPersonMissing(true);
+      return;
+    }
+    setAdded(undefined);
+    save.mutate({ payload, cover, intent });
+  };
+
+  const footer = (
+    <>
+      <OwnershipFieldset
+        value={current}
+        onChange={(value) => {
+          setOwnership(value);
+          setPersonMissing(false);
         }}
       />
-    );
-  }
-
-  return (
-    <BookForm
-      key={formKey}
-      id="add-book"
-      onSubmit={(values, cover, submitIntent) => {
-        setIntent(submitIntent === "next" ? "next" : "add");
-        setAdded(undefined);
-        create.mutate({ values, cover });
-      }}
-    >
-      <fieldset className="min-w-0">
-        <legend className="mb-2 font-semibold text-[13px] leading-[18px]">
-          {t("add.thisBookIs")}
-        </legend>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <label className="flex shrink-0 items-center gap-2.5 text-sm sm:w-[180px]">
-            <input
-              type="radio"
-              name="ownership"
-              defaultChecked
-              className="size-[18px] accent-accent"
-            />
-            {t("add.inLibrary")}
-          </label>
-          <LocationSelect
-            aria-label={t("add.shelf")}
-            noneLabel={t("add.noLocation")}
-            value={location}
-            onChange={(event) => setLocationId(event.target.value)}
-            className="w-full flex-1 sm:w-auto"
-          />
-        </div>
-      </fieldset>
-      {added && (
-        <p role="status" className="text-accent text-sm">
-          {t("add.added", { title: added })}
-        </p>
-      )}
+      {personMissing && <FormError>{t("add.choosePerson")}</FormError>}
       <FormError>
-        {create.error &&
-        !(
-          create.error instanceof ApiError && create.error.code === "isbn_taken"
-        )
-          ? bookErrorMessage(create.error)
+        {save.error && !isQuestion(save.error)
+          ? bookErrorMessage(save.error)
           : undefined}
       </FormError>
       <div className="mt-2 flex flex-wrap justify-end gap-2">
@@ -162,50 +212,175 @@ function AddBook({ onDone }: { onDone: () => void }) {
           type="submit"
           value="add"
           variant="secondary"
-          disabled={create.isPending}
+          disabled={save.isPending}
         >
           {t("add.submit")}
         </Button>
-        <Button type="submit" value="next" disabled={create.isPending}>
+        <Button type="submit" value="next" disabled={save.isPending}>
           {t("add.submitNext")}
         </Button>
       </div>
-    </BookForm>
+    </>
+  );
+
+  const addFound = (candidate: Candidate) => (
+    <form
+      onSubmit={(event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const submitter = (event.nativeEvent as SubmitEvent).submitter;
+        submit(
+          fromCandidate(candidate),
+          null,
+          intentOf(submitter?.getAttribute("value") ?? undefined),
+        );
+      }}
+      className="flex flex-col gap-5"
+    >
+      {footer}
+    </form>
+  );
+
+  const openManual = (values: Partial<BookPayload>) => {
+    setManual((m) => ({ key: m.key + 1, values }));
+    setTab("manual");
+  };
+  const lookupProps = {
+    onNotRight: (candidate: Candidate) => openManual(fromCandidate(candidate)),
+    onManual: (isbn?: string) => openManual(isbn ? { isbns: [isbn] } : {}),
+    children: addFound,
+  };
+
+  if (notice) {
+    return (
+      <div className="flex flex-col gap-5">
+        <p role="status" className="text-sm">
+          {notice}
+        </p>
+        <div className="flex justify-end">
+          <Button onClick={onDone}>{t("add.close")}</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (question?.code === "isbn_taken") {
+    return (
+      <AlreadyInLibrary
+        bookId={question.bookId}
+        locationId={current.locationId}
+        onAdded={(title) =>
+          finish(t("add.added", { title }), false, question.save.intent)
+        }
+        onSkip={() => (question.save.intent === "add" ? onDone() : startNext())}
+      />
+    );
+  }
+
+  if (question?.code === "same_book") {
+    const answer = (answer: Save["answer"]) =>
+      save.mutate({ ...question.save, answer });
+    return (
+      <KnownBook bookId={question.bookId} title={t("same.title")}>
+        <p className="text-sm">{t("same.text")}</p>
+        <FormError>
+          {save.error && !isQuestion(save.error)
+            ? bookErrorMessage(save.error)
+            : undefined}
+        </FormError>
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button
+            variant="secondary"
+            disabled={save.isPending}
+            onClick={() => answer({ keepSeparate: true })}
+          >
+            {t("same.separate")}
+          </Button>
+          <Button
+            disabled={save.isPending}
+            onClick={() => answer({ attachTo: question.bookId })}
+          >
+            {t("same.attach")}
+          </Button>
+        </div>
+      </KnownBook>
+    );
+  }
+
+  const tabClass =
+    "h-10 cursor-pointer font-medium text-ink-muted text-sm data-[state=active]:font-semibold data-[state=active]:text-ink data-[state=active]:shadow-[inset_0_-2px_0_var(--color-accent)]";
+  return (
+    <Tabs.Root
+      value={tab}
+      onValueChange={(value) => setTab(value as Tab)}
+      className="flex flex-col gap-5"
+    >
+      <Tabs.List className="flex gap-6 overflow-x-auto border-border border-b">
+        <Tabs.Trigger value="isbn" className={tabClass}>
+          {t("add.tabs.isbn")}
+        </Tabs.Trigger>
+        <Tabs.Trigger value="search" className={tabClass}>
+          {t("add.tabs.search")}
+        </Tabs.Trigger>
+        <Tabs.Trigger value="manual" className={tabClass}>
+          {t("add.tabs.manual")}
+        </Tabs.Trigger>
+      </Tabs.List>
+      {added && (
+        <p role="status" className="text-accent text-sm">
+          {added}
+        </p>
+      )}
+      <Tabs.Content value="isbn">
+        <IsbnLookup key={isbnKey} {...lookupProps} />
+      </Tabs.Content>
+      <Tabs.Content value="search">
+        <TitleSearch {...lookupProps} />
+      </Tabs.Content>
+      <Tabs.Content value="manual">
+        <BookForm
+          key={manual.key}
+          id="add-book"
+          initialValues={manual.values}
+          coverUrl={manual.values.coverUrl}
+          onSubmit={({ sortAs: _, ...values }, cover, intent) =>
+            submit(
+              {
+                ...values,
+                // A chosen image replaces the one the lookup found.
+                coverUrl: cover ? undefined : manual.values.coverUrl,
+                sources: manual.values.sources,
+              },
+              cover,
+              intentOf(intent),
+            )
+          }
+        >
+          {footer}
+        </BookForm>
+      </Tabs.Content>
+    </Tabs.Root>
   );
 }
 
-/** Shown when the ISBN belongs to a book the household already has. */
-function Duplicate({
+/** A book the system already has, with where its copies are. */
+function KnownBook({
   bookId,
-  locationId,
-  onAdded,
-  onSkip,
+  title,
+  children,
 }: {
   bookId: string;
-  locationId: string;
-  onAdded: (title: string) => void;
-  onSkip: () => void;
+  title: string;
+  children: ReactNode;
 }) {
   const { t } = useTranslation("books");
-  const errorMessage = useErrorMessage();
   const format = useFormat();
   const { data: book } = useQuery(bookQuery(bookId));
-  const addCopy = useMutation({
-    mutationFn: () =>
-      unwrap(
-        api.books[":id"].copies.$post({
-          param: { id: bookId },
-          json: { locationId: locationId || null },
-        }),
-      ),
-    onSuccess: (updated) => onAdded(updated.title),
-  });
   if (!book) return null;
 
   return (
-    <section aria-labelledby="duplicate-title" className="flex flex-col gap-4">
-      <h3 id="duplicate-title" className="font-semibold text-base">
-        {t("duplicate.title")}
+    <section aria-labelledby="known-title" className="flex flex-col gap-4">
+      <h3 id="known-title" className="font-semibold text-base">
+        {title}
       </h3>
       <div className="flex gap-4 rounded-xl border border-border bg-ground p-4">
         <BookCover
@@ -249,6 +424,38 @@ function Duplicate({
           </Link>
         </div>
       </div>
+      {children}
+    </section>
+  );
+}
+
+/** Shown when the ISBN belongs to a book the household already has. */
+function AlreadyInLibrary({
+  bookId,
+  locationId,
+  onAdded,
+  onSkip,
+}: {
+  bookId: string;
+  locationId: string;
+  onAdded: (title: string) => void;
+  onSkip: () => void;
+}) {
+  const { t } = useTranslation("books");
+  const errorMessage = useErrorMessage();
+  const addCopy = useMutation({
+    mutationFn: () =>
+      unwrap(
+        api.books[":id"].copies.$post({
+          param: { id: bookId },
+          json: { locationId: locationId || null },
+        }),
+      ),
+    onSuccess: (updated) => onAdded(updated.title),
+  });
+
+  return (
+    <KnownBook bookId={bookId} title={t("duplicate.title")}>
       <FormError>
         {addCopy.error ? errorMessage(addCopy.error) : undefined}
       </FormError>
@@ -260,6 +467,6 @@ function Duplicate({
           {t("duplicate.addCopy")}
         </Button>
       </div>
-    </section>
+    </KnownBook>
   );
 }

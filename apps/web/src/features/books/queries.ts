@@ -29,6 +29,15 @@ export function fromIsoDate(value: string) {
   return new Date(year, month - 1, day);
 }
 
+export const lookupIsbn = (isbn: string) =>
+  unwrap(api.metadata.isbn[":isbn"].$get({ param: { isbn } }));
+
+export const searchCatalogues = async (q: string) =>
+  (await unwrap(api.metadata.search.$get({ query: { q } }))).items;
+
+/** A book found in the catalogues. */
+export type Candidate = Awaited<ReturnType<typeof lookupIsbn>>;
+
 export async function uploadCover(bookId: string, file: File) {
   return unwrap(
     api.books[":id"].cover.$put({ param: { id: bookId }, form: { file } }),

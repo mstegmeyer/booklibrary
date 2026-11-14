@@ -239,7 +239,10 @@ export function LibraryPage() {
 
       <AddBookDialog
         open={search.add === true}
-        onOpenChange={(open) => setSearch({ add: open || undefined })}
+        own={search.own}
+        onOpenChange={(open) =>
+          setSearch({ add: open || undefined, own: undefined })
+        }
       />
     </>
   );

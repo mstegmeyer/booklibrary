@@ -7,6 +7,7 @@ export const readingFilters = [
   "none",
 ] as const;
 export const sorts = ["added", "title", "author"] as const;
+export const owns = ["borrowed", "reading-list"] as const;
 
 /** The Library's state in the URL, so going back restores it. */
 export type LibrarySearch = {
@@ -17,6 +18,8 @@ export type LibrarySearch = {
   sort?: Exclude<(typeof sorts)[number], "added">;
   /** Opens the "Add a book" dialog. */
   add?: boolean;
+  /** Preselects how the added book is owned. */
+  own?: (typeof owns)[number];
 };
 
 const oneOf = <T extends string>(values: readonly T[], value: unknown) =>
@@ -34,12 +37,17 @@ export function parseLibrarySearch(
     reading: oneOf(readingFilters, search.reading),
     sort: oneOf(["title", "author"] as const, search.sort),
     add: search.add === true || undefined,
+    own: oneOf(owns, search.own),
   };
 }
 
-export type LibraryFilters = Omit<LibrarySearch, "add">;
+export type LibraryFilters = Omit<LibrarySearch, "add" | "own">;
 
-export const filtersOf = ({ add: _, ...filters }: LibrarySearch) => filters;
+export const filtersOf = ({
+  add: _add,
+  own: _own,
+  ...filters
+}: LibrarySearch): LibraryFilters => filters;
 
 export const hasFilters = (filters: LibraryFilters) =>
   Object.values(filters).some((value) => value !== undefined);

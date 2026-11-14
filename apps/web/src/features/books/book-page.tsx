@@ -22,6 +22,7 @@ import { EditBookDialog } from "./edit-book-dialog";
 import {
   type BookDetail,
   bookQuery,
+  type Candidate,
   type CopyDetail,
   fromIsoDate,
 } from "./queries";
@@ -259,7 +260,7 @@ function CopyRow({ book, copy }: { book: BookDetail; copy: CopyDetail }) {
 }
 
 function Details({ book }: { book: BookDetail }) {
-  const { t } = useTranslation("books");
+  const { t, i18n } = useTranslation("books");
   const format = useFormat();
   return (
     <section aria-labelledby="details-title" className="flex flex-col gap-3">
@@ -281,7 +282,17 @@ function Details({ book }: { book: BookDetail }) {
             : format.date(book.createdAt)}
         </dd>
         <dt className="text-ink-muted">{t("details.metadata")}</dt>
-        <dd>{book.metadataSource ?? t("details.manual")}</dd>
+        <dd>
+          {book.metadataSource
+            ? new Intl.ListFormat(i18n.resolvedLanguage).format(
+                book.metadataSource
+                  .split(",")
+                  .map((source) =>
+                    t(`sources.${source as Candidate["sources"][number]}`),
+                  ),
+              )
+            : t("details.manual")}
+        </dd>
       </dl>
     </section>
   );

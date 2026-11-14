@@ -13,6 +13,7 @@ test("adding a book by hand shows it in the grid", async ({ page }) => {
     .getByRole("link", { name: "Add book" })
     .click();
   const dialog = page.getByRole("dialog", { name: "Add a book" });
+  await dialog.getByRole("tab", { name: "Enter manually" }).click();
   await dialog.getByLabel("Title", { exact: true }).fill("Dune");
   await dialog.getByLabel("Authors").fill("Frank Herbert");
   await dialog.getByLabel("Pages").fill("612");
@@ -30,6 +31,7 @@ test("adding a book by hand shows it in the grid", async ({ page }) => {
     .getByRole("navigation")
     .getByRole("link", { name: "Add book" })
     .click();
+  await dialog.getByRole("tab", { name: "Enter manually" }).click();
   await expect(dialog.getByLabel("Shelf")).toHaveValue(/.+/);
   await expect(dialog.getByLabel("Shelf").locator("option:checked")).toHaveText(
     "Home › Shelf A",

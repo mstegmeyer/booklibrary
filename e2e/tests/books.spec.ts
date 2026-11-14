@@ -64,8 +64,9 @@ test("adding a book whose ISBN is known offers another copy", async ({
     .getByRole("link", { name: "Add book" })
     .click();
   const dialog = page.getByRole("dialog", { name: "Add a book" });
+  await dialog.getByRole("tab", { name: "Enter manually" }).click();
   await dialog.getByLabel("Title", { exact: true }).fill("Name of the Rose");
-  await dialog.getByLabel("ISBN").fill("0-15-600131-4");
+  await dialog.getByRole("textbox", { name: "ISBN" }).fill("0-15-600131-4");
   await dialog.getByRole("button", { name: "Add", exact: true }).click();
 
   const prompt = dialog.getByRole("region", {
@@ -90,12 +91,14 @@ test("the duplicate prompt can be skipped", async ({ page }) => {
   });
   await page.goto("/library?add=true");
   const dialog = page.getByRole("dialog", { name: "Add a book" });
+  await dialog.getByRole("tab", { name: "Enter manually" }).click();
   await dialog.getByLabel("Title", { exact: true }).fill("Dune");
-  await dialog.getByLabel("ISBN").fill("9780156001311");
+  await dialog.getByRole("textbox", { name: "ISBN" }).fill("9780156001311");
   await dialog.getByRole("button", { name: "Add and enter next" }).click();
   await dialog.getByRole("button", { name: "Skip" }).click();
 
-  await expect(dialog.getByLabel("Title", { exact: true })).toHaveValue("");
+  await expect(dialog.getByRole("textbox", { name: "ISBN" })).toBeFocused();
+  await expect(dialog.getByRole("textbox", { name: "ISBN" })).toHaveValue("");
   await page.keyboard.press("Escape");
   await expect(page.getByText("1 of 1 shown")).toBeVisible();
 });
