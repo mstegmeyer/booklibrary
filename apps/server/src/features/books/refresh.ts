@@ -80,6 +80,10 @@ export async function refreshFromCatalogue(db: Db, bookId: string) {
     ),
   ) as Partial<BookInput>;
   const { titleOrAuthorsChanged } = updateBook(db, bookId, changes);
+  db.update(book)
+    .set({ metadataSource: found.sources.join(",") })
+    .where(eq(book.id, bookId))
+    .run();
 
   // Which copy is which edition is unknown once the book has several ISBNs.
   const format = isbns.length === 1 ? guessBinding(found.bindings) : null;

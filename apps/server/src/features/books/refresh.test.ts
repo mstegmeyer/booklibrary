@@ -76,6 +76,7 @@ describe("updating a book from the catalogues", () => {
       pageCount: 95,
       publishedYear: 2001,
       genre: { key: "cookbook" },
+      metadataSource: "dnb",
       // The DNB names no author for it, so the old one stays.
       authors: ["Someone"],
     });
