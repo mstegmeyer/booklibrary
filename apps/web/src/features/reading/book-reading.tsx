@@ -55,7 +55,10 @@ export function YourReading({ book }: { book: BookDetail }) {
               param,
               json: { date: todayIso() },
             })
-          : api.reading.books[":bookId"].$put({ param, json: { status } }),
+          : api.reading.books[":bookId"].$put({
+              param,
+              json: { status, date: todayIso() },
+            }),
       );
     },
     onSuccess: () => refreshReading(queryClient),

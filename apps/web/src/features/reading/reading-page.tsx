@@ -574,7 +574,7 @@ function AbandonedSection() {
       unwrap(
         api.reading.books[":bookId"].$put({
           param: { bookId },
-          json: { status: "reading" },
+          json: { status: "reading", date: todayIso() },
         }),
       ),
     onSuccess: () => refreshReading(queryClient),

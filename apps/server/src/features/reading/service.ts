@@ -101,10 +101,10 @@ export function setStatus(
   userId: string,
   bookId: string,
   status: ActiveStatus,
+  date = today(),
 ) {
   findBook(db, bookId);
   const [current] = readThroughs(db, userId, bookId);
-  const date = today();
   if (!current || current.status === "read") {
     if (current && status === "abandoned") {
       throw new ApiError(

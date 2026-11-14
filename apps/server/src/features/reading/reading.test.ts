@@ -162,6 +162,22 @@ describe("reading status", () => {
     ]);
   });
 
+  it("takes the start and abandon dates from the caller", async () => {
+    const { addBook, call, state } = await setup();
+    const book = await addBook({ title: "Dune", copy: {} });
+    const put = (status: string, date: string) =>
+      call(`/reading/books/${book}`, "PUT", { status, date });
+
+    await put("reading", "2026-11-13");
+    await put("abandoned", "2026-11-15");
+    expect((await state(book)).current).toMatchObject({
+      status: "abandoned",
+      startedOn: "2026-11-13",
+      endedOn: "2026-11-15",
+    });
+    expect((await put("reading", "13.11.2026")).status).toBe(400);
+  });
+
   it("refuses to abandon a finished book", async () => {
     const { addBook, setStatus, finish } = await setup();
     const book = await addBook({ title: "Dune", copy: {} });

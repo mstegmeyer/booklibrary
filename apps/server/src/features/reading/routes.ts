@@ -175,11 +175,14 @@ export const readingRoutes = createRouter()
       tags: ["Reading"],
       summary: "Set the reading status",
       description:
-        "Starting to read sets the start date to today if it is empty; abandoning records today. On a finished book, `want` and `reading` start a new read-through and `abandoned` is refused with 409. Use `finish` to mark a book as read.",
+        "Starting to read sets the start date to `date` if it is empty; abandoning records `date`. `date` is the reader's today and defaults to the server's. On a finished book, `want` and `reading` start a new read-through and `abandoned` is refused with 409. Use `finish` to mark a book as read.",
       request: {
         params: BookParams,
         ...jsonBody(
-          z.object({ status: z.enum(["want", "reading", "abandoned"]) }),
+          z.object({
+            status: z.enum(["want", "reading", "abandoned"]),
+            date: IsoDate.optional(),
+          }),
         ),
       },
       responses: { 200: json(MyReading, "The new state"), ...errors },
@@ -187,7 +190,8 @@ export const readingRoutes = createRouter()
     (c) => {
       const { bookId } = c.req.valid("param");
       const { id } = c.var.user;
-      setStatus(c.var.db, id, bookId, c.req.valid("json").status);
+      const { status, date } = c.req.valid("json");
+      setStatus(c.var.db, id, bookId, status, date);
       return c.json(getMyReading(c.var.db, id, bookId), 200);
     },
   )
