@@ -14,6 +14,13 @@ export default {
   allPlaces: "Alle Orte",
   all: "Alle",
   lentOutFilter: "Verliehen",
+  ebooksFilter: "E-Books",
+  format: {
+    label: "Format",
+    any: "Alle",
+    print: "Gedruckt",
+    ebook: "E-Book",
+  },
   availability: {
     label: "Verfügbarkeit",
     any: "Alle",
@@ -38,7 +45,7 @@ export default {
   columns: {
     book: "Buch",
     location: "Ort",
-    copies: "Exemplare",
+    format: "Format",
     reading: "Mein Lesen",
     pages: "Seiten",
   },

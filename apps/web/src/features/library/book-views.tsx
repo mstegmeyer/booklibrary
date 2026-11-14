@@ -31,6 +31,8 @@ function BookLink({
 
 const lentBadge =
   "rounded-full bg-lent-tint px-2 font-medium text-lent text-xs leading-[18px]";
+const ebookBadge =
+  "mt-1 self-start rounded-full bg-[#e6e9e3] px-2 font-medium text-[#3c423e] text-xs leading-[18px]";
 
 export function BookGrid({ items }: { items: LibraryItem[] }) {
   const { t } = useTranslation("library");
@@ -86,11 +88,16 @@ export function BookGrid({ items }: { items: LibraryItem[] }) {
                 {t("lentTo", { name: item.lentTo })}
               </span>
             ) : (
-              <span className="mt-1 hidden truncate text-ink-muted text-xs leading-[18px] md:block">
-                {item.locationPath.length > 0
-                  ? shortPath(item.locationPath)
-                  : t("noLocation")}
-              </span>
+              item.copyCount > 0 && (
+                <span className="mt-1 hidden truncate text-ink-muted text-xs leading-[18px] md:block">
+                  {item.locationPath.length > 0
+                    ? shortPath(item.locationPath)
+                    : t("noLocation")}
+                </span>
+              )
+            )}
+            {item.ebook && (
+              <span className={ebookBadge}>{t("format.ebook")}</span>
             )}
           </BookLink>
         </li>
@@ -100,19 +107,19 @@ export function BookGrid({ items }: { items: LibraryItem[] }) {
 }
 
 const columns =
-  "grid grid-cols-[minmax(0,2.4fr)_minmax(0,1.6fr)_90px_170px_64px] gap-x-4";
+  "grid grid-cols-[minmax(0,2.4fr)_minmax(0,1.6fr)_130px_170px_64px] gap-x-4";
 
 export function BookList({ items }: { items: LibraryItem[] }) {
   const { t } = useTranslation("library");
   return (
     <div className="overflow-x-auto rounded-xl border border-border bg-surface">
-      <div className="min-w-[720px]">
+      <div className="min-w-[760px]">
         <div
           className={`${columns} px-4 py-2.5 font-semibold text-ink-muted text-xs leading-[18px]`}
         >
           <span>{t("columns.book")}</span>
           <span>{t("columns.location")}</span>
-          <span>{t("columns.copies")}</span>
+          <span>{t("columns.format")}</span>
           <span>{t("columns.reading")}</span>
           <span className="text-right">{t("columns.pages")}</span>
         </div>
@@ -143,7 +150,8 @@ export function BookList({ items }: { items: LibraryItem[] }) {
                     <span className={lentBadge}>
                       {t("lentTo", { name: item.lentTo })}
                     </span>
-                  ) : item.locationPath.length > 0 ? (
+                  ) : item.copyCount === 0 ? null : item.locationPath.length >
+                    0 ? (
                     <span className="max-w-full truncate">
                       {shortPath(item.locationPath)}
                     </span>
@@ -151,7 +159,14 @@ export function BookList({ items }: { items: LibraryItem[] }) {
                     <span className="text-ink-muted">{t("noLocation")}</span>
                   )}
                 </span>
-                <span className="tabular-nums">{item.copyCount}</span>
+                <span>
+                  {[
+                    item.copyCount > 0 && t("format.print"),
+                    item.ebook && t("format.ebook"),
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
                 <ReadingCell reading={item.reading} />
                 <span className="text-right tabular-nums">
                   {item.pageCount ?? ""}

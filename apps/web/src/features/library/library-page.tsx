@@ -27,6 +27,7 @@ import { forgetOpenedBook, rememberLibrary } from "./return-to-library";
 import {
   availabilities,
   filtersOf,
+  formats,
   hasFilters,
   type LibrarySearch,
   readingFilters,
@@ -158,11 +159,33 @@ export function LibraryPage() {
             {t("lentOutFilter")}
           </Pill>
         </span>
+        <span className="md:hidden">
+          <Pill
+            pressed={filters.format === "ebook"}
+            onClick={() =>
+              setSearch({
+                format: filters.format === "ebook" ? undefined : "ebook",
+              })
+            }
+          >
+            {t("ebooksFilter")}
+          </Pill>
+        </span>
         <span
           aria-hidden
           className="mx-2 hidden h-5 w-px bg-[#c9cdc7] md:block"
         />
         <div className="hidden gap-2 md:flex">
+          <FilterMenu
+            label={t("format.label")}
+            value={filters.format}
+            options={formats.map((value) => ({
+              value,
+              label: t(`format.${value}`),
+            }))}
+            anyLabel={t("format.any")}
+            onChange={(format) => setSearch({ format })}
+          />
           <FilterMenu
             label={t("availability.label")}
             value={filters.availability}

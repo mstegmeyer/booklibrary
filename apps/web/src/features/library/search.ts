@@ -1,4 +1,5 @@
 export const availabilities = ["shelf", "lent"] as const;
+export const formats = ["print", "ebook"] as const;
 export const readingFilters = [
   "want",
   "reading",
@@ -14,6 +15,7 @@ export type LibrarySearch = {
   q?: string;
   location?: string;
   availability?: (typeof availabilities)[number];
+  format?: (typeof formats)[number];
   reading?: (typeof readingFilters)[number];
   sort?: Exclude<(typeof sorts)[number], "added">;
   /** Opens the "Add a book" dialog. */
@@ -34,6 +36,7 @@ export function parseLibrarySearch(
     q: text(search.q),
     location: text(search.location),
     availability: oneOf(availabilities, search.availability),
+    format: oneOf(formats, search.format),
     reading: oneOf(readingFilters, search.reading),
     sort: oneOf(["title", "author"] as const, search.sort),
     add: search.add === true || undefined,

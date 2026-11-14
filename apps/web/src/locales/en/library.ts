@@ -12,6 +12,13 @@ const library = {
   allPlaces: "All places",
   all: "All",
   lentOutFilter: "Lent out",
+  ebooksFilter: "E-books",
+  format: {
+    label: "Format",
+    any: "Any",
+    print: "Print",
+    ebook: "E-book",
+  },
   availability: {
     label: "Availability",
     any: "Any",
@@ -36,7 +43,7 @@ const library = {
   columns: {
     book: "Book",
     location: "Location",
-    copies: "Copies",
+    format: "Format",
     reading: "My reading",
     pages: "Pages",
   },

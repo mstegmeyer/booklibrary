@@ -11,6 +11,7 @@ const fetchPage = (filters: LibraryFilters, cursor?: string) =>
         q: filters.q,
         locationId: filters.location,
         availability: filters.availability,
+        format: filters.format,
         reading: filters.reading,
         sort: filters.sort,
         cursor,
