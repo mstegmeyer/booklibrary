@@ -15,7 +15,11 @@ export type ErrorCode =
   | "location_cycle"
   | "invalid_isbn"
   | "metadata_not_found"
-  | "metadata_unavailable";
+  | "metadata_unavailable"
+  | "unsupported_file"
+  | "duplicate_file"
+  | "format_exists"
+  | "file_too_large";
 
 export class ApiError extends Error {
   readonly status: ContentfulStatusCode;

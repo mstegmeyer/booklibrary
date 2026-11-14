@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import {
   and,
   asc,
@@ -18,6 +20,7 @@ import { decodeCursor, toPage } from "../../api/pagination.ts";
 import type { Db } from "../../db/client.ts";
 import {
   book,
+  bookFile,
   type bookFormats,
   bookIdentifier,
   contact,
@@ -46,6 +49,7 @@ export type LibraryQuery = {
   q?: string;
   locationId?: string;
   availability?: "shelf" | "lent";
+  format?: "print" | "ebook";
   reading?: ReadingStatus | "none";
   sort?: LibrarySort;
   cursor?: string;
@@ -75,9 +79,14 @@ const copyNotFound = () => new ApiError(404, "not_found", "Copy not found");
 
 const isActiveLend = and(eq(loan.direction, "lent"), isNull(loan.endedOn));
 
-const ownedBook = exists(
+const hasCopy = exists(
   sql`(select 1 from ${copy} where ${copy.bookId} = ${book.id})`,
 );
+const hasFile = exists(
+  sql`(select 1 from ${bookFile} where ${bookFile.bookId} = ${book.id})`,
+);
+/** A copy or an e-book file: either puts the book in the Library. */
+const ownedBook = or(hasCopy, hasFile);
 
 const escapeLike = (value: string) => value.replace(/[\\%_]/g, "\\$&");
 const contains = (column: SQLWrapper, value: string) =>
@@ -209,6 +218,8 @@ export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
       ),
     );
   }
+  if (query.format === "print") conditions.push(hasCopy);
+  if (query.format === "ebook") conditions.push(hasFile);
   if (query.reading === "none") {
     conditions.push(sql`${currentReadingStatus(userId)} is null`);
   } else if (query.reading) {
@@ -229,6 +240,7 @@ export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
       pageCount: book.pageCount,
       coverPath: book.coverPath,
       createdAt: book.createdAt,
+      ebook: sql`${hasFile}`.mapWith(Boolean),
     })
     .from(book)
     .where(and(...conditions))
@@ -254,6 +266,7 @@ async function toLibraryItems(
     authors: string[];
     pageCount: number | null;
     coverPath: string | null;
+    ebook: boolean;
   }[],
 ) {
   const ids = rows.map((row) => row.id);
@@ -274,7 +287,9 @@ async function toLibraryItems(
       pageCount: row.pageCount,
       ...coverUrls(row.id, row.coverPath),
       copyCount: own.length,
-      availability: available ? ("shelf" as const) : ("lent" as const),
+      ebook: row.ebook,
+      availability:
+        own.length > 0 && !available ? ("lent" as const) : ("shelf" as const),
       locationPath: available?.locationId
         ? (paths.get(available.locationId) ?? [])
         : [],
@@ -354,14 +369,14 @@ export async function librarySummary(db: Db) {
   };
 }
 
-export async function getBook(db: Db, id: string) {
+export async function getBook(db: Db, libraryDir: string, id: string) {
   const [row] = await db
     .select({ book, createdByName: user.name })
     .from(book)
     .leftJoin(user, eq(user.id, book.createdBy))
     .where(eq(book.id, id));
   if (!row) throw bookNotFound();
-  const [identifiers, copies, paths] = await Promise.all([
+  const [identifiers, copies, paths, files] = await Promise.all([
     db
       .select({ isbn13: bookIdentifier.isbn13 })
       .from(bookIdentifier)
@@ -369,6 +384,11 @@ export async function getBook(db: Db, id: string) {
       .orderBy(asc(bookIdentifier.isbn13)),
     copiesWithLoans(db, [id]),
     locationPaths(db),
+    db
+      .select()
+      .from(bookFile)
+      .where(eq(bookFile.bookId, id))
+      .orderBy(asc(bookFile.format)),
   ]);
   const b = row.book;
   return {
@@ -400,6 +420,14 @@ export async function getBook(db: Db, id: string) {
         c.contactName !== null && c.lentSince !== null
           ? { contactName: c.contactName, startedOn: c.lentSince }
           : null,
+    })),
+    files: files.map((f) => ({
+      id: f.id,
+      format: f.format,
+      size: f.size,
+      path: f.path,
+      isProtected: f.isProtected,
+      missing: !existsSync(join(libraryDir, f.path)),
     })),
   };
 }
@@ -487,7 +515,8 @@ export function createBook(
 /**
  * The sort key changes only when `sortAs` or `authors` is sent, so that other
  * edits keep a key the user corrected by hand. A non-empty `sortAs` is stored
- * as given; otherwise the key is guessed from the first author.
+ * as given; otherwise the key is guessed from the first author. Returns
+ * whether the title or the authors changed.
  */
 export function updateBook(
   db: Db,
@@ -495,11 +524,15 @@ export function updateBook(
   input: Partial<BookInput> & { sortAs?: string },
 ) {
   const current = db
-    .select({ authors: book.authors })
+    .select({ title: book.title, authors: book.authors })
     .from(book)
     .where(eq(book.id, id))
     .get();
   if (!current) throw bookNotFound();
+  const titleOrAuthorsChanged =
+    (input.title !== undefined && input.title !== current.title) ||
+    (input.authors !== undefined &&
+      input.authors.join("\n") !== current.authors.join("\n"));
   const isbns = input.isbns && unique(input.isbns);
   if (isbns) assertIsbnsFree(db, isbns, id);
   db.transaction((tx) => {
@@ -520,6 +553,7 @@ export function updateBook(
       }
     }
   });
+  return { titleOrAuthorsChanged };
 }
 
 export async function addCopy(
@@ -576,14 +610,16 @@ export async function removeCopy(db: Db, bookId: string, copyId: string) {
 
 /**
  * Deletes a book (with its ISBNs and cover) once nothing refers to it any
- * more: no copies, reading records or loan records. Call it after removing
- * any of those. Returns whether the book was kept.
+ * more: no copies, files, reading records or loan records. Call it after
+ * removing any of those. Returns whether the book was kept.
  */
 export async function deleteBookIfUnreferenced(db: Db, bookId: string) {
-  const referenced = (table: typeof copy | typeof reading | typeof loan) =>
-    db.$count(table, eq(table.bookId, bookId));
+  const referenced = (
+    table: typeof copy | typeof bookFile | typeof reading | typeof loan,
+  ) => db.$count(table, eq(table.bookId, bookId));
   if (
     (await referenced(copy)) ||
+    (await referenced(bookFile)) ||
     (await referenced(reading)) ||
     (await referenced(loan))
   ) {

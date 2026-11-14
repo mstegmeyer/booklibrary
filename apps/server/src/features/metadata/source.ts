@@ -1,6 +1,12 @@
 import { version } from "../../config.ts";
 
-export const sourceNames = ["openlibrary", "googlebooks", "dnb"] as const;
+// "epub" is the e-book file itself, when its metadata was read.
+export const sourceNames = [
+  "openlibrary",
+  "googlebooks",
+  "dnb",
+  "epub",
+] as const;
 export type SourceName = (typeof sourceNames)[number];
 
 export type Candidate = {

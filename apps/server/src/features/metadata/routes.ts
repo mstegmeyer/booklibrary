@@ -6,7 +6,7 @@ import { normalizeIsbn } from "../books/isbn.ts";
 import { lookupIsbn, searchBooks } from "./service.ts";
 import { sourceNames } from "./source.ts";
 
-const Candidate = z
+export const Candidate = z
   .object({
     isbn13: z.string().nullable(),
     title: z.string(),

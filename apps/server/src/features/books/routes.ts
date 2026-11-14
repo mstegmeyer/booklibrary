@@ -1,13 +1,35 @@
+import { createReadStream } from "node:fs";
+import { join } from "node:path";
+import { Readable } from "node:stream";
 import { createRoute, z } from "@hono/zod-openapi";
+import { bodyLimit } from "hono/body-limit";
 import { ApiError } from "../../api/errors.ts";
 import { errors, json } from "../../api/openapi.ts";
 import { PaginationQuery, page } from "../../api/pagination.ts";
 import { createRouter } from "../../api/router.ts";
-import { bookFormats, readingStatuses } from "../../db/schema.ts";
+import { bookFormats, fileFormats, readingStatuses } from "../../db/schema.ts";
 import { ContactInput } from "../contacts/routes.ts";
-import { sourceNames } from "../metadata/source.ts";
+import { Candidate } from "../metadata/routes.ts";
+import { lookupIsbn, merge } from "../metadata/service.ts";
+import {
+  type Candidate as CandidateValue,
+  sourceNames,
+} from "../metadata/source.ts";
 import { addBook } from "./add.ts";
 import { readCover, saveCover } from "./covers.ts";
+import {
+  attachFile,
+  downloadName,
+  findFile,
+  inspect,
+  maxFileBytes,
+  mediaTypes,
+  removeFile,
+  stageUpload,
+  syncFiles,
+  type Upload,
+  uploadCover,
+} from "./files.ts";
 import { normalizeIsbn } from "./isbn.ts";
 import {
   addCopy,
@@ -20,6 +42,21 @@ import {
 } from "./service.ts";
 
 const maxCoverBytes = 10 * 1024 * 1024;
+
+const limitFileSize = bodyLimit({
+  maxSize: maxFileBytes,
+  onError: () => {
+    throw new ApiError(
+      413,
+      "file_too_large",
+      `Files can be up to ${maxFileBytes / 1024 / 1024} MB`,
+    );
+  },
+});
+
+const FileUpload = z.object({
+  file: z.instanceof(File).openapi({ type: "string", format: "binary" }),
+});
 
 const Isbn = z
   .string()
@@ -73,8 +110,10 @@ const LibraryItem = z
     coverUrl: z.string().nullable(),
     thumbnailUrl: z.string().nullable(),
     copyCount: z.number().int(),
+    ebook: z.boolean().openapi({ description: "The book has an e-book file" }),
     availability: z.enum(["shelf", "lent"]).openapi({
-      description: "`shelf` when at least one copy is not lent out",
+      description:
+        "`lent` when the household has copies and every one is lent out",
     }),
     locationPath: z.array(z.string()).openapi({
       description: "Where the first available copy is; empty if not placed",
@@ -102,6 +141,23 @@ const Copy = z
   })
   .openapi("Copy");
 
+const BookFile = z
+  .object({
+    id: z.string(),
+    format: z.enum(fileFormats),
+    size: z.number().int(),
+    path: z.string().openapi({
+      description: "Where the file is in the library folder",
+    }),
+    isProtected: z.boolean().openapi({
+      description: "Copy-protected (DRM): nothing is written into the file",
+    }),
+    missing: z.boolean().openapi({
+      description: "The file is no longer in the library folder",
+    }),
+  })
+  .openapi("BookFile");
+
 const Book = z
   .object({
     id: z.string(),
@@ -122,6 +178,7 @@ const Book = z
     createdAt: z.number().int(),
     createdBy: z.object({ id: z.string(), name: z.string() }).nullable(),
     copies: z.array(Copy),
+    files: z.array(BookFile),
   })
   .openapi("Book");
 
@@ -131,6 +188,9 @@ const LibraryQuery = PaginationQuery.extend({
     description: "Only books with a copy here or in a location inside",
   }),
   availability: z.enum(["shelf", "lent"]).optional(),
+  format: z.enum(["print", "ebook"]).optional().openapi({
+    description: "`print`: with a copy; `ebook`: with an e-book file",
+  }),
   reading: z
     .enum([...readingStatuses, "none"])
     .optional()
@@ -141,11 +201,63 @@ const LibraryQuery = PaginationQuery.extend({
 });
 
 const BookParams = z.object({ id: z.string() });
+const FileParams = z.object({ id: z.string(), fileId: z.string() });
+
+/** The file's own metadata, completed by a catalogue lookup of its ISBN. */
+async function candidateOf(upload: Upload): Promise<CandidateValue | null> {
+  const epub = upload.epub;
+  const fromFile: CandidateValue | null = epub?.title
+    ? {
+        isbn13: epub.isbns[0] ?? null,
+        title: epub.title,
+        subtitle: null,
+        authors: epub.authors,
+        description: epub.description,
+        pageCount: null,
+        publishedYear: epub.publishedYear,
+        language: epub.language,
+        coverUrl: null,
+        sources: ["epub"],
+      }
+    : null;
+  const isbn = epub?.isbns[0];
+  const found = isbn ? await lookupIsbn(isbn) : null;
+  if (found === null || typeof found === "string") return fromFile;
+  return fromFile ? merge(fromFile, found) : found;
+}
 const CopyParams = z.object({ id: z.string(), copyId: z.string() });
 
 const router = createRouter();
 
-// Images are not JSON, so this route stays outside the typed client.
+router.use("/uploads", limitFileSize);
+router.use("/:id/files", limitFileSize);
+
+// Images and e-books are not JSON, so these routes stay outside the typed client.
+router.get("/uploads/:upload/cover", async (c) => {
+  const cover = await uploadCover(c.var.db, c.req.param("upload"));
+  return c.body(new Uint8Array(cover), 200, {
+    "cache-control": "private, max-age=86400",
+  });
+});
+
+router.get("/:id/files/:fileId", async (c) => {
+  const file = findFile(c.var.db, c.req.param("id"), c.req.param("fileId"));
+  const stream = createReadStream(join(c.var.libraryDir, file.path));
+  await new Promise<void>((resolve, reject) => {
+    stream.once("open", () => resolve());
+    stream.once("error", () =>
+      reject(new ApiError(404, "not_found", "The file is missing")),
+    );
+  });
+  const name = downloadName(file.path);
+  const ascii = name.replace(/[^\x20-\x7e]|["\\]/g, "_");
+  return c.body(Readable.toWeb(stream) as ReadableStream, 200, {
+    "content-type": mediaTypes[file.format],
+    "content-length": String(file.size),
+    "content-disposition": `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(name)}`,
+  });
+});
+
 router.get("/:id/cover", async (c) => {
   const size = c.req.query("size") === "thumb" ? "thumb" : "full";
   const image = await readCover(c.var.db, c.req.param("id"), size);
@@ -206,11 +318,13 @@ export const booksRoutes = router
       path: "/",
       tags: ["Books"],
       summary: "Add a book",
-      description: `Creates a book with at most one kind of ownership: \`copy\` (in the library), \`borrowedFrom\` (a borrowed loan from today, no copy) or \`wantToRead\` (the signed-in user's reading list, no copy). \`coverUrl\` and \`sources\` come from a metadata lookup; a cover that cannot be downloaded is skipped.
+      description: `Creates a book with at most one kind of ownership: \`copy\` (in the library), \`borrowedFrom\` (a borrowed loan from \`borrowedOn\`, the client's today, no copy), \`wantToRead\` (the signed-in user's reading list, no copy) or \`upload\` (an e-book file uploaded through \`POST /books/uploads\`). \`coverUrl\` and \`sources\` come from a metadata lookup; a cover that cannot be downloaded is skipped.
 
 When an ISBN already belongs to a book, the ownership is applied to that book (\`outcome: "known"\`). It is refused with 409 \`isbn_taken\` and the book's id as \`error.bookId\` when no ownership is given, or when a copy is to be added to a book the household already owns; add another copy through \`POST /books/{id}/copies\` instead.
 
 When the ISBNs are new but the title and first author match an existing book, it is refused with 409 \`same_book\` and that book's id as \`error.bookId\`. Send the request again with \`attachTo\` set to that id to add the ISBNs and the ownership to it (\`outcome: "attached"\`), or with \`keepSeparate: true\` to create a new book.
+
+A file of a format the book already has is refused with 409 \`format_exists\`; send \`replace: true\` to replace it. Without ISBNs, an upload also asks \`same_book\` for a matching title and first author. A book without a cover takes the lookup's \`coverUrl\`, or else the EPUB's cover.
 
 \`statusKept\` is true when \`wantToRead\` left an existing reading status unchanged.`,
       request: {
@@ -220,17 +334,23 @@ When the ISBNs are new but the title and first author match an existing book, it
               schema: BookFields.extend({
                 copy: CopyFields.optional(),
                 borrowedFrom: ContactInput.optional(),
+                borrowedOn: z.iso.date().optional(),
                 wantToRead: z.boolean().optional(),
+                upload: z.string().optional(),
+                replace: z.boolean().optional(),
                 coverUrl: z.url().max(2000).optional(),
                 sources: z.array(z.enum(sourceNames)).optional(),
                 attachTo: z.string().optional(),
                 keepSeparate: z.boolean().optional(),
               }).refine(
                 (input) =>
-                  [input.copy, input.borrowedFrom, input.wantToRead].filter(
-                    Boolean,
-                  ).length <= 1,
-                "Give at most one of copy, borrowedFrom and wantToRead",
+                  [
+                    input.copy,
+                    input.borrowedFrom,
+                    input.wantToRead,
+                    input.upload,
+                  ].filter(Boolean).length <= 1,
+                "Give at most one of copy, borrowedFrom, wantToRead and upload",
               ),
             },
           },
@@ -250,10 +370,14 @@ When the ISBNs are new but the title and first author match an existing book, it
     async (c) => {
       const { bookId, ...added } = await addBook(
         c.var.db,
+        c.var.libraryDir,
         c.var.user.id,
         c.req.valid("json"),
       );
-      return c.json({ ...(await getBook(c.var.db, bookId)), ...added }, 201);
+      return c.json(
+        { ...(await getBook(c.var.db, c.var.libraryDir, bookId)), ...added },
+        201,
+      );
     },
   )
   .openapi(
@@ -265,7 +389,11 @@ When the ISBNs are new but the title and first author match an existing book, it
       request: { params: BookParams },
       responses: { 200: json(Book, "The book"), ...errors },
     }),
-    async (c) => c.json(await getBook(c.var.db, c.req.valid("param").id), 200),
+    async (c) =>
+      c.json(
+        await getBook(c.var.db, c.var.libraryDir, c.req.valid("param").id),
+        200,
+      ),
   )
   .openapi(
     createRoute({
@@ -274,7 +402,7 @@ When the ISBNs are new but the title and first author match an existing book, it
       tags: ["Books"],
       summary: "Edit a book's metadata and ISBNs",
       description:
-        "`isbns`, when given, replaces the whole list. An ISBN of another book gives 409 `isbn_taken` with `error.bookId`. An empty or missing `sortAs` sorts the book by a guess from its first author's name.",
+        "`isbns`, when given, replaces the whole list. An ISBN of another book gives 409 `isbn_taken` with `error.bookId`. An empty or missing `sortAs` sorts the book by a guess from its first author's name. The book's e-book files move when the title or `sortAs` changes, and a new title or new authors are written into its EPUB.",
       request: {
         params: BookParams,
         body: {
@@ -291,8 +419,15 @@ When the ISBNs are new but the title and first author match an existing book, it
     }),
     async (c) => {
       const { id } = c.req.valid("param");
-      updateBook(c.var.db, id, c.req.valid("json"));
-      return c.json(await getBook(c.var.db, id), 200);
+      const { titleOrAuthorsChanged } = updateBook(
+        c.var.db,
+        id,
+        c.req.valid("json"),
+      );
+      await syncFiles(c.var.db, c.var.libraryDir, id, {
+        metadata: titleOrAuthorsChanged,
+      });
+      return c.json(await getBook(c.var.db, c.var.libraryDir, id), 200);
     },
   )
   .openapi(
@@ -301,7 +436,7 @@ When the ISBNs are new but the title and first author match an existing book, it
       path: "/{id}/cover",
       tags: ["Books"],
       summary: "Upload a cover image",
-      description: `Replaces the cover. Any common image format up to ${maxCoverBytes / 1024 / 1024} MB.`,
+      description: `Replaces the cover, also in the book's EPUB. Any common image format up to ${maxCoverBytes / 1024 / 1024} MB.`,
       request: {
         params: BookParams,
         body: {
@@ -325,7 +460,8 @@ When the ISBNs are new but the title and first author match an existing book, it
         throw new ApiError(400, "bad_request", "The image is too large");
       }
       await saveCover(c.var.db, id, new Uint8Array(await file.arrayBuffer()));
-      return c.json(await getBook(c.var.db, id), 200);
+      await syncFiles(c.var.db, c.var.libraryDir, id, { cover: true });
+      return c.json(await getBook(c.var.db, c.var.libraryDir, id), 200);
     },
   )
   .openapi(
@@ -343,7 +479,7 @@ When the ISBNs are new but the title and first author match an existing book, it
     async (c) => {
       const { id } = c.req.valid("param");
       await addCopy(c.var.db, c.var.user.id, id, c.req.valid("json"));
-      return c.json(await getBook(c.var.db, id), 201);
+      return c.json(await getBook(c.var.db, c.var.libraryDir, id), 201);
     },
   )
   .openapi(
@@ -361,7 +497,7 @@ When the ISBNs are new but the title and first author match an existing book, it
     async (c) => {
       const { id, copyId } = c.req.valid("param");
       await updateCopy(c.var.db, id, copyId, c.req.valid("json"));
-      return c.json(await getBook(c.var.db, id), 200);
+      return c.json(await getBook(c.var.db, c.var.libraryDir, id), 200);
     },
   )
   .openapi(
@@ -381,5 +517,110 @@ When the ISBNs are new but the title and first author match an existing book, it
     async (c) => {
       const { id, copyId } = c.req.valid("param");
       return c.json(await removeCopy(c.var.db, id, copyId), 200);
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "post",
+      path: "/uploads",
+      tags: ["Books"],
+      summary: "Upload an e-book to add",
+      description: `The first step of adding a book from an EPUB or PDF file of up to ${maxFileBytes / 1024 / 1024} MB. Nothing is saved yet: the file waits for \`POST /books\` with \`upload\` set to the returned \`id\`.
+
+For an EPUB, \`candidate\` is the metadata inside the file completed by a catalogue lookup of its ISBN (null when the file has no title), and \`fileCoverUrl\` its cover. \`candidate.coverUrl\` is only the lookup's. Nothing is read from a PDF.
+
+A file that is already in the library is refused with 409 \`duplicate_file\` and that book's id as \`error.bookId\`; other files than EPUB and PDF with 400 \`unsupported_file\`.`,
+      request: {
+        body: { content: { "multipart/form-data": { schema: FileUpload } } },
+      },
+      responses: {
+        201: json(
+          z.object({
+            id: z.string(),
+            format: z.enum(fileFormats),
+            size: z.number().int(),
+            isProtected: z.boolean(),
+            candidate: Candidate.nullable(),
+            fileCoverUrl: z.string().nullable(),
+          }),
+          "The waiting upload and what was found about the book",
+        ),
+        ...errors,
+      },
+    }),
+    async (c) => {
+      const { file } = c.req.valid("form");
+      const upload = inspect(
+        c.var.db,
+        new Uint8Array(await file.arrayBuffer()),
+      );
+      const id = await stageUpload(c.var.db, upload);
+      return c.json(
+        {
+          id,
+          format: upload.format,
+          size: upload.bytes.length,
+          isProtected: upload.epub?.isProtected ?? false,
+          candidate: await candidateOf(upload),
+          fileCoverUrl: upload.epub?.cover
+            ? `/api/v1/books/uploads/${id}/cover`
+            : null,
+        },
+        201,
+      );
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "post",
+      path: "/{id}/files",
+      tags: ["Books"],
+      summary: "Add an e-book file to a book",
+      description: `Stores an EPUB or PDF of up to ${maxFileBytes / 1024 / 1024} MB as the book's file of that format and writes the book's title, authors and cover into an EPUB. A format the book already has is refused with 409 \`format_exists\` unless \`replace\` is true. A file already in the library is refused with 409 \`duplicate_file\` and that book's id as \`error.bookId\`.`,
+      request: {
+        params: BookParams,
+        query: z.object({ replace: z.stringbool().optional() }),
+        body: { content: { "multipart/form-data": { schema: FileUpload } } },
+      },
+      responses: { 201: json(Book, "The book with its files"), ...errors },
+    }),
+    async (c) => {
+      const { id } = c.req.valid("param");
+      const { file } = c.req.valid("form");
+      const upload = inspect(
+        c.var.db,
+        new Uint8Array(await file.arrayBuffer()),
+      );
+      await attachFile(
+        c.var.db,
+        c.var.libraryDir,
+        c.var.user.id,
+        id,
+        upload,
+        c.req.valid("query").replace,
+      );
+      return c.json(await getBook(c.var.db, c.var.libraryDir, id), 201);
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "delete",
+      path: "/{id}/files/{fileId}",
+      tags: ["Books"],
+      summary: "Remove an e-book file",
+      description:
+        "Deletes the file from the library folder (if it is still there) and from the catalogue. Removing the book's last copy or file deletes the book unless reading or loan records refer to it; `bookKept` tells which happened. Download a file with `GET /books/{id}/files/{fileId}`.",
+      request: { params: FileParams },
+      responses: {
+        200: json(z.object({ bookKept: z.boolean() }), "The file is gone"),
+        ...errors,
+      },
+    }),
+    async (c) => {
+      const { id, fileId } = c.req.valid("param");
+      return c.json(
+        await removeFile(c.var.db, c.var.libraryDir, id, fileId),
+        200,
+      );
     },
   );

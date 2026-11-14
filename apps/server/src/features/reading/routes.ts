@@ -101,7 +101,7 @@ export const readingRoutes = createRouter()
       tags: ["Reading"],
       summary: "Books the signed-in user wants to read",
       description:
-        "`within`: the household owns a copy or has borrowed the book. `wishlist`: everything else.",
+        "`within`: the household owns a copy or an e-book file or has borrowed the book. `wishlist`: everything else.",
       request: {
         query: PaginationQuery.extend({
           reach: z.enum(["within", "wishlist"]),

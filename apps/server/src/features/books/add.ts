@@ -9,11 +9,18 @@ import type { SourceName } from "../metadata/source.ts";
 import { getMyReading, setStatus, today } from "../reading/service.ts";
 import { saveCover } from "./covers.ts";
 import {
+  assertFormatFree,
+  attachFile,
+  discardUpload,
+  readUpload,
+} from "./files.ts";
+import {
   assertIsbnsFree,
   assertLocationExists,
   type BookInput,
   type CopyInput,
   createBook,
+  deleteBookIfUnreferenced,
   unique,
 } from "./service.ts";
 
@@ -21,7 +28,11 @@ import {
 type Ownership = {
   copy?: CopyInput;
   borrowedFrom?: ContactInput;
+  /** The day the borrowed loan starts; the server's today otherwise. */
+  borrowedOn?: string;
   wantToRead?: boolean;
+  /** An uploaded e-book file, by the id its upload returned. */
+  upload?: string;
 };
 
 export type AddInput = BookInput &
@@ -33,6 +44,8 @@ export type AddInput = BookInput &
     attachTo?: string;
     /** The answer to `same_book`: create a book of its own anyway. */
     keepSeparate?: boolean;
+    /** The answer to `format_exists`: replace the book's file. */
+    replace?: boolean;
   };
 
 export type AddOutcome = "created" | "known" | "attached";
@@ -72,7 +85,10 @@ function applyOwnership(
       .run();
   }
   if (input.borrowedFrom) {
-    borrowBook(db, bookId, { contact: input.borrowedFrom, startedOn: today() });
+    borrowBook(db, bookId, {
+      contact: input.borrowedFrom,
+      startedOn: input.borrowedOn ?? today(),
+    });
   }
   if (input.wantToRead) {
     if (getMyReading(db, userId, bookId).current) return true;
@@ -116,6 +132,12 @@ function addToBook(
 }
 
 async function storeCover(db: Db, bookId: string, coverUrl: string) {
+  const current = db
+    .select({ coverPath: book.coverPath })
+    .from(book)
+    .where(eq(book.id, bookId))
+    .get();
+  if (current?.coverPath) return;
   try {
     const { bytes } = await downloadCover(coverUrl);
     await saveCover(db, bookId, bytes);
@@ -128,16 +150,37 @@ async function storeCover(db: Db, bookId: string, coverUrl: string) {
  * Adds a book with its ownership. An ISBN the system knows applies the
  * ownership to that book instead, unless the household already has a copy
  * and wants another (409 `isbn_taken`). A new ISBN whose title and first
- * author match an existing book asks first (409 `same_book`).
+ * author match an existing book asks first (409 `same_book`). An uploaded
+ * file of a format the book already has asks too (409 `format_exists`).
+ * A book without a cover takes the one the lookup found.
  */
 export async function addBook(
   db: Db,
+  libraryDir: string,
   userId: string,
   input: AddInput,
 ): Promise<{ bookId: string; outcome: AddOutcome; statusKept: boolean }> {
   const isbns = unique(input.isbns ?? []);
+  const upload = input.upload ? await readUpload(db, input.upload) : undefined;
+  const complete = async (bookId: string, outcome: AddOutcome) => {
+    if (input.coverUrl) await storeCover(db, bookId, input.coverUrl);
+    if (!upload || !input.upload) return;
+    try {
+      await attachFile(db, libraryDir, userId, bookId, upload, input.replace);
+    } catch (error) {
+      // A book created only to hold the file must not stay behind without it.
+      if (outcome === "created") await deleteBookIfUnreferenced(db, bookId);
+      throw error;
+    }
+    await discardUpload(db, input.upload);
+  };
+
   if (input.attachTo) {
+    if (upload) {
+      assertFormatFree(db, input.attachTo, upload.format, input.replace);
+    }
     const statusKept = addToBook(db, userId, input.attachTo, isbns, input);
+    await complete(input.attachTo, "attached");
     return { bookId: input.attachTo, outcome: "attached", statusKept };
   }
 
@@ -150,7 +193,8 @@ export async function addBook(
           .get()?.bookId
       : undefined;
   if (known) {
-    const owns = input.copy || input.borrowedFrom || input.wantToRead;
+    const owns =
+      input.copy || input.borrowedFrom || input.wantToRead || input.upload;
     if (!owns || (input.copy && hasCopies(db, known))) {
       throw new ApiError(
         409,
@@ -159,11 +203,14 @@ export async function addBook(
         { bookId: known },
       );
     }
+    if (upload) assertFormatFree(db, known, upload.format, input.replace);
     const statusKept = addToBook(db, userId, known, isbns, input);
+    await complete(known, "known");
     return { bookId: known, outcome: "known", statusKept };
   }
 
-  if (isbns.length > 0 && !input.keepSeparate) {
+  // E-book files often carry no ISBN, so for them title and author decide.
+  if ((isbns.length > 0 || upload) && !input.keepSeparate) {
     const same = findSameBook(db, input.title, input.authors);
     if (same) {
       throw new ApiError(409, "same_book", "The same book already exists", {
@@ -182,6 +229,6 @@ export async function addBook(
     applyOwnership(db, userId, id, input);
     return id;
   });
-  if (input.coverUrl) await storeCover(db, bookId, input.coverUrl);
+  await complete(bookId, "created");
   return { bookId, outcome: "created", statusKept: false };
 }
