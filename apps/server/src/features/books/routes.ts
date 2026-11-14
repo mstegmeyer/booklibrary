@@ -9,6 +9,7 @@ import { PaginationQuery, page } from "../../api/pagination.ts";
 import { createRouter } from "../../api/router.ts";
 import { bookFormats, fileFormats, readingStatuses } from "../../db/schema.ts";
 import { ContactInput } from "../contacts/routes.ts";
+import { GenreRef } from "../genres/routes.ts";
 import { Candidate } from "../metadata/routes.ts";
 import { lookupIsbn, merge } from "../metadata/service.ts";
 import {
@@ -87,6 +88,7 @@ const BookFields = z.object({
   pageCount: z.number().int().min(1).max(100_000).nullable().optional(),
   publishedYear: z.number().int().min(0).max(9999).nullable().optional(),
   language: Text(50),
+  genreId: z.string().nullable().optional(),
   isbns: z.array(Isbn).max(20).optional(),
 });
 
@@ -111,6 +113,7 @@ const LibraryItem = z
     thumbnailUrl: z.string().nullable(),
     copyCount: z.number().int(),
     ebook: z.boolean().openapi({ description: "The book has an e-book file" }),
+    genre: GenreRef.nullable(),
     availability: z.enum(["shelf", "lent"]).openapi({
       description:
         "`lent` when the household has copies and every one is lent out",
@@ -171,6 +174,7 @@ const Book = z
     pageCount: z.number().int().nullable(),
     publishedYear: z.number().int().nullable(),
     language: z.string().nullable(),
+    genre: GenreRef.nullable(),
     isbns: z.array(z.string()),
     coverUrl: z.string().nullable(),
     thumbnailUrl: z.string().nullable(),
@@ -197,6 +201,9 @@ const LibraryQuery = PaginationQuery.extend({
     .openapi({
       description: "The signed-in user's current reading status",
     }),
+  genre: z.string().optional().openapi({
+    description: "A genre's id, or `none` for books without a genre",
+  }),
   sort: z.enum(["added", "title", "author"]).default("added"),
 });
 

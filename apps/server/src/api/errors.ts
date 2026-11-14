@@ -13,6 +13,7 @@ export type ErrorCode =
   | "copy_lent"
   | "location_not_empty"
   | "location_cycle"
+  | "genre_exists"
   | "invalid_isbn"
   | "metadata_not_found"
   | "metadata_unavailable"

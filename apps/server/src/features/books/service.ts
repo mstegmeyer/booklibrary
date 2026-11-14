@@ -25,6 +25,7 @@ import {
   bookIdentifier,
   contact,
   copy,
+  genre,
   loan,
   location,
   reading,
@@ -32,6 +33,7 @@ import {
   type readingStatuses,
   user,
 } from "../../db/schema.ts";
+import { assertGenreExists } from "../genres/service.ts";
 import {
   countPlaces,
   locationPaths,
@@ -51,6 +53,8 @@ export type LibraryQuery = {
   availability?: "shelf" | "lent";
   format?: "print" | "ebook";
   reading?: ReadingStatus | "none";
+  /** A genre's id, or "none" for books without one. */
+  genre?: string;
   sort?: LibrarySort;
   cursor?: string;
   limit: number;
@@ -64,6 +68,7 @@ export type BookInput = {
   pageCount?: number | null;
   publishedYear?: number | null;
   language?: string | null;
+  genreId?: string | null;
   /** ISBN-13s as returned by `normalizeIsbn`. */
   isbns?: string[];
 };
@@ -73,6 +78,10 @@ export type CopyInput = {
   format?: BookFormat | null;
   note?: string | null;
 };
+
+export type GenreRef = { id: string; key: string | null; name: string | null };
+
+const genreRef = { id: genre.id, key: genre.key, name: genre.name };
 
 const bookNotFound = () => new ApiError(404, "not_found", "Book not found");
 const copyNotFound = () => new ApiError(404, "not_found", "Copy not found");
@@ -225,6 +234,8 @@ export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
   } else if (query.reading) {
     conditions.push(sql`${currentReadingStatus(userId)} = ${query.reading}`);
   }
+  if (query.genre === "none") conditions.push(isNull(book.genreId));
+  else if (query.genre) conditions.push(eq(book.genreId, query.genre));
   const total = await db.$count(book, and(...conditions));
   if (query.cursor) {
     conditions.push(after(sort.keys, sort.dir, decodeCursor(query.cursor)));
@@ -241,8 +252,10 @@ export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
       coverPath: book.coverPath,
       createdAt: book.createdAt,
       ebook: sql`${hasFile}`.mapWith(Boolean),
+      genre: genreRef,
     })
     .from(book)
+    .leftJoin(genre, eq(genre.id, book.genreId))
     .where(and(...conditions))
     .orderBy(...sort.keys.map((key) => order(key.expr)))
     .limit(query.limit + 1);
@@ -267,6 +280,7 @@ async function toLibraryItems(
     pageCount: number | null;
     coverPath: string | null;
     ebook: boolean;
+    genre: GenreRef | null;
   }[],
 ) {
   const ids = rows.map((row) => row.id);
@@ -288,6 +302,7 @@ async function toLibraryItems(
       ...coverUrls(row.id, row.coverPath),
       copyCount: own.length,
       ebook: row.ebook,
+      genre: row.genre,
       availability:
         own.length > 0 && !available ? ("lent" as const) : ("shelf" as const),
       locationPath: available?.locationId
@@ -371,9 +386,10 @@ export async function librarySummary(db: Db) {
 
 export async function getBook(db: Db, libraryDir: string, id: string) {
   const [row] = await db
-    .select({ book, createdByName: user.name })
+    .select({ book, createdByName: user.name, genre: genreRef })
     .from(book)
     .leftJoin(user, eq(user.id, book.createdBy))
+    .leftJoin(genre, eq(genre.id, book.genreId))
     .where(eq(book.id, id));
   if (!row) throw bookNotFound();
   const [identifiers, copies, paths, files] = await Promise.all([
@@ -401,6 +417,7 @@ export async function getBook(db: Db, libraryDir: string, id: string) {
     pageCount: b.pageCount,
     publishedYear: b.publishedYear,
     language: b.language,
+    genre: row.genre,
     isbns: identifiers.map((i) => i.isbn13),
     ...coverUrls(b.id, b.coverPath),
     metadataSource: b.metadataSource,
@@ -475,6 +492,7 @@ const bookFields = (input: Partial<BookInput>) => ({
   pageCount: input.pageCount,
   publishedYear: input.publishedYear,
   language: input.language,
+  genreId: input.genreId,
 });
 
 export const unique = (values: string[]) => [...new Set(values)];
@@ -488,6 +506,7 @@ export function createBook(
   const isbns = unique(input.isbns ?? []);
   assertIsbnsFree(db, isbns);
   assertLocationExists(db, input.copy?.locationId);
+  assertGenreExists(db, input.genreId);
   return db.transaction((tx) => {
     const created = tx
       .insert(book)
@@ -535,6 +554,7 @@ export function updateBook(
       input.authors.join("\n") !== current.authors.join("\n"));
   const isbns = input.isbns && unique(input.isbns);
   if (isbns) assertIsbnsFree(db, isbns, id);
+  assertGenreExists(db, input.genreId);
   db.transaction((tx) => {
     const fields = {
       ...bookFields(input),
