@@ -129,6 +129,18 @@ test("a re-read keeps the earlier read", async ({ page }) => {
   await expect(card).toContainText("Read once before, finished March 2019");
 });
 
+const clearDialog = (page: Page) =>
+  page.getByRole("dialog", { name: "Clear your reading status?" });
+
+async function expectNoStatus(page: Page) {
+  for (const name of ["Want to read", "Reading", "Read", "Abandoned"]) {
+    await expect(statusButton(page, name)).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+  }
+}
+
 test("clearing the status", async ({ page }) => {
   const book = await openBook(page);
   await finishBook(page.request, book.id, "2019-03-10");
@@ -136,8 +148,12 @@ test("clearing the status", async ({ page }) => {
   await page.reload();
   const card = yourReading(page);
   const clear = card.getByRole("button", { name: "Clear status" });
+  const confirm = clearDialog(page).getByRole("button", {
+    name: "Clear status",
+  });
 
   await clear.click();
+  await confirm.click();
   await expect(statusButton(page, "Read")).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -146,13 +162,45 @@ test("clearing the status", async ({ page }) => {
   await expect(card).not.toContainText("Read once before");
 
   await clear.click();
+  await expect(clearDialog(page)).toContainText("Finished on Mar 10, 2019");
+  await confirm.click();
   await expect(clear).toBeHidden();
-  for (const name of ["Want to read", "Reading", "Read", "Abandoned"]) {
-    await expect(statusButton(page, name)).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
-  }
+  await expectNoStatus(page);
+});
+
+test("clearing asks first when progress would be lost", async ({ page }) => {
+  const book = await openBook(page, { pageCount: 300 });
+  await setStatus(page.request, book.id, "reading");
+  await addProgress(page.request, book.id, today(), 60);
+  await page.reload();
+  const card = yourReading(page);
+  const clear = card.getByRole("button", { name: "Clear status" });
+
+  await clear.click();
+  const dialog = clearDialog(page);
+  await expect(dialog).toContainText("Your status “Reading”");
+  await expect(dialog).toContainText(`Started ${formatDate(new Date())}`);
+  await expect(dialog).toContainText("Your progress, up to page 60");
+  await dialog.getByRole("button", { name: "Cancel" }).first().click();
+  await expect(dialog).toBeHidden();
+  await expect(card).toContainText("Page 60 of 300");
+
+  await clear.click();
+  await dialog.getByRole("button", { name: "Clear status" }).click();
+  await expect(clear).toBeHidden();
+  await expectNoStatus(page);
+});
+
+test("clearing a plain want to read does not ask", async ({ page }) => {
+  const book = await openBook(page);
+  await setStatus(page.request, book.id, "want");
+  await page.reload();
+  const clear = yourReading(page).getByRole("button", { name: "Clear status" });
+
+  await clear.click();
+  await expect(clear).toBeHidden();
+  await expect(clearDialog(page)).toHaveCount(0);
+  await expectNoStatus(page);
 });
 
 test("clearing the status of a book outside the library removes it", async ({

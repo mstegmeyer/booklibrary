@@ -1,8 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTrigger,
+} from "../../components/ui/dialog";
 import { FormError } from "../../components/ui/field";
 import { api, unwrap } from "../../lib/api";
 import { cn } from "../../lib/cn";
@@ -79,14 +85,11 @@ export function YourReading({ book }: { book: BookDetail }) {
           {t("book.title")}
         </h2>
         {current && (
-          <button
-            type="button"
+          <ClearStatus
+            current={current}
             disabled={change.isPending}
-            onClick={() => change.mutate(null)}
-            className="h-11 cursor-pointer pl-4 font-semibold text-accent text-sm hover:text-accent-hover md:h-7 md:pl-0 md:text-[13px]"
-          >
-            {t("book.clear")}
-          </button>
+            onClear={() => change.mutate(null)}
+          />
         )}
       </div>
       <fieldset
@@ -137,6 +140,83 @@ export function YourReading({ book }: { book: BookDetail }) {
         </div>
       )}
     </section>
+  );
+}
+
+/** Asks first unless clearing loses no more than a plain status. */
+function ClearStatus({
+  current,
+  disabled,
+  onClear,
+}: {
+  current: CurrentReading;
+  disabled: boolean;
+  onClear: () => void;
+}) {
+  const { t } = useTranslation(["reading", "common"]);
+  const format = useFormat();
+  const [open, setOpen] = useState(false);
+  const date = (value: string) => format.date(fromIsoDate(value));
+  const button = (onClick?: () => void) => (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className="h-11 cursor-pointer pl-4 font-semibold text-accent text-sm hover:text-accent-hover md:h-7 md:pl-0 md:text-[13px]"
+    >
+      {t("book.clear")}
+    </button>
+  );
+  const ask =
+    current.page !== null ||
+    current.startedOn !== null ||
+    current.status === "read" ||
+    current.status === "abandoned";
+  if (!ask) return button(onClear);
+
+  const removed = [
+    t("book.clearStatus", { status: t(`statuses.${current.status}`) }),
+    current.startedOn && t("book.started", { date: date(current.startedOn) }),
+    current.page !== null && t("book.clearProgress", { page: current.page }),
+    current.status === "read" &&
+      (current.endedOn
+        ? t("book.finishedOn", { date: date(current.endedOn) })
+        : t("book.finishedUndated")),
+    current.status === "abandoned" &&
+      current.endedOn &&
+      t("book.stoppedOn", { date: date(current.endedOn) }),
+  ].filter((item) => typeof item === "string");
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{button()}</DialogTrigger>
+      <DialogContent
+        title={t("book.clearTitle")}
+        closeLabel={t("common:form.cancel")}
+      >
+        <div className="flex flex-col gap-2 text-sm">
+          <p>{t("book.clearText")}</p>
+          <ul className="list-disc pl-5">
+            {removed.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="flex flex-wrap justify-end gap-2">
+          <DialogClose asChild>
+            <Button variant="secondary">{t("common:form.cancel")}</Button>
+          </DialogClose>
+          <Button
+            onClick={() => {
+              setOpen(false);
+              onClear();
+            }}
+          >
+            {t("book.clear")}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
