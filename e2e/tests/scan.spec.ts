@@ -46,6 +46,37 @@ async function bookWithIsbn(page: Page, isbn: string) {
 test.describe("inside the app", () => {
   test.skip(({ isMobile }) => !isMobile, "the iOS app runs on phones");
 
+  test("a scanned book comes with its genre and format guessed", async ({
+    page,
+  }) => {
+    const shell = await openScanner(page);
+    // The DNB calls this one a cookbook bound in boards.
+    await shell.scan("9783897484832");
+    const found = sheet(page);
+    await expect(found).toContainText("Kochen mit Bibi Blocksberg");
+    await expect(
+      found.getByLabel("Genre").locator("option:checked"),
+    ).toHaveText("Cookbook");
+    await found.getByLabel("Genre").selectOption({ label: "Children's book" });
+    await expect(
+      found.getByLabel("Format").locator("option:checked"),
+    ).toHaveText("Hardcover");
+    await found.getByRole("button", { name: "Add and scan next" }).click();
+    await expect(found).toContainText("1 book added in this session");
+
+    const book = await bookWithIsbn(page, "9783897484832");
+    expect(book).toMatchObject({
+      genre: { key: "childrens-book" },
+      copies: [{ format: "hardcover" }],
+    });
+
+    // Scanned again, the book is known: its genre is not offered.
+    await shell.scan("9783897484832");
+    await expect(found).toContainText("Kochen mit Bibi Blocksberg");
+    await expect(found.getByLabel("Format")).toBeVisible();
+    await expect(found.getByLabel("Genre")).toHaveCount(0);
+  });
+
   test("scanning books and adding them one after another", async ({ page }) => {
     const shell = await openScanner(page);
     await expect(page).toHaveURL(/\/scan$/);

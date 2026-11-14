@@ -152,6 +152,51 @@ test("the account menu leads to the locations", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Locations" })).toBeVisible();
 });
 
+test("the genres page and the genre and format selects fit in German", async ({
+  page,
+}) => {
+  await german(page);
+  await setupAdmin(page);
+  await createBook(page, { title: "Dune", copy: {} });
+
+  await page.goto("/library");
+  await openAccountMenu(page);
+  await page.getByRole("menuitem", { name: "Genres" }).click();
+  await expect(page.getByRole("heading", { name: "Genres" })).toBeVisible();
+  const list = page.getByRole("list", { name: "Genres" });
+  await list.getByRole("button", { name: /^Politik & Gesellschaft/ }).click();
+  await expectInside(page.locator("html"));
+  for (const row of await list.getByRole("button").all()) {
+    expect((await row.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+  }
+  await expectFieldsZoomFree(page);
+  await page.getByRole("button", { name: "Genre löschen" }).click();
+  const confirm = page.getByRole("dialog", {
+    name: "Politik & Gesellschaft löschen?",
+  });
+  await expectInside(confirm);
+  await page.keyboard.press("Escape");
+
+  await page.goto("/library?add=true");
+  const dialog = page.getByRole("dialog", { name: "Buch hinzufügen" });
+  await dialog.getByRole("tab", { name: "Von Hand eingeben" }).click();
+  for (const label of ["Genre", "Ausgabe"]) {
+    const select = dialog.getByLabel(label, { exact: true });
+    await expect(select).toBeVisible();
+    await expectInside(select);
+    expect((await select.boundingBox())?.height).toBeGreaterThanOrEqual(40);
+  }
+  await expectInside(dialog);
+  await expectFieldsZoomFree(page);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+
+  await page.getByRole("button", { name: "Sortieren und filtern" }).click();
+  const sheet = page.getByRole("dialog", { name: "Sortieren und filtern" });
+  await expect(sheet.getByRole("radiogroup", { name: "Genre" })).toBeVisible();
+  await expectInside(sheet);
+});
+
 test("a very long word in a title stays on the book page", async ({ page }) => {
   await setupAdmin(page);
   const book = await createBook(page, {
