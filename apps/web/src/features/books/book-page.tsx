@@ -119,7 +119,7 @@ function BookHeader({
         imageUrl={book.coverUrl}
         size="page"
       />
-      <div className="flex min-w-0 flex-[1_1_280px] flex-col gap-1 pt-1 md:gap-2.5 md:pt-0">
+      <div className="flex min-w-0 flex-[1_1_280px] flex-col gap-1 break-words pt-1 md:gap-2.5 md:pt-0">
         <h1 className="font-semibold font-serif text-2xl leading-[29px] md:text-[34px] md:leading-10">
           {book.title}
         </h1>
