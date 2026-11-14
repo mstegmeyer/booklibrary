@@ -40,6 +40,15 @@ const library = {
     title: "Title",
     author: "Author",
   },
+  sheet: {
+    title: "Sort and filter",
+    active: "Sorting or filters are on",
+    sortBy: "Sort by",
+    reading: "Reading status",
+    reset: "Reset",
+    done: "Done",
+    close: "Close",
+  },
   columns: {
     book: "Book",
     location: "Location",

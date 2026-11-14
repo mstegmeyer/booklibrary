@@ -42,6 +42,15 @@ export default {
     title: "Titel",
     author: "Autor",
   },
+  sheet: {
+    title: "Sortieren und filtern",
+    active: "Sortierung oder Filter aktiv",
+    sortBy: "Sortieren nach",
+    reading: "Lesestatus",
+    reset: "Zurücksetzen",
+    done: "Fertig",
+    close: "Schließen",
+  },
   columns: {
     book: "Buch",
     location: "Ort",

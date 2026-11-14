@@ -1,16 +1,30 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import type { TFunction } from "i18next";
-import { ChevronDown, LayoutGrid, List, Search } from "lucide-react";
+import {
+  ChevronDown,
+  LayoutGrid,
+  List,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
+import { RadioGroup } from "radix-ui";
 import {
   type ReactNode,
   useEffect,
+  useId,
   useRef,
   useState,
   useSyncExternalStore,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState, PageHeader } from "../../components/shell/page-header";
+import { Button } from "../../components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "../../components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +43,7 @@ import {
   filtersOf,
   formats,
   hasFilters,
+  type LibraryFilters,
   type LibrarySearch,
   readingFilters,
   sorts,
@@ -101,6 +116,7 @@ export function LibraryPage() {
               value={filters.q ?? ""}
               onChange={(q) => setSearch({ q: q || undefined })}
             />
+            <SortFilterSheet filters={filters} onChange={setSearch} />
             <div className="hidden overflow-hidden rounded-lg border border-control md:flex">
               <ViewButton
                 label={t("gridView")}
@@ -304,7 +320,7 @@ function SearchBox({
   }, [text, value]);
 
   return (
-    <label className="flex h-11 w-full items-center gap-2 rounded-[10px] bg-[#eceee9] px-3 text-ink-muted md:h-10 md:w-80 md:rounded-lg md:border md:border-control md:bg-surface">
+    <label className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-[10px] bg-[#eceee9] px-3 text-ink-muted md:h-10 md:w-80 md:flex-none md:rounded-lg md:border md:border-control md:bg-surface">
       <Search aria-hidden size={16} />
       <input
         type="search"
@@ -466,5 +482,156 @@ function SortMenu({
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+/** The phone's way to the sort and the filters of the desktop row. */
+function SortFilterSheet({
+  filters,
+  onChange,
+}: {
+  filters: LibraryFilters;
+  onChange: (changes: Partial<LibrarySearch>) => void;
+}) {
+  const { t } = useTranslation("library");
+  const activeId = useId();
+  const [open, setOpen] = useState(false);
+  const active = Boolean(
+    filters.sort || filters.format || filters.availability || filters.reading,
+  );
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        aria-label={t("sheet.title")}
+        aria-describedby={active ? activeId : undefined}
+        className="relative flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[10px] bg-[#eceee9] text-ink md:hidden"
+      >
+        <SlidersHorizontal aria-hidden size={18} />
+        {active && (
+          <span
+            aria-hidden
+            className="absolute top-2 right-2 size-2.5 rounded-full border-2 border-[#eceee9] bg-accent"
+          />
+        )}
+      </DialogTrigger>
+      <span id={activeId} hidden>
+        {t("sheet.active")}
+      </span>
+      <DialogContent
+        title={t("sheet.title")}
+        closeLabel={t("sheet.close")}
+        layout="sheet"
+      >
+        <Choices
+          label={t("sheet.sortBy")}
+          value={filters.sort}
+          options={sorts.map((value) => ({
+            value: value === "added" ? undefined : value,
+            label: t(`sort.${value}`),
+          }))}
+          onChange={(sort) => onChange({ sort })}
+        />
+        <Choices
+          label={t("format.label")}
+          value={filters.format}
+          options={[
+            { value: undefined, label: t("format.any") },
+            ...formats.map((value) => ({
+              value,
+              label: t(`format.${value}`),
+            })),
+          ]}
+          onChange={(format) => onChange({ format })}
+        />
+        <Choices
+          label={t("availability.label")}
+          value={filters.availability}
+          options={[
+            { value: undefined, label: t("availability.any") },
+            ...availabilities.map((value) => ({
+              value,
+              label: t(`availability.${value}`),
+            })),
+          ]}
+          onChange={(availability) => onChange({ availability })}
+        />
+        <Choices
+          label={t("sheet.reading")}
+          value={filters.reading}
+          options={[
+            { value: undefined, label: t("reading.any") },
+            ...readingFilters.map((value) => ({
+              value,
+              label: t(`reading.${value}`),
+            })),
+          ]}
+          onChange={(reading) => onChange({ reading })}
+        />
+        <div className="mt-1 grid grid-cols-2 gap-2">
+          <Button
+            variant="secondary"
+            onClick={() =>
+              onChange({
+                sort: undefined,
+                format: undefined,
+                availability: undefined,
+                reading: undefined,
+              })
+            }
+            className="h-12 rounded-xl text-base"
+          >
+            {t("sheet.reset")}
+          </Button>
+          <Button
+            onClick={() => setOpen(false)}
+            className="h-12 rounded-xl text-base"
+          >
+            {t("sheet.done")}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Choices<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T | undefined;
+  options: { value: T | undefined; label: string }[];
+  onChange: (value: T | undefined) => void;
+}) {
+  const labelId = useId();
+  return (
+    <div className="flex flex-col gap-1">
+      <span id={labelId} className="font-semibold text-[13px] leading-[18px]">
+        {label}
+      </span>
+      <RadioGroup.Root
+        aria-labelledby={labelId}
+        value={value ?? ""}
+        onValueChange={(next) =>
+          onChange(options.find((o) => (o.value ?? "") === next)?.value)
+        }
+        className="flex flex-wrap gap-x-2"
+      >
+        {options.map((option) => (
+          <RadioGroup.Item
+            key={option.label}
+            value={option.value ?? ""}
+            className="flex h-11 cursor-pointer items-center"
+          >
+            <span className={cn(pillClass, pillState(option.value === value))}>
+              {option.label}
+            </span>
+          </RadioGroup.Item>
+        ))}
+      </RadioGroup.Root>
+    </div>
   );
 }
