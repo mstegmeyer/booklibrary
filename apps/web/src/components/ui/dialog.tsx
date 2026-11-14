@@ -14,9 +14,12 @@ const layouts = {
   /** At phone width, a sheet at the bottom of the screen. */
   sheet:
     "max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:max-h-[calc(100dvh-max(48px,env(safe-area-inset-top)+16px))] max-md:w-full max-md:max-w-none max-md:translate-x-0 max-md:translate-y-0 max-md:rounded-b-none max-md:px-5 max-md:pb-[max(32px,env(safe-area-inset-bottom))]",
-  /** At phone width, the whole screen. */
+  /**
+   * At phone width, the whole screen. The status bar's strip is a border: it
+   * lies outside the scrolling area, so nothing scrolls underneath.
+   */
   screen:
-    "max-sm:inset-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-full max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:px-4 max-sm:pt-[max(24px,env(safe-area-inset-top))] max-sm:pb-[max(24px,env(safe-area-inset-bottom))]",
+    "max-sm:inset-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-full max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:border-surface max-sm:border-t-[length:env(safe-area-inset-top)] max-sm:px-4 max-sm:pb-[max(24px,env(safe-area-inset-bottom))]",
 };
 
 export function DialogContent({
