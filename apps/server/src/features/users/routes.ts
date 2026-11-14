@@ -4,7 +4,13 @@ import { errors, json } from "../../api/openapi.ts";
 import { PaginationQuery, page } from "../../api/pagination.ts";
 import { createRouter } from "../../api/router.ts";
 import { roles } from "../../auth.ts";
-import { createUser, listUsers, setPassword } from "./service.ts";
+import {
+  createUser,
+  listUsers,
+  removeUser,
+  setPassword,
+  setRole,
+} from "./service.ts";
 
 const User = z
   .object({
@@ -66,6 +72,7 @@ export const usersRoutes = router
       path: "/{id}/password",
       tags: ["Users"],
       summary: "Reset a user's password",
+      description: "Also ends all of the user's sessions.",
       request: {
         params: UserParams,
         body: {
@@ -80,6 +87,45 @@ export const usersRoutes = router
       const { id } = c.req.valid("param");
       const { password } = c.req.valid("json");
       await setPassword(c.var.auth, c.req.raw.headers, id, password);
+      return c.body(null, 204);
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "put",
+      path: "/{id}/role",
+      tags: ["Users"],
+      summary: "Change a user's role",
+      description: "The last admin cannot be made a member.",
+      request: {
+        params: UserParams,
+        body: {
+          content: {
+            "application/json": { schema: z.object({ role: z.enum(roles) }) },
+          },
+        },
+      },
+      responses: { 200: json(User, "The updated user"), ...errors },
+    }),
+    async (c) => {
+      const { id } = c.req.valid("param");
+      const { role } = c.req.valid("json");
+      return c.json(await setRole(c.var.db, id, role), 200);
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "delete",
+      path: "/{id}",
+      tags: ["Users"],
+      summary: "Remove a user",
+      description:
+        "Deletes the user's reading history; the books and copies they added stay. Admins cannot remove themselves or the last admin.",
+      request: { params: UserParams },
+      responses: { 204: { description: "User removed" }, ...errors },
+    }),
+    async (c) => {
+      await removeUser(c.var.db, c.var.user.id, c.req.valid("param").id);
       return c.body(null, 204);
     },
   );

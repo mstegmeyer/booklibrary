@@ -24,6 +24,14 @@ export function createAuth(db: Db, config: Config) {
     basePath: "/api/auth",
     database: drizzleAdapter(db, { provider: "sqlite", schema }),
     emailAndPassword: { enabled: true, disableSignUp: true },
+    // The users API replaces these: it guards the last admin and ends the
+    // sessions of a user whose password was reset.
+    disabledPaths: [
+      "/admin/set-role",
+      "/admin/update-user",
+      "/admin/set-user-password",
+      "/admin/remove-user",
+    ],
     plugins: [
       admin({
         roles: { admin: adminAc, member: userAc },
