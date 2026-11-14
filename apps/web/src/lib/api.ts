@@ -7,11 +7,19 @@ export const api = hc<AppType>("/").api.v1;
 export class ApiError extends Error {
   readonly status: number;
   readonly code: string;
+  /** Extra fields the server sent with the error, such as an id. */
+  readonly details: Record<string, unknown>;
 
-  constructor(status: number, code: string, message: string) {
+  constructor(
+    status: number,
+    code: string,
+    message: string,
+    details: Record<string, unknown> = {},
+  ) {
     super(message);
     this.status = status;
     this.code = code;
+    this.details = details;
   }
 }
 
@@ -22,13 +30,14 @@ export async function unwrap<T>(
   const res = await request;
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as {
-      error?: { code: string; message: string };
+      error?: { code: string; message: string } & Record<string, unknown>;
     } | null;
-    throw new ApiError(
-      res.status,
-      body?.error?.code ?? "internal",
-      body?.error?.message ?? res.status.toString(),
-    );
+    const {
+      code = "internal",
+      message = res.status.toString(),
+      ...details
+    } = body?.error ?? {};
+    throw new ApiError(res.status, code, message, details);
   }
   if (res.status === 204) return undefined as Exclude<T, { error: unknown }>;
   return (await res.json()) as Exclude<T, { error: unknown }>;
