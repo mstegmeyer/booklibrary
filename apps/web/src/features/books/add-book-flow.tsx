@@ -12,6 +12,7 @@ import { formatPath, locationsQuery } from "../locations/queries";
 import type { Staged } from "./add-book-upload";
 import { BookCover } from "./book-cover";
 import { type BookFormValues, useBookErrorMessage } from "./book-form";
+import { CopyFormatSelect, copyFormat } from "./copy-dialogs";
 import { type Ownership, type OwnershipKind, ownershipJson } from "./ownership";
 import {
   bookQuery,
@@ -90,6 +91,7 @@ export function useAddBook({
   const [ownership, setOwnership] = useState<Ownership>(() => ({
     kind: own ?? "library",
     locationId: localStorage.getItem(lastLocationKey) ?? "",
+    format: "",
     person: null,
   }));
   const [personMissing, setPersonMissing] = useState(false);
@@ -160,6 +162,9 @@ export function useAddBook({
       setPersonMissing(false);
     },
     personMissing,
+    /** Starts the new copy's format from what a lookup found. */
+    prefillFormat: (candidate: Candidate | null) =>
+      setOwnership((value) => ({ ...value, format: candidate?.format ?? "" })),
     submit: (payload: BookPayload, cover: File | null) => {
       if (!ebook && current.kind === "borrowed" && !personName) {
         setPersonMissing(true);
@@ -200,6 +205,7 @@ export function AddQuestion({
       <AlreadyInLibrary
         bookId={question.bookId}
         locationId={flow.ownership.locationId}
+        format={flow.ownership.format}
         onAdded={flow.addedCopy}
         onSkip={() => {
           flow.skip();
@@ -305,22 +311,26 @@ export function KnownBook({
 function AlreadyInLibrary({
   bookId,
   locationId,
+  format: initialFormat,
   onAdded,
   onSkip,
 }: {
   bookId: string;
   locationId: string;
+  /** The new copy's format as the lookup found it. */
+  format: string;
   onAdded: (title: string) => void;
   onSkip: () => void;
 }) {
   const { t } = useTranslation("books");
   const errorMessage = useErrorMessage();
+  const [format, setFormat] = useState(initialFormat);
   const addCopy = useMutation({
     mutationFn: () =>
       unwrap(
         api.books[":id"].copies.$post({
           param: { id: bookId },
-          json: { locationId: locationId || null },
+          json: { locationId: locationId || null, format: copyFormat(format) },
         }),
       ),
     onSuccess: (updated) => onAdded(updated.title),
@@ -328,6 +338,10 @@ function AlreadyInLibrary({
 
   return (
     <KnownBook bookId={bookId} title={t("duplicate.title")}>
+      <CopyFormatSelect
+        value={format}
+        onChange={(event) => setFormat(event.target.value)}
+      />
       <FormError>
         {addCopy.error ? errorMessage(addCopy.error) : undefined}
       </FormError>

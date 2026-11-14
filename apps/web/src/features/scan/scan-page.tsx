@@ -22,6 +22,7 @@ import { AddQuestion, fromCandidate, useAddBook } from "../books/add-book-flow";
 import { Problem } from "../books/add-book-lookup";
 import { BookCover } from "../books/book-cover";
 import { useBookErrorMessage } from "../books/book-form";
+import { CopyFormatSelect } from "../books/copy-dialogs";
 import { OwnershipFieldset } from "../books/ownership";
 import { type Candidate, lookupIsbn } from "../books/queries";
 import { GenreSelect } from "../genres/genre-select";
@@ -57,7 +58,10 @@ export function ScanPage() {
   const [genreId, setGenreId] = useState("");
   const lookup = useMutation({
     mutationFn: lookupIsbn,
-    onSuccess: (found) => setGenreId(found.genreId ?? ""),
+    onSuccess: (found) => {
+      setGenreId(found.genreId ?? "");
+      flow.prefillFormat(found);
+    },
   });
   const flow = useAddBook({
     onAdded: (message) => {
@@ -162,6 +166,17 @@ export function ScanPage() {
           value={flow.ownership}
           onChange={flow.setOwnership}
         />
+        {flow.ownership.kind === "library" && (
+          <CopyFormatSelect
+            value={flow.ownership.format}
+            onChange={(event) =>
+              flow.setOwnership({
+                ...flow.ownership,
+                format: event.target.value,
+              })
+            }
+          />
+        )}
         {flow.personMissing && (
           <FormError>{t("books:add.choosePerson")}</FormError>
         )}

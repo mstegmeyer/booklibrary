@@ -4,6 +4,7 @@ import { PersonPicker } from "../contacts/person-picker";
 import type { ContactChoice } from "../contacts/queries";
 import { LocationSelect } from "../locations/location-select";
 import { todayIso } from "../reading/queries";
+import { copyFormat } from "./copy-dialogs";
 
 export const ownershipKinds = ["library", "borrowed", "reading-list"] as const;
 export type OwnershipKind = (typeof ownershipKinds)[number];
@@ -11,6 +12,8 @@ export type OwnershipKind = (typeof ownershipKinds)[number];
 export type Ownership = {
   kind: OwnershipKind;
   locationId: string;
+  /** The new copy's format; empty for "Not specified". */
+  format: string;
   person: ContactChoice | null;
 };
 
@@ -25,7 +28,12 @@ export function ownershipJson(ownership: Ownership) {
     };
   }
   if (ownership.kind === "reading-list") return { wantToRead: true };
-  return { copy: { locationId: ownership.locationId || null } };
+  return {
+    copy: {
+      locationId: ownership.locationId || null,
+      format: copyFormat(ownership.format),
+    },
+  };
 }
 
 // One set of radios: a segmented control on phones (as on the scan board),

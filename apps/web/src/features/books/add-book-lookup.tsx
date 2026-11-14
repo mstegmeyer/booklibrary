@@ -13,6 +13,8 @@ type LookupProps = {
   onNotRight: (candidate: Candidate) => void;
   /** Manual entry, with the ISBN when there is one. */
   onManual: (isbn?: string) => void;
+  /** A book was found or picked. */
+  onFound: (candidate: Candidate) => void;
   /** The ownership and the add buttons for the chosen book. */
   children: (candidate: Candidate) => ReactNode;
 };
@@ -28,12 +30,18 @@ const lookupCodes = [
 ];
 
 /** Look a book up by its ISBN. */
-export function IsbnLookup({ onNotRight, onManual, children }: LookupProps) {
+export function IsbnLookup({
+  onNotRight,
+  onManual,
+  onFound,
+  children,
+}: LookupProps) {
   const { t } = useTranslation("books");
   const id = useId();
   const [isbn, setIsbn] = useState("");
   const lookup = useMutation({
     mutationFn: (value: string) => lookupIsbn(value.replace(/\s/g, "")),
+    onSuccess: onFound,
   });
   const code = errorCode(lookup.error);
   const manual = (
@@ -113,7 +121,12 @@ export function IsbnLookup({ onNotRight, onManual, children }: LookupProps) {
 }
 
 /** Search the catalogues by title or author and pick one of the results. */
-export function TitleSearch({ onNotRight, onManual, children }: LookupProps) {
+export function TitleSearch({
+  onNotRight,
+  onManual,
+  onFound,
+  children,
+}: LookupProps) {
   const { t } = useTranslation("books");
   const [query, setQuery] = useState("");
   const [chosen, setChosen] = useState<Candidate>();
@@ -187,7 +200,10 @@ export function TitleSearch({ onNotRight, onManual, children }: LookupProps) {
               <li key={index}>
                 <button
                   type="button"
-                  onClick={() => setChosen(candidate)}
+                  onClick={() => {
+                    setChosen(candidate);
+                    onFound(candidate);
+                  }}
                   className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-sidebar"
                 >
                   <BookCover

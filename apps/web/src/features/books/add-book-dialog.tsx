@@ -16,6 +16,7 @@ import {
 import { IsbnLookup, TitleSearch } from "./add-book-lookup";
 import { EbookUpload, type Staged } from "./add-book-upload";
 import { BookForm, useBookErrorMessage } from "./book-form";
+import { CopyFormatSelect } from "./copy-dialogs";
 import { OwnershipFieldset, type OwnershipKind } from "./ownership";
 import type { Candidate } from "./queries";
 
@@ -158,6 +159,14 @@ function AddBook({
           onChange={flow.setOwnership}
         />
       )}
+      {!ebook && flow.ownership.kind === "library" && (
+        <CopyFormatSelect
+          value={flow.ownership.format}
+          onChange={(event) =>
+            flow.setOwnership({ ...flow.ownership, format: event.target.value })
+          }
+        />
+      )}
       {flow.personMissing && <FormError>{t("add.choosePerson")}</FormError>}
       <FormError>
         {flow.error ? bookErrorMessage(flow.error) : undefined}
@@ -209,7 +218,11 @@ function AddBook({
   });
   const lookupProps = {
     onNotRight: (candidate: Candidate) => openManual(fromCandidate(candidate)),
-    onManual: (isbn?: string) => openManual(isbn ? { isbns: [isbn] } : {}),
+    onManual: (isbn?: string) => {
+      flow.prefillFormat(null);
+      openManual(isbn ? { isbns: [isbn] } : {});
+    },
+    onFound: flow.prefillFormat,
     children: addFound,
   };
 

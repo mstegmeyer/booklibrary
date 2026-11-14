@@ -1,6 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { type FormEvent, type ReactNode, useState } from "react";
+import {
+  type ComponentProps,
+  type FormEvent,
+  type ReactNode,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components/ui/button";
 import {
@@ -17,6 +22,27 @@ import { LocationSelect } from "../locations/location-select";
 import { type BookDetail, type CopyDetail, refreshCatalogue } from "./queries";
 
 const formats = ["paperback", "hardcover", "other"] as const;
+
+/** The format as the API takes it: null for "Not specified". */
+export const copyFormat = (value: string) =>
+  formats.find((f) => f === value) ?? null;
+
+/** "Format": not specified, or one of the copy formats. */
+export function CopyFormatSelect(
+  props: Omit<ComponentProps<"select">, "children">,
+) {
+  const { t } = useTranslation("books");
+  return (
+    <SelectField label={t("copies.format")} {...props}>
+      <option value="">{t("copies.unknownFormat")}</option>
+      {formats.map((f) => (
+        <option key={f} value={f}>
+          {t(`copies.formats.${f}`)}
+        </option>
+      ))}
+    </SelectField>
+  );
+}
 
 function useCopyDialog() {
   const [open, setOpen] = useState(false);
@@ -50,7 +76,7 @@ export function AddCopyDialog({
           param: { id: book.id },
           json: {
             locationId: locationId || null,
-            format: formats.find((f) => f === format) ?? null,
+            format: copyFormat(format),
           },
         }),
       ),
@@ -76,18 +102,10 @@ export function AddCopyDialog({
             value={locationId}
             onChange={(event) => setLocationId(event.target.value)}
           />
-          <SelectField
-            label={t("copies.format")}
+          <CopyFormatSelect
             value={format}
             onChange={(event) => setFormat(event.target.value)}
-          >
-            <option value="">{t("copies.unknownFormat")}</option>
-            {formats.map((f) => (
-              <option key={f} value={f}>
-                {t(`copies.formats.${f}`)}
-              </option>
-            ))}
-          </SelectField>
+          />
           <FormError>
             {add.error ? errorMessage(add.error) : undefined}
           </FormError>
