@@ -1,5 +1,61 @@
 import { createBook, createLocation } from "../catalogue.ts";
 import { expect, setupAdmin, test } from "../fixtures.ts";
+import { dnbOnlyIsbn, unknownIsbn } from "../metadata-stub.ts";
+
+test.describe("looking for a cover", () => {
+  test("finds one and shows it on the page and in the library", async ({
+    page,
+  }) => {
+    await setupAdmin(page);
+    const book = await createBook(page, {
+      title: "Der Teepalast",
+      isbns: [dnbOnlyIsbn],
+      copy: {},
+    });
+    await page.route("**/cover/lookup", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      await route.continue();
+    });
+    await page.goto(`/books/${book.id}`);
+    const button = page.getByRole("button", { name: "Look for a cover" });
+    await button.click();
+    await expect(button).toBeDisabled();
+    await expect(button).toBeHidden();
+    const cover = `img[src^="/api/v1/books/${book.id}/cover"]`;
+    await expect(page.locator(cover)).toBeVisible();
+
+    await page
+      .getByRole("link", { name: "Library", exact: true })
+      .filter({ visible: true })
+      .first()
+      .click();
+    await expect(
+      page.getByRole("link", { name: /Der Teepalast/ }).locator(cover),
+    ).toBeVisible();
+  });
+
+  test("says so when no catalogue has one", async ({ page }) => {
+    await setupAdmin(page);
+    const book = await createBook(page, {
+      title: "Codex",
+      isbns: [unknownIsbn],
+      copy: {},
+    });
+    await page.goto(`/books/${book.id}`);
+    await page.getByRole("button", { name: "Look for a cover" }).click();
+    await expect(page.getByText("No cover found.")).toBeVisible();
+  });
+
+  test("is not offered without an ISBN", async ({ page }) => {
+    await setupAdmin(page);
+    const book = await createBook(page, { title: "Notes", copy: {} });
+    await page.goto(`/books/${book.id}`);
+    await expect(page.getByRole("heading", { name: "Notes" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Look for a cover" }),
+    ).toHaveCount(0);
+  });
+});
 
 test("moving a copy to another location", async ({ page }) => {
   await setupAdmin(page);

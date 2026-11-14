@@ -6,6 +6,8 @@ import { recordedResponse } from "../apps/server/src/features/metadata/fixtures/
 export const unreachableIsbn = "9780000000019";
 /** No source knows this ISBN. */
 export const unknownIsbn = "9780000000002";
+/** Only the DNB knows "Der Teepalast", and its cover service has the cover. */
+export const dnbOnlyIsbn = "9783442492114";
 
 // A 4×6 pixel PNG served for every cover.
 const cover = Buffer.from(
@@ -16,7 +18,8 @@ const coverHosts = /https?:\/\/(covers\.openlibrary\.org|books\.google\.com)/g;
 
 /**
  * Serves the recorded Open Library, Google Books and DNB responses on a free
- * local port, with their cover URLs pointing here as well. Pass `env` to the
+ * local port, with their cover URLs pointing here as well. The DNB cover
+ * service has covers only for `dnbCoverIsbns` from the recording. Pass `env` to the
  * server so its lookups go here instead of to the real services.
  */
 export async function startMetadataStub() {
@@ -28,9 +31,13 @@ export async function startMetadataStub() {
     } else if (/^\/(b\/id|books\/content)/.test(requested.pathname)) {
       res.writeHead(200, { "content-type": "image/png" }).end(cover);
     } else {
-      const { body, contentType } = recordedResponse(requested);
+      const { status, body, contentType } = recordedResponse(requested);
+      if (status === 200 && contentType.startsWith("image/")) {
+        res.writeHead(200, { "content-type": "image/png" }).end(cover);
+        return;
+      }
       res
-        .writeHead(200, { "content-type": contentType })
+        .writeHead(status, { "content-type": contentType })
         .end(body.replace(coverHosts, url));
     }
   });
@@ -43,6 +50,7 @@ export async function startMetadataStub() {
       GOOGLE_BOOKS_URL: url,
       GOOGLE_BOOKS_API_KEY: "stub",
       DNB_SRU_URL: `${url}/sru/dnb`,
+      DNB_COVERS_URL: `${url}/opac/mvb/cover`,
     },
     close: () => new Promise<void>((resolve) => server.close(() => resolve())),
   };

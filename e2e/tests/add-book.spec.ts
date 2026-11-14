@@ -1,7 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { createBook, createLocation } from "../catalogue.ts";
 import { expect, setupAdmin, test } from "../fixtures.ts";
-import { unknownIsbn, unreachableIsbn } from "../metadata-stub.ts";
+import { dnbOnlyIsbn, unknownIsbn, unreachableIsbn } from "../metadata-stub.ts";
 
 // The metadata stub answers with recorded catalogue data: 9780140328721 is
 // "Fantastic Mr. Fox", 9780547928227 "The Hobbit", 9783257229530 "Der Vorleser".
@@ -54,6 +54,20 @@ test("adding a book by ISBN into the library", async ({ page }) => {
     metadataSource: "openlibrary,googlebooks",
     copies: [{ location: { path: ["Home"] } }],
   });
+  expect(book.coverUrl).not.toBeNull();
+});
+
+test("a book only the DNB knows arrives with its cover", async ({ page }) => {
+  await setupAdmin(page);
+  const dialog = await openDialog(page);
+  await lookUp(dialog, dnbOnlyIsbn);
+  await expect(dialog).toContainText("Der Teepalast");
+  await expect(dialog).toContainText("Found on Deutsche Nationalbibliothek");
+  await dialog.getByRole("button", { name: "Add", exact: true }).click();
+  await expect(dialog).toBeHidden();
+
+  const book = await bookWithIsbn(page, dnbOnlyIsbn);
+  expect(book.metadataSource).toBe("dnb");
   expect(book.coverUrl).not.toBeNull();
 });
 
@@ -334,7 +348,7 @@ test("adding a book by ISBN in German", async ({ page }) => {
   await dialog.getByRole("button", { name: "Nachschlagen" }).click();
   await expect(dialog).toContainText("1997 · 206 Seiten · Deutsch");
   await expect(dialog).toContainText(
-    "Gefunden in: Deutsche Nationalbibliothek, Open Library und Google Books",
+    "Gefunden in: Deutsche Nationalbibliothek und Google Books",
   );
   await dialog.getByRole("button", { name: "Hinzufügen und nächstes" }).click();
   await expect(dialog.getByRole("status")).toHaveText(
