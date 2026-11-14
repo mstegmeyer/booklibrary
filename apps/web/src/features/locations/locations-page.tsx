@@ -35,7 +35,10 @@ export function LocationsPage() {
       {locations?.length === 0 && <EmptyState>{t("empty")}</EmptyState>}
       {locations && locations.length > 0 && (
         <div className="flex flex-wrap items-start gap-8">
-          <ul className="min-w-0 flex-[999_1_480px] overflow-hidden rounded-xl border border-border bg-surface">
+          <ul
+            aria-label={t("title")}
+            className="min-w-0 flex-[999_1_480px] overflow-hidden rounded-xl border border-border bg-surface"
+          >
             {locations.map((node) => (
               <TreeRow
                 key={node.id}
