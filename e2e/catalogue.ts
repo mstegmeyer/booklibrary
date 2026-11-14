@@ -59,3 +59,16 @@ export async function createCopy(
   expect(res.status()).toBe(201);
   return res.json();
 }
+
+/** Adds an e-book file to a book and returns the book with its files. */
+export async function addFile(
+  page: Page,
+  bookId: string,
+  file: { name: string; mimeType: string; buffer: Buffer },
+): Promise<SeededBook & { files: { id: string; path: string }[] }> {
+  const res = await page.request.post(`/api/v1/books/${bookId}/files`, {
+    multipart: { file },
+  });
+  expect(res.status()).toBe(201);
+  return res.json();
+}
