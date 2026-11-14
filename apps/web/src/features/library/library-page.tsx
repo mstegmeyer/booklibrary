@@ -557,7 +557,7 @@ function SortFilterSheet({
           onChange={(availability) => onChange({ availability })}
         />
         <Choices
-          label={t("sheet.reading")}
+          label={t("reading.label")}
           value={filters.reading}
           options={[
             { value: undefined, label: t("reading.any") },

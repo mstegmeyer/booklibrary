@@ -46,7 +46,6 @@ export default {
     title: "Sortieren und filtern",
     active: "Sortierung oder Filter aktiv",
     sortBy: "Sortieren nach",
-    reading: "Lesestatus",
     reset: "Zurücksetzen",
     done: "Fertig",
     close: "Schließen",

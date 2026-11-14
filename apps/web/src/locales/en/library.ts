@@ -44,7 +44,6 @@ const library = {
     title: "Sort and filter",
     active: "Sorting or filters are on",
     sortBy: "Sort by",
-    reading: "Reading status",
     reset: "Reset",
     done: "Done",
     close: "Close",

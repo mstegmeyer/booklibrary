@@ -54,7 +54,7 @@ test("a reading status narrows the list and Reset clears it", async ({
   await expect(button).not.toHaveAccessibleDescription(marker);
 
   const sheet = await openSheet(page);
-  const reading = sheet.getByRole("radiogroup", { name: "Reading status" });
+  const reading = sheet.getByRole("radiogroup", { name: "My reading" });
   await reading.getByRole("radio", { name: "Reading", exact: true }).click();
   await sheet.getByRole("button", { name: "Done" }).click();
   await expect(books).toHaveCount(1);
