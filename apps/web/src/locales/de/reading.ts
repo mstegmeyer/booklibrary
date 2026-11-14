@@ -9,7 +9,8 @@ export default {
     want: "Will ich lesen",
     reading: "Lese ich",
     read: "Gelesen",
-    abandoned: "Abgebrochen",
+    // The soft hyphen lets the word break in the narrow status buttons on phones.
+    abandoned: "Abge\u00adbrochen",
   },
   page: "Seite {{page}}",
   pageOf: "Seite {{page}} von {{total}}",
