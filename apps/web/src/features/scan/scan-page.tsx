@@ -57,7 +57,7 @@ export function ScanPage() {
   const [genreId, setGenreId] = useState("");
   const lookup = useMutation({
     mutationFn: lookupIsbn,
-    onSuccess: () => setGenreId(""),
+    onSuccess: (found) => setGenreId(found.genreId ?? ""),
   });
   const flow = useAddBook({
     onAdded: (message) => {
@@ -152,10 +152,12 @@ export function ScanPage() {
     sheet = (
       <>
         <ScannedBook candidate={candidate} />
-        <GenreSelect
-          value={genreId}
-          onChange={(event) => setGenreId(event.target.value)}
-        />
+        {!candidate.bookId && (
+          <GenreSelect
+            value={genreId}
+            onChange={(event) => setGenreId(event.target.value)}
+          />
+        )}
         <OwnershipFieldset
           value={flow.ownership}
           onChange={flow.setOwnership}

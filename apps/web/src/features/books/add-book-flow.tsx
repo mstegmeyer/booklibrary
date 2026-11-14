@@ -60,7 +60,7 @@ export const fromCandidate = (candidate: Candidate): BookPayload => ({
   pageCount: candidate.pageCount,
   publishedYear: candidate.publishedYear,
   language: candidate.language,
-  genreId: null,
+  genreId: candidate.genreId,
   isbns: candidate.isbn13 ? [candidate.isbn13] : [],
   coverUrl: candidate.coverUrl ?? undefined,
   sources: candidate.sources,

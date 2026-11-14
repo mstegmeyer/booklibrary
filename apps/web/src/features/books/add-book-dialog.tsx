@@ -31,6 +31,21 @@ const withGenre = (payload: BookPayload, form: HTMLFormElement) => ({
   genreId: String(new FormData(form).get("genreId") ?? "") || null,
 });
 
+/**
+ * The genre for a book a lookup found, prefilled with the guess. A book the
+ * library has already keeps its genre, so there is nothing to choose.
+ */
+function FoundGenre({ candidate }: { candidate: Candidate }) {
+  if (candidate.bookId) return null;
+  return (
+    <GenreSelect
+      key={`${candidate.isbn13}${candidate.title}`}
+      name="genreId"
+      defaultValue={candidate.genreId ?? ""}
+    />
+  );
+}
+
 /** "Add a book": by ISBN, by a title search or by hand. */
 export function AddBookDialog({
   open,
@@ -176,7 +191,7 @@ function AddBook({
       }}
       className="flex flex-col gap-5"
     >
-      <GenreSelect name="genreId" />
+      <FoundGenre candidate={candidate} />
       {footer}
     </form>
   );
@@ -319,7 +334,7 @@ function AddBook({
               }}
               className="flex flex-col gap-5"
             >
-              <GenreSelect name="genreId" />
+              <FoundGenre candidate={candidate} />
               {footer}
             </form>
           )}
