@@ -14,6 +14,8 @@ final class Scanner: NSObject, AVCaptureMetadataOutputObjectsDelegate {
     // startRunning and stopRunning block, so they run on sessionQueue.
     private nonisolated(unsafe) let session = AVCaptureSession()
     private let sessionQueue = DispatchQueue(label: "Scanner")
+    private var camera: AVCaptureDevice?
+    private var isRunning = false
     private var lastCode: String?
     private var lastSeen = Date.distantPast
 
@@ -31,11 +33,26 @@ final class Scanner: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         default: throw .denied
         }
         if session.inputs.isEmpty { try configure() }
+        isRunning = true
         sessionQueue.async { self.session.startRunning() }
     }
 
     func stop() {
+        try? setTorch(false)
+        isRunning = false
         sessionQueue.async { self.session.stopRunning() }
+    }
+
+    static var hasTorch: Bool {
+        AVCaptureDevice.default(for: .video)?.hasTorch == true
+    }
+
+    func setTorch(_ on: Bool) throws(ScanError) {
+        guard isRunning, let camera, camera.hasTorch,
+              (try? camera.lockForConfiguration()) != nil
+        else { throw .unavailable }
+        camera.torchMode = on ? .on : .off
+        camera.unlockForConfiguration()
     }
 
     private func configure() throws(ScanError) {
@@ -50,6 +67,7 @@ final class Scanner: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         output.metadataObjectTypes = [.ean13, .ean8]
         output.setMetadataObjectsDelegate(self, queue: .main)
         session.commitConfiguration()
+        self.camera = camera
     }
 
     nonisolated func metadataOutput(

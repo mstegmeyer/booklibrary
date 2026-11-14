@@ -56,7 +56,7 @@ struct WebView: UIViewRepresentable {
             replyHandler: @escaping @MainActor @Sendable (Any?, String?) -> Void
         ) {
             guard message.frameInfo.isMainFrame, isServer(message.frameInfo.request.url),
-                  let action = (message.body as? [String: Any])?["action"] as? String
+                  let body = message.body as? [String: Any], let action = body["action"] as? String
             else { return replyHandler(nil, "unknown") }
             switch action {
             case "changeServer":
@@ -75,6 +75,15 @@ struct WebView: UIViewRepresentable {
             case "stopScan":
                 stopScan()
                 replyHandler(nil, nil)
+            case "checkTorch":
+                replyHandler(nil, Scanner.hasTorch ? nil : ScanError.unavailable.rawValue)
+            case "setTorch":
+                do throws(ScanError) {
+                    try scanner.setTorch(body["on"] as? Bool == true)
+                    replyHandler(nil, nil)
+                } catch {
+                    replyHandler(nil, error.rawValue)
+                }
             default:
                 replyHandler(nil, "unknown")
             }

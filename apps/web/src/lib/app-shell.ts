@@ -17,18 +17,27 @@
  *   when the scan screen closes; the shell only stops by itself when a page
  *   loads.
  *
+ * Torch:
+ * - `checkTorch()` resolves when the device has a torch and rejects with
+ *   `"unavailable"` when it has none (simulator).
+ * - `setTorch(on)` switches the torch on or off while scanning. It rejects with
+ *   `"unavailable"` when there is no torch or no scan is running. Stopping the
+ *   scan turns the torch off, so every scan starts with it off.
+ *
  * `changeServer()` leaves the web interface for the shell's connect screen.
  */
 export type ScanError = "denied" | "unavailable";
 
-type Action = "changeServer" | "startScan" | "stopScan";
+type Message =
+  | { action: "changeServer" | "startScan" | "stopScan" | "checkTorch" }
+  | { action: "setTorch"; on: boolean };
 
 declare global {
   interface Window {
     webkit?: {
       messageHandlers?: {
         bookLibrary?: {
-          postMessage(message: { action: Action }): Promise<unknown>;
+          postMessage(message: Message): Promise<unknown>;
         };
       };
     };
@@ -39,14 +48,16 @@ const handler = window.webkit?.messageHandlers?.bookLibrary;
 
 export const isInApp = handler !== undefined;
 
-async function call(action: Action): Promise<void> {
+async function call(message: Message): Promise<void> {
   if (!handler) throw new Error("unavailable" satisfies ScanError);
-  await handler.postMessage({ action });
+  await handler.postMessage(message);
 }
 
-export const changeServer = () => call("changeServer");
-export const startScan = () => call("startScan");
-export const stopScan = () => call("stopScan");
+export const changeServer = () => call({ action: "changeServer" });
+export const startScan = () => call({ action: "startScan" });
+export const stopScan = () => call({ action: "stopScan" });
+export const checkTorch = () => call({ action: "checkTorch" });
+export const setTorch = (on: boolean) => call({ action: "setTorch", on });
 
 export function onBarcode(listener: (code: string) => void): () => void {
   const handle = (event: Event) =>
