@@ -96,7 +96,10 @@ export function BookCover({
         <>
           <span
             aria-hidden
-            className={cn("font-semibold font-serif", style.title)}
+            className={cn(
+              "font-semibold font-serif [overflow-wrap:anywhere]",
+              style.title,
+            )}
           >
             {title}
           </span>

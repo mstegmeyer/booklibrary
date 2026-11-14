@@ -120,7 +120,7 @@ export function LibraryPage() {
         }
       />
 
-      <div className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 md:mx-0 md:mb-6 md:flex-wrap md:items-center md:overflow-visible md:px-0">
+      <div className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:mb-6 md:flex-wrap md:items-center md:overflow-visible md:px-0">
         <Pill
           pressed={!filters.location}
           count={summary.data?.books}
