@@ -273,10 +273,12 @@ function Details({ book }: { book: BookDetail }) {
         </dd>
         <dt className="text-ink-muted">{t("details.added")}</dt>
         <dd>
-          {t("details.addedBy", {
-            date: format.date(book.createdAt),
-            name: book.createdBy.name,
-          })}
+          {book.createdBy
+            ? t("details.addedBy", {
+                date: format.date(book.createdAt),
+                name: book.createdBy.name,
+              })
+            : format.date(book.createdAt)}
         </dd>
         <dt className="text-ink-muted">{t("details.metadata")}</dt>
         <dd>{book.metadataSource ?? t("details.manual")}</dd>

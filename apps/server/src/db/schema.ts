@@ -123,9 +123,10 @@ export const book = sqliteTable(
     coverPath: text("cover_path"),
     metadataSource: text("metadata_source"),
     createdAt: timestamp("created_at"),
-    createdBy: text("created_by")
-      .notNull()
-      .references(() => user.id, { onDelete: "restrict" }),
+    // Removing a user keeps the books and copies they added.
+    createdBy: text("created_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
     updatedAt: timestamp("updated_at").$onUpdateFn(() => Date.now()),
   },
   (t) => [
@@ -173,9 +174,10 @@ export const copy = sqliteTable(
     format: text("format", { enum: bookFormats }),
     note: text("note"),
     createdAt: timestamp("created_at"),
-    createdBy: text("created_by")
-      .notNull()
-      .references(() => user.id, { onDelete: "restrict" }),
+    // Removing a user keeps the books and copies they added.
+    createdBy: text("created_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
   },
   (t) => [
     index("copy_book_id_idx").on(t.bookId),
@@ -204,8 +206,9 @@ export const loan = sqliteTable(
     bookId: text("book_id")
       .notNull()
       .references(() => book.id, { onDelete: "restrict" }),
+    // A lent loan stays as history after its copy is removed.
     copyId: text("copy_id").references(() => copy.id, {
-      onDelete: "restrict",
+      onDelete: "set null",
     }),
     contactId: text("contact_id")
       .notNull()
@@ -221,7 +224,7 @@ export const loan = sqliteTable(
     index("loan_ended_on_idx").on(t.endedOn),
     check(
       "loan_direction_check",
-      sql`(${t.direction} = 'lent' and ${t.copyId} is not null) or (${t.direction} = 'borrowed' and ${t.copyId} is null)`,
+      sql`${t.direction} = 'lent' or ${t.copyId} is null`,
     ),
   ],
 );

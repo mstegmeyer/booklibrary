@@ -115,7 +115,7 @@ const Book = z
     thumbnailUrl: z.string().nullable(),
     metadataSource: z.string().nullable(),
     createdAt: z.number().int(),
-    createdBy: z.object({ id: z.string(), name: z.string() }),
+    createdBy: z.object({ id: z.string(), name: z.string() }).nullable(),
     copies: z.array(Copy),
   })
   .openapi("Book");

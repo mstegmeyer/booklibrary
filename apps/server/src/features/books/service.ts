@@ -353,7 +353,7 @@ export async function getBook(db: Db, id: string) {
   const [row] = await db
     .select({ book, createdByName: user.name })
     .from(book)
-    .innerJoin(user, eq(user.id, book.createdBy))
+    .leftJoin(user, eq(user.id, book.createdBy))
     .where(eq(book.id, id));
   if (!row) throw bookNotFound();
   const [identifiers, copies, paths] = await Promise.all([
@@ -379,7 +379,10 @@ export async function getBook(db: Db, id: string) {
     ...coverUrls(b.id, b.coverPath),
     metadataSource: b.metadataSource,
     createdAt: b.createdAt,
-    createdBy: { id: b.createdBy, name: row.createdByName },
+    createdBy:
+      b.createdBy && row.createdByName
+        ? { id: b.createdBy, name: row.createdByName }
+        : null,
     copies: copies.map((c) => ({
       id: c.id,
       format: c.format,
