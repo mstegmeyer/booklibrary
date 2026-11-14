@@ -222,15 +222,16 @@ function AddBook({
     return <AddQuestion flow={flow} onSkip={skip} />;
   }
 
+  // At phone width the four tabs share the row equally, on two lines if need be.
   const tabClass =
-    "h-10 cursor-pointer font-medium text-ink-muted text-sm data-[state=active]:font-semibold data-[state=active]:text-ink data-[state=active]:shadow-[inset_0_-2px_0_var(--color-accent)]";
+    "h-10 cursor-pointer font-medium text-ink-muted text-sm data-[state=active]:font-semibold data-[state=active]:text-ink data-[state=active]:shadow-[inset_0_-2px_0_var(--color-accent)] max-sm:h-11 max-sm:px-0.5 max-sm:text-[13px] max-sm:leading-4";
   return (
     <Tabs.Root
       value={tab}
       onValueChange={(value) => setTab(value as Tab)}
       className="flex flex-col gap-5"
     >
-      <Tabs.List className="flex gap-6 overflow-x-auto border-border border-b">
+      <Tabs.List className="flex gap-6 overflow-x-auto border-border border-b max-sm:grid max-sm:grid-cols-4 max-sm:gap-1">
         <Tabs.Trigger value="isbn" className={tabClass}>
           {t("add.tabs.isbn")}
         </Tabs.Trigger>
