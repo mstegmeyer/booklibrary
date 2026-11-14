@@ -61,8 +61,11 @@ test("the Reading page sections", async ({ page, isMobile }) => {
 
   await openTab(page, isMobile, "Finished");
   const table = page.getByRole("table", { name: "Finished" });
+  await expect(
+    table.getByRole("columnheader", { name: "Library" }),
+  ).toBeVisible();
   await expect(table.getByRole("row", { name: /Stoner/ })).toContainText(
-    "Library copy",
+    "In the library",
   );
   await page.getByRole("combobox", { name: "Year" }).selectOption("undated");
   await expect(table.getByRole("row", { name: /Gilead/ })).toContainText(

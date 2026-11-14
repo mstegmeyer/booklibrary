@@ -58,7 +58,9 @@ const HouseholdReading = z
 
 const ReadingItem = ReadThrough.extend({
   page: z.number().int().nullable(),
-  inLibrary: z.boolean().openapi({ description: "The household owns a copy" }),
+  inLibrary: z
+    .boolean()
+    .openapi({ description: "The household owns a copy or an e-book file" }),
   borrowed: z.boolean().openapi({
     description: "The household has the book on a borrowed loan now",
   }),

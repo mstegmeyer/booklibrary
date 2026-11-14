@@ -516,7 +516,7 @@ function FinishedSection() {
                     {t("finished.pages")}
                   </th>
                   <th scope="col" className={th}>
-                    {t("finished.readAs")}
+                    {t("finished.library")}
                   </th>
                 </>
               }
@@ -535,7 +535,7 @@ function FinishedSection() {
                     </td>
                     <td className={td}>
                       {item.inLibrary
-                        ? t("finished.libraryCopy")
+                        ? t("finished.inLibrary")
                         : t("notInLibrary")}
                     </td>
                   </tr>
