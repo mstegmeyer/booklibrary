@@ -480,7 +480,11 @@ export function createBook(
   });
 }
 
-/** An empty or missing `sortAs` means the guess from the first author. */
+/**
+ * The sort key changes only when `sortAs` or `authors` is sent, so that other
+ * edits keep a key the user corrected by hand. A non-empty `sortAs` is stored
+ * as given; otherwise the key is guessed from the first author.
+ */
 export function updateBook(
   db: Db,
   id: string,
@@ -495,12 +499,16 @@ export function updateBook(
   const isbns = input.isbns && unique(input.isbns);
   if (isbns) assertIsbnsFree(db, isbns, id);
   db.transaction((tx) => {
-    const sortKey =
-      input.sortAs || guessSortKey(input.authors ?? current.authors);
-    tx.update(book)
-      .set({ ...bookFields(input), sortKey })
-      .where(eq(book.id, id))
-      .run();
+    const fields = {
+      ...bookFields(input),
+      sortKey:
+        input.sortAs === undefined && input.authors === undefined
+          ? undefined
+          : input.sortAs || guessSortKey(input.authors ?? current.authors),
+    };
+    if (Object.values(fields).some((value) => value !== undefined)) {
+      tx.update(book).set(fields).where(eq(book.id, id)).run();
+    }
     if (isbns) {
       tx.delete(bookIdentifier).where(eq(bookIdentifier.bookId, id)).run();
       for (const isbn13 of isbns) {

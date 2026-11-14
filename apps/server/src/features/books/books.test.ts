@@ -314,6 +314,9 @@ describe("books", () => {
     expect(await titles("sort=author")).toEqual(["Dune", "Baudolino"]);
 
     res = await call(`/books/${eco.id}`, "PATCH", { title: "Baudolino" });
+    expect(res.body.sortAs).toBe("Zeta");
+
+    res = await call(`/books/${eco.id}`, "PATCH", { sortAs: "" });
     expect(res.body.sortAs).toBe("Eco, Umberto");
 
     await call(`/books/${eco.id}`, "PATCH", { sortAs: "Zeta" });
