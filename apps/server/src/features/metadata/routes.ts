@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { errorBody } from "../../api/errors.ts";
+import { ApiError } from "../../api/errors.ts";
 import { ErrorSchema, errors, json } from "../../api/openapi.ts";
 import { createRouter } from "../../api/router.ts";
 import { normalizeIsbn } from "../books/isbn.ts";
@@ -24,10 +24,12 @@ const unavailable = {
   502: json(ErrorSchema, "No metadata source could be reached"),
 };
 
-const unavailableBody = errorBody(
-  "metadata_unavailable",
-  "No metadata source could be reached",
-);
+const unavailableError = () =>
+  new ApiError(
+    502,
+    "metadata_unavailable",
+    "No metadata source could be reached",
+  );
 
 export const metadataRoutes = createRouter()
   .openapi(
@@ -47,15 +49,14 @@ export const metadataRoutes = createRouter()
     }),
     async (c) => {
       const isbn13 = normalizeIsbn(c.req.valid("param").isbn);
-      if (!isbn13) {
-        return c.json(errorBody("invalid_isbn", "Not a valid ISBN"), 400);
-      }
+      if (!isbn13) throw new ApiError(400, "invalid_isbn", "Not a valid ISBN");
       const result = await lookupIsbn(isbn13);
-      if (result === "unavailable") return c.json(unavailableBody, 502);
+      if (result === "unavailable") throw unavailableError();
       if (result === "not_found") {
-        return c.json(
-          errorBody("metadata_not_found", "No source knows this ISBN"),
+        throw new ApiError(
           404,
+          "metadata_not_found",
+          "No source knows this ISBN",
         );
       }
       return c.json(result, 200);
@@ -78,7 +79,7 @@ export const metadataRoutes = createRouter()
     }),
     async (c) => {
       const result = await searchBooks(c.req.valid("query").q);
-      if (result === "unavailable") return c.json(unavailableBody, 502);
+      if (result === "unavailable") throw unavailableError();
       return c.json({ items: result }, 200);
     },
   );

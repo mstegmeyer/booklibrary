@@ -11,7 +11,10 @@ export type ErrorCode =
   | "isbn_taken"
   | "copy_lent"
   | "location_not_empty"
-  | "location_cycle";
+  | "location_cycle"
+  | "invalid_isbn"
+  | "metadata_not_found"
+  | "metadata_unavailable";
 
 export class ApiError extends Error {
   readonly status: ContentfulStatusCode;
