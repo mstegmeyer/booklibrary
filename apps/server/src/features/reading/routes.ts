@@ -13,6 +13,7 @@ import {
   listCurrent,
   listFinished,
   listWanted,
+  setStartDate,
   setStatus,
 } from "./service.ts";
 
@@ -260,6 +261,27 @@ export const readingRoutes = createRouter()
       const { bookId } = c.req.valid("param");
       const { id } = c.var.user;
       finish(c.var.db, id, bookId, c.req.valid("json"));
+      return c.json(getMyReading(c.var.db, id, bookId), 200);
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "put",
+      path: "/books/{bookId}/start-date",
+      tags: ["Reading"],
+      summary: "Change the start date",
+      description:
+        "Of the current read-through; `date` null means the user does not remember.",
+      request: {
+        params: BookParams,
+        ...jsonBody(z.object({ date: IsoDate.nullable() })),
+      },
+      responses: { 200: json(MyReading, "The new state"), ...errors },
+    }),
+    (c) => {
+      const { bookId } = c.req.valid("param");
+      const { id } = c.var.user;
+      setStartDate(c.var.db, id, bookId, c.req.valid("json").date);
       return c.json(getMyReading(c.var.db, id, bookId), 200);
     },
   )

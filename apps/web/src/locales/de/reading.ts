@@ -26,6 +26,8 @@ export default {
     updateProgress: "Fortschritt eintragen",
     finished: "Fertig",
     started: "Begonnen am {{date}}",
+    startedUndated: "Beginn unbekannt",
+    changeStartDate: "Beginn ändern",
     finishedOn: "Beendet am {{date}}",
     finishedUndated: "Beendet, Datum unbekannt",
     changeDate: "Datum ändern",
@@ -52,6 +54,11 @@ export default {
     since_other: "{{count}} Seiten seit dem letzten Mal",
     date: "Gelesen am",
     finished: "Ich habe das Buch beendet",
+  },
+  startDate: {
+    title: "Wann hast du angefangen?",
+    date: "Begonnen am",
+    unknown: "Ich weiß das Datum nicht mehr",
   },
   finishDate: {
     title: "Wann hast du es beendet?",

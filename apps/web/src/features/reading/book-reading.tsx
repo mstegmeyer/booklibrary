@@ -10,7 +10,7 @@ import { useFormat } from "../../lib/format";
 import { useErrorMessage } from "../../lib/use-error-message";
 import { coverColor } from "../books/book-cover";
 import { type BookDetail, fromIsoDate } from "../books/queries";
-import { FinishDateDialog } from "./finish-date-dialog";
+import { DateDialog } from "./date-dialog";
 import { ProgressBar } from "./progress-bar";
 import { ProgressDialog } from "./progress-dialog";
 import {
@@ -178,11 +178,7 @@ function StatusBody({
             />
             {finish}
           </div>
-          {current.startedOn && (
-            <p className={info}>
-              {t("book.started", { date: date(current.startedOn) })}
-            </p>
-          )}
+          <StartDate bookId={book.id} startedOn={current.startedOn} />
         </>
       );
     case "read":
@@ -193,23 +189,17 @@ function StatusBody({
               ? t("book.finishedOn", { date: date(current.endedOn) })
               : t("book.finishedUndated")}
           </p>
-          <FinishDateDialog
+          <DateDialog
             bookId={book.id}
-            endedOn={current.endedOn}
+            kind="finish"
+            value={current.endedOn}
             trigger={
-              <button
-                type="button"
-                className="h-11 cursor-pointer font-semibold text-accent text-sm hover:text-accent-hover md:h-7 md:text-[13px]"
-              >
+              <button type="button" className={textButton}>
                 {t("book.changeDate")}
               </button>
             }
           />
-          {current.startedOn && (
-            <p className={cn(info, "w-full")}>
-              {t("book.started", { date: date(current.startedOn) })}
-            </p>
-          )}
+          <StartDate bookId={book.id} startedOn={current.startedOn} />
         </div>
       );
     case "abandoned":
@@ -224,6 +214,39 @@ function StatusBody({
         </>
       );
   }
+}
+
+const textButton =
+  "h-11 cursor-pointer font-semibold text-accent text-sm hover:text-accent-hover md:h-7 md:text-[13px]";
+
+function StartDate({
+  bookId,
+  startedOn,
+}: {
+  bookId: string;
+  startedOn: string | null;
+}) {
+  const { t } = useTranslation("reading");
+  const format = useFormat();
+  return (
+    <div className="flex w-full flex-wrap items-center justify-between gap-x-3">
+      <p className="text-[13px] text-ink-muted leading-5">
+        {startedOn
+          ? t("book.started", { date: format.date(fromIsoDate(startedOn)) })
+          : t("book.startedUndated")}
+      </p>
+      <DateDialog
+        bookId={bookId}
+        kind="start"
+        value={startedOn}
+        trigger={
+          <button type="button" className={textButton}>
+            {t("book.changeStartDate")}
+          </button>
+        }
+      />
+    </div>
+  );
 }
 
 export function PageReached({

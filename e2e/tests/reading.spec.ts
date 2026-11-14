@@ -96,6 +96,28 @@ test("finishing with a date and without one", async ({ page }) => {
   await expect(card).toContainText("Finished, date not known");
 });
 
+test("changing and removing the start date", async ({ page }) => {
+  const book = await openBook(page);
+  await setStatus(page.request, book.id, "reading");
+  await page.reload();
+  const card = yourReading(page);
+  await expect(card).toContainText(`Started ${formatDate(new Date())}`);
+
+  await card.getByRole("button", { name: "Change start date" }).click();
+  let dialog = page.getByRole("dialog", { name: "When did you start?" });
+  await dialog.getByLabel("Started on").fill("2026-10-02");
+  await dialog.getByRole("button", { name: "Save" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(card).toContainText("Started Oct 2, 2026");
+
+  await card.getByRole("button", { name: "Change start date" }).click();
+  dialog = page.getByRole("dialog", { name: "When did you start?" });
+  await dialog.getByLabel("I do not remember the date").check();
+  await dialog.getByRole("button", { name: "Save" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(card).toContainText("Start date not known");
+});
+
 test("a re-read keeps the earlier read", async ({ page }) => {
   const book = await openBook(page);
   await finishBook(page.request, book.id, "2019-03-10");

@@ -24,6 +24,8 @@ const reading = {
     updateProgress: "Update progress",
     finished: "Finished",
     started: "Started {{date}}",
+    startedUndated: "Start date not known",
+    changeStartDate: "Change start date",
     finishedOn: "Finished on {{date}}",
     finishedUndated: "Finished, date not known",
     changeDate: "Change date",
@@ -49,6 +51,11 @@ const reading = {
     since_other: "{{count}} pages since last time",
     date: "Read on",
     finished: "I finished the book",
+  },
+  startDate: {
+    title: "When did you start?",
+    date: "Started on",
+    unknown: "I do not remember the date",
   },
   finishDate: {
     title: "When did you finish?",

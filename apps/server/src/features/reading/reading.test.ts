@@ -178,6 +178,24 @@ describe("reading status", () => {
     expect((await put("reading", "13.11.2026")).status).toBe(400);
   });
 
+  it("changes or forgets the start date of the current read", async () => {
+    const { addBook, setStatus, finish, call, state } = await setup();
+    const book = await addBook({ title: "Dune", copy: {} });
+    const startDate = (date: string | null) =>
+      call(`/reading/books/${book}/start-date`, "PUT", { date });
+    expect((await startDate("2026-10-01")).status).toBe(404);
+
+    await finish(book, "2019-03-10");
+    await setStatus(book, "reading");
+    expect((await startDate("2026-10-01")).body).toMatchObject({
+      current: { status: "reading", startedOn: "2026-10-01" },
+      earlier: [{ status: "read", startedOn: null }],
+    });
+    await startDate(null);
+    expect((await state(book)).current?.startedOn).toBeNull();
+    expect((await startDate("1.10.2026")).status).toBe(400);
+  });
+
   it("refuses to abandon a finished book", async () => {
     const { addBook, setStatus, finish } = await setup();
     const book = await addBook({ title: "Dune", copy: {} });

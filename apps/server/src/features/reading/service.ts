@@ -138,6 +138,22 @@ export function setStatus(
   }
 }
 
+/** Changes the start date of the current read-through; null forgets it. */
+export function setStartDate(
+  db: Db,
+  userId: string,
+  bookId: string,
+  date: string | null,
+) {
+  findBook(db, bookId);
+  const [current] = readThroughs(db, userId, bookId);
+  if (!current) throw new ApiError(404, "not_found", "No reading status");
+  db.update(reading)
+    .set({ startedOn: date })
+    .where(eq(reading.id, current.id))
+    .run();
+}
+
 /** Saves the total page count on a book that has none yet. */
 function completePageCount(
   db: Db,
