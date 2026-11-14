@@ -102,3 +102,19 @@ test("the duplicate prompt can be skipped", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.getByText("1 of 1 shown")).toBeVisible();
 });
+
+test("the book page names the book's language", async ({ page }) => {
+  await setupAdmin(page);
+  const known = await createBook(page, {
+    title: "Middlemarch",
+    publishedYear: 1983,
+    pageCount: 536,
+    language: "en",
+  });
+  await page.goto(`/books/${known.id}`);
+  await expect(page.getByText("1983 · 536 pages · English")).toBeVisible();
+
+  const unknown = await createBook(page, { title: "Codex", language: "xx" });
+  await page.goto(`/books/${unknown.id}`);
+  await expect(page.getByText("xx", { exact: true })).toBeVisible();
+});

@@ -14,5 +14,13 @@ export function useFormat() {
         unit: bytes < 1_000_000 ? "kilobyte" : "megabyte",
         maximumFractionDigits: 1,
       }).format(bytes < 1_000_000 ? bytes / 1000 : bytes / 1_000_000),
+    /** The name of a BCP 47 language; a code Intl rejects stays as it is. */
+    language: (code: string) => {
+      try {
+        return new Intl.DisplayNames(locale, { type: "language" }).of(code);
+      } catch {
+        return code;
+      }
+    },
   };
 }

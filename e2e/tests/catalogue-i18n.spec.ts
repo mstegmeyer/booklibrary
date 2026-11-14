@@ -9,6 +9,7 @@ test("the library and a book page in German", async ({ page }) => {
     title: "Momo",
     authors: ["Michael Ende"],
     pageCount: 304,
+    language: "de",
     copy: { locationId: home.id, format: "hardcover" },
   });
   await page.goto("/library");
@@ -26,5 +27,5 @@ test("the library and a book page in German", async ({ page }) => {
   await expect(
     copies.getByRole("button", { name: "Verschieben" }),
   ).toBeVisible();
-  await expect(page.getByText("304 Seiten")).toBeVisible();
+  await expect(page.getByText("304 Seiten · Deutsch")).toBeVisible();
 });

@@ -103,10 +103,11 @@ function BookHeader({
   onEdit: () => void;
 }) {
   const { t } = useTranslation("books");
+  const format = useFormat();
   const facts = [
     book.publishedYear,
     book.pageCount && t("page.pages", { count: book.pageCount }),
-    book.language,
+    book.language && format.language(book.language),
   ].filter(Boolean);
 
   return (
