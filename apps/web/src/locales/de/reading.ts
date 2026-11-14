@@ -9,7 +9,7 @@ export default {
     want: "Will ich lesen",
     reading: "Lese ich",
     read: "Gelesen",
-    // The soft hyphen lets the word break in the narrow status buttons on phones.
+    // The soft hyphen lets the word break in the narrow buttons on phones.
     abandoned: "Abge\u00adbrochen",
   },
   page: "Seite {{page}}",
@@ -76,7 +76,8 @@ export default {
     reading: "Lese ich",
     want: "Will ich lesen",
     finished: "Gelesen",
-    abandoned: "Abgebrochen",
+    // See statuses.abandoned.
+    abandoned: "Abge\u00adbrochen",
   },
   current: {
     title: "Lese ich gerade",
