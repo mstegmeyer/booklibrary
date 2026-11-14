@@ -16,7 +16,7 @@ test("moving a copy to another location", async ({ page }) => {
   const copies = page.getByRole("region", { name: "Copies" });
   await expect(copies.getByText("Home › Shelf A")).toBeVisible();
 
-  await copies.getByRole("button", { name: "Move" }).click();
+  await copies.getByRole("button", { name: "Move", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Move this copy" });
   await dialog.getByLabel("Location").selectOption({ label: "Lake house" });
   await dialog.getByRole("button", { name: "Save" }).click();

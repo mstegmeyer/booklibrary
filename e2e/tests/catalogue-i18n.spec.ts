@@ -23,6 +23,8 @@ test("the library and a book page in German", async ({ page }) => {
   await page.getByRole("link", { name: /Momo/ }).click();
   const copies = page.getByRole("region", { name: "Exemplare" });
   await expect(copies.getByText("Gebunden")).toBeVisible();
-  await expect(copies.getByRole("button", { name: "Verschieben" })).toBeVisible();
+  await expect(
+    copies.getByRole("button", { name: "Verschieben" }),
+  ).toBeVisible();
   await expect(page.getByText("304 Seiten")).toBeVisible();
 });

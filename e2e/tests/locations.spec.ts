@@ -4,7 +4,7 @@ import { expect, setupAdmin, test } from "../fixtures.ts";
 test("creating, renaming, moving and deleting locations", async ({ page }) => {
   await setupAdmin(page);
   await page.goto("/locations");
-  const tree = page.getByRole("list").first();
+  const tree = page.getByRole("list", { name: "Locations" });
 
   await page.getByRole("button", { name: "Add location" }).click();
   let dialog = page.getByRole("dialog", { name: "Add a location" });
@@ -34,7 +34,12 @@ test("creating, renaming, moving and deleting locations", async ({ page }) => {
   const lounge = page.getByRole("region", { name: "Lounge" });
   await lounge.getByLabel("Inside").selectOption({ label: "Lake house" });
   await lounge.getByRole("button", { name: "Save" }).click();
-  await expect(lounge.getByText("Lake house", { exact: true })).toBeVisible();
+  // Lounge now sits below Lake house in the tree.
+  await expect(tree.getByRole("button")).toHaveText([
+    /^Home/,
+    /^Lake house/,
+    /^Lounge/,
+  ]);
 
   await tree.getByRole("button", { name: /^Home/ }).click();
   await page
@@ -53,7 +58,7 @@ test("a location with books or locations inside cannot be deleted", async ({
   const shelf = await createLocation(page, "Shelf", home.id);
   await createBook(page, { title: "Dune", copy: { locationId: shelf.id } });
   await page.goto("/locations");
-  const tree = page.getByRole("list").first();
+  const tree = page.getByRole("list", { name: "Locations" });
 
   await tree.getByRole("button", { name: /^Home/ }).click();
   let panel = page.getByRole("region", { name: "Home" });

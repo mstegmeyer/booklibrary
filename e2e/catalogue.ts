@@ -33,7 +33,10 @@ export async function createBook(
     publishedYear?: number;
     language?: string;
     description?: string;
-    copy?: { locationId?: string; format?: "paperback" | "hardcover" | "other" };
+    copy?: {
+      locationId?: string;
+      format?: "paperback" | "hardcover" | "other";
+    };
   },
 ): Promise<SeededBook> {
   const res = await page.request.post("/api/v1/books", { data: book });
@@ -45,7 +48,10 @@ export async function createBook(
 export async function createCopy(
   page: Page,
   bookId: string,
-  copy: { locationId?: string; format?: "paperback" | "hardcover" | "other" } = {},
+  copy: {
+    locationId?: string;
+    format?: "paperback" | "hardcover" | "other";
+  } = {},
 ): Promise<SeededBook> {
   const res = await page.request.post(`/api/v1/books/${bookId}/copies`, {
     data: copy,

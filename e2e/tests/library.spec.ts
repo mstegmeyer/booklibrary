@@ -31,9 +31,9 @@ test("adding a book by hand shows it in the grid", async ({ page }) => {
     .getByRole("link", { name: "Add book" })
     .click();
   await expect(dialog.getByLabel("Shelf")).toHaveValue(/.+/);
-  await expect(
-    dialog.getByLabel("Shelf").locator("option:checked"),
-  ).toHaveText("Home › Shelf A");
+  await expect(dialog.getByLabel("Shelf").locator("option:checked")).toHaveText(
+    "Home › Shelf A",
+  );
 });
 
 test("switching to the list view is remembered", async ({ page, isMobile }) => {
@@ -49,13 +49,16 @@ test("switching to the list view is remembered", async ({ page, isMobile }) => {
     return;
   }
   await page.getByRole("button", { name: "List view" }).click();
-  await expect(page.getByText("My reading", { exact: true }).last()).toBeVisible();
+  await expect(
+    page.getByText("My reading", { exact: true }).last(),
+  ).toBeVisible();
   await expect(page.getByRole("link", { name: /Dune/ })).toContainText("612");
 
   await page.reload();
-  await expect(
-    page.getByRole("button", { name: "List view" }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "List view" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
   await expect(page.getByRole("link", { name: /Dune/ })).toContainText("612");
 });
 
@@ -127,7 +130,10 @@ test("more books load while scrolling and come back after visiting one", async (
   // Newest first, so the first book is at the very end.
   const last = page.getByRole("link", { name: /Book 01/ });
   await expect(async () => {
-    await page.mouse.wheel(0, 5000);
+    await page
+      .getByRole("link", { name: /Book \d+/ })
+      .last()
+      .scrollIntoViewIfNeeded();
     await expect(last).toBeVisible({ timeout: 500 });
   }).toPass();
   await expect(page.getByText("45 of 45 shown")).toBeVisible();
