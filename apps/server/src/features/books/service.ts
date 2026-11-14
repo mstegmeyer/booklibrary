@@ -36,6 +36,7 @@ import {
 } from "../locations/service.ts";
 import { coverUrls, deleteCoverFiles } from "./covers.ts";
 import { normalizeIsbn } from "./isbn.ts";
+import { guessSortKey } from "./sort-key.ts";
 
 export type BookFormat = (typeof bookFormats)[number];
 export type ReadingStatus = (typeof readingStatuses)[number];
@@ -106,12 +107,14 @@ type SortKey = {
 type SortRow = {
   id: string;
   title: string;
-  authors: string[];
+  sortKey: string;
   createdAt: number;
 };
 
 const byTitle = sql`${book.title} collate nocase`;
-const firstAuthor = sql`coalesce(json_extract(${book.authors}, '$[0]'), '') collate nocase`;
+// Parenthesised because `after` appends comparisons to it.
+const withoutAuthor = sql`(${book.sortKey} = '')`;
+const bySortKey = sql`${book.sortKey} collate nocase`;
 
 const sorts: Record<LibrarySort, { dir: "asc" | "desc"; keys: SortKey[] }> = {
   added: {
@@ -131,7 +134,8 @@ const sorts: Record<LibrarySort, { dir: "asc" | "desc"; keys: SortKey[] }> = {
   author: {
     dir: "asc",
     keys: [
-      { expr: firstAuthor, of: (r) => r.authors[0] ?? "" },
+      { expr: withoutAuthor, of: (r) => Number(r.sortKey === "") },
+      { expr: bySortKey, of: (r) => r.sortKey },
       { expr: byTitle, of: (r) => r.title },
       { expr: book.id, of: (r) => r.id },
     ],
@@ -221,6 +225,7 @@ export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
       id: book.id,
       title: book.title,
       authors: book.authors,
+      sortKey: book.sortKey,
       pageCount: book.pageCount,
       coverPath: book.coverPath,
       createdAt: book.createdAt,
@@ -371,6 +376,7 @@ export async function getBook(db: Db, id: string) {
     title: b.title,
     subtitle: b.subtitle,
     authors: b.authors,
+    sortAs: b.sortKey,
     description: b.description,
     pageCount: b.pageCount,
     publishedYear: b.publishedYear,
@@ -454,7 +460,12 @@ export function createBook(
   return db.transaction((tx) => {
     const created = tx
       .insert(book)
-      .values({ ...bookFields(input), title: input.title, createdBy: userId })
+      .values({
+        ...bookFields(input),
+        title: input.title,
+        sortKey: guessSortKey(input.authors ?? []),
+        createdBy: userId,
+      })
       .returning({ id: book.id })
       .get();
     for (const isbn13 of isbns) {
@@ -469,17 +480,27 @@ export function createBook(
   });
 }
 
-export function updateBook(db: Db, id: string, input: Partial<BookInput>) {
-  if (!db.select({ id: book.id }).from(book).where(eq(book.id, id)).get()) {
-    throw bookNotFound();
-  }
+/** An empty or missing `sortAs` means the guess from the first author. */
+export function updateBook(
+  db: Db,
+  id: string,
+  input: Partial<BookInput> & { sortAs?: string },
+) {
+  const current = db
+    .select({ authors: book.authors })
+    .from(book)
+    .where(eq(book.id, id))
+    .get();
+  if (!current) throw bookNotFound();
   const isbns = input.isbns && unique(input.isbns);
   if (isbns) assertIsbnsFree(db, isbns, id);
   db.transaction((tx) => {
-    const fields = bookFields(input);
-    if (Object.values(fields).some((value) => value !== undefined)) {
-      tx.update(book).set(fields).where(eq(book.id, id)).run();
-    }
+    const sortKey =
+      input.sortAs || guessSortKey(input.authors ?? current.authors);
+    tx.update(book)
+      .set({ ...bookFields(input), sortKey })
+      .where(eq(book.id, id))
+      .run();
     if (isbns) {
       tx.delete(bookIdentifier).where(eq(bookIdentifier.bookId, id)).run();
       for (const isbn13 of isbns) {

@@ -12,6 +12,7 @@ import {
 import { createTestApp } from "../../test/app.ts";
 import { normalizeIsbn } from "./isbn.ts";
 import { deleteBookIfUnreferenced } from "./service.ts";
+import { guessSortKey } from "./sort-key.ts";
 
 type Book = {
   id: string;
@@ -71,6 +72,21 @@ describe("ISBN normalisation", () => {
     expect(normalizeIsbn("9780156001312")).toBeNull();
     expect(normalizeIsbn("1234567890123")).toBeNull();
     expect(normalizeIsbn("abc")).toBeNull();
+  });
+});
+
+describe("sort key guess", () => {
+  it.each([
+    [["Umberto Eco"], "Eco, Umberto"],
+    [["Ursula K. Le Guin", "Someone Else"], "Le Guin, Ursula K."],
+    [["Ludwig van Beethoven"], "van Beethoven, Ludwig"],
+    [["Johann Wolfgang von Goethe"], "von Goethe, Johann Wolfgang"],
+    [["Michael Ende"], "Ende, Michael"],
+    [["Cicero"], "Cicero"],
+    [["Eco, Umberto"], "Eco, Umberto"],
+    [[], ""],
+  ])("%j sorts as %j", (authors, key) => {
+    expect(guessSortKey(authors)).toBe(key);
   });
 });
 
@@ -256,11 +272,57 @@ describe("books", () => {
       "Momo",
     ]);
     expect(await titles("sort=author")).toEqual([
-      "Anonymous tales",
-      "Dune",
       "middlemarch",
       "Momo",
+      "Dune",
+      "Anonymous tales",
     ]);
+  });
+
+  it("sorts by author surname, then title, with authorless books last", async () => {
+    const { addBook, titles } = await setup();
+    for (const [title, author] of [
+      ["Untitled", undefined],
+      ["The Name of the Rose", "Umberto Eco"],
+      ["Foucault's Pendulum", "umberto eco"],
+      ["Wizard of Earthsea", "Ursula K. Le Guin"],
+      ["Symphonies", "Ludwig van Beethoven"],
+      ["Rome", "Cicero"],
+      ["Akira", "Katsuhiro Otomo"],
+    ]) {
+      await addBook({ title, authors: author ? [author] : [] });
+    }
+    expect(await titles("sort=author")).toEqual([
+      "Rome",
+      "Foucault's Pendulum",
+      "The Name of the Rose",
+      "Wizard of Earthsea",
+      "Akira",
+      "Symphonies",
+      "Untitled",
+    ]);
+  });
+
+  it("guesses the sort key and lets an edit override or reset it", async () => {
+    const { addBook, call, titles } = await setup();
+    const eco = await addBook({ title: "Baudolino", authors: ["Umberto Eco"] });
+    await addBook({ title: "Dune", authors: ["Frank Herbert"] });
+    expect((await call(`/books/${eco.id}`)).body.sortAs).toBe("Eco, Umberto");
+
+    let res = await call(`/books/${eco.id}`, "PATCH", { sortAs: "Zeta" });
+    expect(res.body.sortAs).toBe("Zeta");
+    expect(await titles("sort=author")).toEqual(["Dune", "Baudolino"]);
+
+    res = await call(`/books/${eco.id}`, "PATCH", { title: "Baudolino" });
+    expect(res.body.sortAs).toBe("Eco, Umberto");
+
+    await call(`/books/${eco.id}`, "PATCH", { sortAs: "Zeta" });
+    res = await call(`/books/${eco.id}`, "PATCH", {
+      authors: ["Italo Calvino"],
+      sortAs: "",
+    });
+    expect(res.body.sortAs).toBe("Calvino, Italo");
+    expect(res.body.authors).toEqual(["Italo Calvino"]);
   });
 
   it("pages through the library with a cursor in every sort", async () => {
@@ -269,7 +331,8 @@ describe("books", () => {
     for (let i = 0; i < 7; i++) {
       const title = `Book ${i}`;
       all.push(title);
-      await addBook({ title, authors: [i % 2 ? "Same" : `Author ${i}`] });
+      const author = i % 2 ? "Same" : `Author ${i}`;
+      await addBook({ title, authors: i % 3 ? [author] : [] });
     }
     for (const sort of ["added", "title", "author"]) {
       const seen: string[] = [];

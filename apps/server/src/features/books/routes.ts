@@ -106,6 +106,9 @@ const Book = z
     title: z.string(),
     subtitle: z.string().nullable(),
     authors: z.array(z.string()),
+    sortAs: z.string().openapi({
+      description: "How the book sorts by author, e.g. `Eco, Umberto`",
+    }),
     description: z.string().nullable(),
     pageCount: z.number().int().nullable(),
     publishedYear: z.number().int().nullable(),
@@ -237,11 +240,17 @@ export const booksRoutes = router
       tags: ["Books"],
       summary: "Edit a book's metadata and ISBNs",
       description:
-        "`isbns`, when given, replaces the whole list. An ISBN of another book gives 409 `isbn_taken` with `error.bookId`.",
+        "`isbns`, when given, replaces the whole list. An ISBN of another book gives 409 `isbn_taken` with `error.bookId`. An empty or missing `sortAs` sorts the book by a guess from its first author's name.",
       request: {
         params: BookParams,
         body: {
-          content: { "application/json": { schema: BookFields.partial() } },
+          content: {
+            "application/json": {
+              schema: BookFields.partial().extend({
+                sortAs: z.string().trim().max(200).optional(),
+              }),
+            },
+          },
         },
       },
       responses: { 200: json(Book, "The changed book"), ...errors },
