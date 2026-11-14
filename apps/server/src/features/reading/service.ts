@@ -58,7 +58,8 @@ function readThroughs(db: Db | Tx, userId: string, bookId: string) {
 const lastPage = sql<
   number | null
 >`(select "page" from "reading_progress" where "reading_progress"."reading_id" = "reading"."id" order by "date" desc, "page" desc limit 1)`;
-const owned = sql`(exists (select 1 from "copy" where "copy"."book_id" = "reading"."book_id") or exists (select 1 from "book_file" where "book_file"."book_id" = "reading"."book_id"))`;
+/** Whether the household owns the read book as a copy or an e-book file. */
+export const owned = sql`(exists (select 1 from "copy" where "copy"."book_id" = "reading"."book_id") or exists (select 1 from "book_file" where "book_file"."book_id" = "reading"."book_id"))`;
 const borrowed = sql`exists (select 1 from "loan" where "loan"."book_id" = "reading"."book_id" and "loan"."direction" = 'borrowed' and "loan"."ended_on" is null)`;
 
 /** The signed-in user's reading of a book with their earlier read-throughs. */

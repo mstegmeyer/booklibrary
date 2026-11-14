@@ -17,7 +17,7 @@ const Statistics = z
     }),
     notInLibrary: z.number().int().openapi({
       description:
-        "Books finished this year that the household owns no copy of",
+        "Books finished this year that the household owns neither a copy nor an e-book file of",
     }),
     booksPerMonth: Months,
     pagesPerMonth: Months,

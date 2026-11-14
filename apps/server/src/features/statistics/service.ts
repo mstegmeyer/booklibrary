@@ -1,8 +1,8 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { ApiError } from "../../api/errors.ts";
 import type { Db } from "../../db/client.ts";
-import { book, copy, reading, readingProgress, user } from "../../db/schema.ts";
-import { today } from "../reading/service.ts";
+import { book, reading, readingProgress, user } from "../../db/schema.ts";
+import { owned, today } from "../reading/service.ts";
 
 /** Everyone in the household, for choosing whose statistics to show. */
 export function listMembers(db: Db) {
@@ -83,10 +83,7 @@ export function statistics(db: Db, userId: string | undefined, year: number) {
       id: reading.id,
       endedOn: reading.endedOn,
       pageCount: book.pageCount,
-      inLibrary:
-        sql`exists (select 1 from ${copy} where ${copy.bookId} = ${book.id})`.mapWith(
-          Boolean,
-        ),
+      inLibrary: owned.mapWith(Boolean),
     })
     .from(reading)
     .innerJoin(book, eq(book.id, reading.bookId))

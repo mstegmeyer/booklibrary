@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { reading, readingProgress, user } from "../../db/schema.ts";
+import { bookFile, reading, readingProgress, user } from "../../db/schema.ts";
 import { createTestApp } from "../../test/app.ts";
 
 async function setup() {
@@ -54,7 +54,7 @@ async function setup() {
   const stats = async (year: number, userId?: string) =>
     (await call(`/statistics?year=${year}${userId ? `&userId=${userId}` : ""}`))
       .body;
-  return { call, mara, ben, addBook, readThrough, stats };
+  return { app, call, mara, ben, addBook, readThrough, stats };
 }
 
 describe("pages read", () => {
@@ -144,6 +144,28 @@ describe("statistics", () => {
       allTime: 3,
     });
     expect(household.booksPerMonth.slice(0, 4)).toEqual([0, 1, 0, 2]);
+  });
+
+  it("counts a book owned as an e-book file as in the library", async () => {
+    const { app, mara, addBook, readThrough, stats } = await setup();
+    const ebook = await addBook(100, false);
+    app.db
+      .insert(bookFile)
+      .values({
+        bookId: ebook,
+        format: "epub",
+        path: "Book.epub",
+        size: 1,
+        sha256: "a",
+        uploadSha256: "a",
+      })
+      .run();
+    readThrough(mara, ebook, "read", "2025-03-01");
+
+    expect(await stats(2025, mara)).toMatchObject({
+      booksFinished: 1,
+      notInLibrary: 0,
+    });
   });
 
   it("lists the members and rejects an unknown user", async () => {
