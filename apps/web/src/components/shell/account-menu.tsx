@@ -1,8 +1,9 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { ChevronsUpDown, LogOut, UserRound, Users } from "lucide-react";
+import { ChevronsUpDown, LogOut, Server, UserRound, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { type Language, languages } from "../../i18n";
+import { changeServer, isInApp } from "../../lib/app-shell";
 import { authClient, sessionQuery } from "../../lib/session";
 import {
   DropdownMenu,
@@ -101,6 +102,12 @@ export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
               <Users aria-hidden size={16} />
               {t("account.users")}
             </Link>
+          </DropdownMenuItem>
+        )}
+        {isInApp && (
+          <DropdownMenuItem onSelect={changeServer}>
+            <Server aria-hidden size={16} />
+            {t("account.changeServer")}
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onSelect={signOut}>

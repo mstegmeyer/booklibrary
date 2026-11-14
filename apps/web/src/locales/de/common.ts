@@ -15,6 +15,7 @@ export default {
     menu: "Konto: {{name}}",
     language: "Sprache",
     users: "Benutzer",
+    changeServer: "Server wechseln",
     signOut: "Abmelden",
   },
   pages: {

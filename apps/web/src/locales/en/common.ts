@@ -13,6 +13,7 @@ const common = {
     menu: "Account: {{name}}",
     language: "Language",
     users: "Users",
+    changeServer: "Change server",
     signOut: "Sign out",
   },
   pages: {
