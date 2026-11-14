@@ -18,10 +18,6 @@ import type { ContactChoice } from "../contacts/queries";
 import { formatPath } from "../locations/queries";
 import { refreshLoans, today } from "./queries";
 
-/** On the phone, dialogs of this feature slide up from the bottom as a sheet. */
-export const sheet =
-  "max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:w-full max-md:max-w-none max-md:translate-x-0 max-md:translate-y-0 max-md:rounded-b-none max-md:px-5 max-md:pb-8";
-
 function useCopyName() {
   const { t } = useTranslation("books");
   return (copy: CopyDetail) =>
@@ -115,7 +111,7 @@ export function LendCopyDialog({
       <DialogContent
         title={t("lend.title")}
         closeLabel={t("common:form.cancel")}
-        className={sheet}
+        layout="sheet"
       >
         <p className="-mt-4 text-ink-muted text-sm">
           {book.title} · {copyName(copy)}
@@ -144,7 +140,7 @@ export function LendBookDialog({ trigger }: { trigger: ReactNode }) {
       <DialogContent
         title={t("pick.title")}
         closeLabel={t("common:form.cancel")}
-        className={sheet}
+        layout="sheet"
       >
         {bookId ? (
           <ChosenBook

@@ -44,7 +44,8 @@ export function AddBookDialog({
       <DialogContent
         title={t("add.title")}
         closeLabel={t("common:form.cancel")}
-        className="max-w-[640px] max-sm:inset-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-full max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:px-4"
+        layout="screen"
+        className="max-w-[640px]"
       >
         <AddBook own={own} isbn={isbn} onDone={() => onOpenChange(false)} />
       </DialogContent>

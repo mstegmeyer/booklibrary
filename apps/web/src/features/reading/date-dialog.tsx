@@ -10,7 +10,6 @@ import {
 import { Field, FormError } from "../../components/ui/field";
 import { api, unwrap } from "../../lib/api";
 import { useErrorMessage } from "../../lib/use-error-message";
-import { sheet } from "./progress-dialog";
 import { refreshReading, todayIso } from "./queries";
 
 /** Changes the start or finish date of the current read, or forgets it. */
@@ -69,7 +68,7 @@ export function DateDialog({
       <DialogContent
         title={t(`${kind}Date.title`)}
         closeLabel={t("common:form.cancel")}
-        className={sheet}
+        layout="sheet"
       >
         <form onSubmit={submit} className="flex flex-col gap-4">
           <Field

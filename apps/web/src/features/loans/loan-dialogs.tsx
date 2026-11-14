@@ -20,7 +20,6 @@ import { api, unwrap } from "../../lib/api";
 import { useErrorMessage } from "../../lib/use-error-message";
 import { PersonPicker, useChosenName } from "../contacts/person-picker";
 import type { ContactChoice } from "../contacts/queries";
-import { sheet } from "./lend-dialog";
 import { type Loan, refreshLoans, today } from "./queries";
 
 /**
@@ -74,7 +73,7 @@ export function ReturnDialog({
       <DialogContent
         title={t("return.title")}
         closeLabel={t("common:form.cancel")}
-        className={sheet}
+        layout="sheet"
       >
         <form onSubmit={submit} className="flex flex-col gap-4">
           <Field
@@ -154,7 +153,7 @@ function EditLoanDialog({ loan, open, onOpenChange }: DialogProps) {
       <DialogContent
         title={t("edit.title")}
         closeLabel={t("common:form.cancel")}
-        className={sheet}
+        layout="sheet"
       >
         <p className="-mt-4 text-ink-muted text-sm">{loan.book.title}</p>
         {open && (

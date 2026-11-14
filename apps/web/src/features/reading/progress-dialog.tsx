@@ -13,10 +13,6 @@ import { useErrorMessage } from "../../lib/use-error-message";
 import { ProgressBar } from "./progress-bar";
 import { percent, refreshReading, todayIso } from "./queries";
 
-/** At phone width the dialog is a sheet at the bottom of the screen. */
-export const sheet =
-  "max-md:top-auto max-md:bottom-0 max-md:max-h-[calc(100dvh-48px)] max-md:w-full max-md:max-w-none max-md:translate-y-0 max-md:rounded-b-none max-md:px-5 max-md:pb-[max(34px,env(safe-area-inset-bottom))]";
-
 export function ProgressDialog({
   book,
   page,
@@ -82,7 +78,7 @@ export function ProgressDialog({
       <DialogContent
         title={t("progress.title")}
         closeLabel={t("common:form.cancel")}
-        className={sheet}
+        layout="sheet"
       >
         <p className="-mt-4 text-ink-muted text-sm leading-5">{book.title}</p>
         <form onSubmit={submit} className="flex flex-col gap-[18px]">
