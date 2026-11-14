@@ -6,6 +6,7 @@ const fetchBook = (id: string) =>
 
 export type BookDetail = Awaited<ReturnType<typeof fetchBook>>;
 export type CopyDetail = BookDetail["copies"][number];
+export type FileDetail = BookDetail["files"][number];
 
 export const bookQuery = (id: string) =>
   queryOptions({
@@ -37,6 +38,24 @@ export const searchCatalogues = async (q: string) =>
 
 /** A book found in the catalogues. */
 export type Candidate = Awaited<ReturnType<typeof lookupIsbn>>;
+
+/** Uploads an e-book to add; nothing is saved before `POST /books`. */
+export const stageEbook = (file: File) =>
+  unwrap(api.books.uploads.$post({ form: { file } }));
+
+export type StagedEbook = Awaited<ReturnType<typeof stageEbook>>;
+
+export const addEbook = (bookId: string, file: File, replace: boolean) =>
+  unwrap(
+    api.books[":id"].files.$post({
+      param: { id: bookId },
+      query: { replace: String(replace) },
+      form: { file },
+    }),
+  );
+
+export const fileUrl = (bookId: string, fileId: string) =>
+  `/api/v1/books/${bookId}/files/${fileId}`;
 
 export async function uploadCover(bookId: string, file: File) {
   return unwrap(

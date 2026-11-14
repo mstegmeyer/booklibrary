@@ -193,7 +193,7 @@ export function RemoveCopyDialog({
         closeLabel={t("common:form.cancel")}
       >
         <p className="text-sm">
-          {book.copies.length === 1
+          {book.copies.length === 1 && book.files.length === 0
             ? t("copies.removeLast")
             : t("copies.removeOne")}
         </p>

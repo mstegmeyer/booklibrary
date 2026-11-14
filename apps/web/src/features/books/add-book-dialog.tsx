@@ -12,6 +12,7 @@ import { useErrorMessage } from "../../lib/use-error-message";
 import { useChosenName } from "../contacts/person-picker";
 import { formatPath, locationsQuery } from "../locations/queries";
 import { IsbnLookup, TitleSearch } from "./add-book-lookup";
+import { EbookUpload, type Staged } from "./add-book-upload";
 import { BookCover } from "./book-cover";
 import {
   BookForm,
@@ -33,7 +34,7 @@ import {
 } from "./queries";
 
 const lastLocationKey = "books.lastLocation";
-type Tab = "isbn" | "search" | "manual";
+type Tab = "isbn" | "search" | "manual" | "upload";
 type Intent = "add" | "next";
 
 /** The book as it is sent; `coverUrl` and `sources` come from a lookup. */
@@ -46,20 +47,25 @@ type Save = {
   payload: BookPayload;
   cover: File | null;
   intent: Intent;
-  /** The answer to the "Same book?" question. */
-  answer?: { attachTo: string } | { keepSeparate: true };
+  /** The answers to "Same book?" and to replacing the book's file. */
+  answer?: { attachTo?: string; keepSeparate?: true; replace?: true };
 };
 
-/** The server asks first: the book is in the library, or the same book exists. */
+/**
+ * The server asks first: the book is in the library, the same book exists,
+ * or it has a file of this format already.
+ */
 type Question = {
-  code: "isbn_taken" | "same_book";
+  code: "isbn_taken" | "same_book" | "format_exists";
   bookId: string;
   save: Save;
 };
 
 const isQuestion = (error: Error | null) =>
   error instanceof ApiError &&
-  (error.code === "isbn_taken" || error.code === "same_book");
+  (error.code === "isbn_taken" ||
+    error.code === "same_book" ||
+    error.code === "format_exists");
 
 const fromCandidate = (candidate: Candidate): BookPayload => ({
   title: candidate.title,
@@ -107,12 +113,16 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
   const queryClient = useQueryClient();
   const bookErrorMessage = useBookErrorMessage();
   const { data: locations } = useQuery(locationsQuery);
+  const format = useFormat();
   const [tab, setTab] = useState<Tab>("isbn");
   const [isbnKey, setIsbnKey] = useState(0);
   const [manual, setManual] = useState<{
     key: number;
     values: Partial<BookPayload>;
+    coverPreview?: string;
   }>({ key: 0, values: {} });
+  /** An e-book file the book is added with, instead of an ownership. */
+  const [ebook, setEbook] = useState<Staged>();
   const [ownership, setOwnership] = useState<Ownership>(() => ({
     kind: own ?? "library",
     locationId: localStorage.getItem(lastLocationKey) ?? "",
@@ -140,6 +150,7 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
       ),
     ]);
     setQuestion(undefined);
+    setEbook(undefined);
     if (intent === "add") return tell ? setNotice(message) : onDone();
     setAdded(message);
     startNext();
@@ -147,6 +158,7 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
 
   const startNext = () => {
     setQuestion(undefined);
+    setEbook(undefined);
     setTab("isbn");
     setIsbnKey((key) => key + 1);
   };
@@ -155,7 +167,11 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
     mutationFn: async ({ payload, cover, answer }: Save) => {
       const book = await unwrap(
         api.books.$post({
-          json: { ...payload, ...ownershipJson(current), ...answer },
+          json: {
+            ...payload,
+            ...(ebook ? { upload: ebook.id } : ownershipJson(current)),
+            ...answer,
+          },
         }),
       );
       if (cover && book.outcome === "created") {
@@ -168,7 +184,9 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
       const message = book.statusKept
         ? t("add.statusKept", { title: book.title })
         : book.outcome === "known"
-          ? t(`add.known.${current.kind}`, { title: book.title })
+          ? t(`add.known.${ebook ? "ebook" : current.kind}`, {
+              title: book.title,
+            })
           : t("add.added", { title: book.title });
       return finish(message, known, intent);
     },
@@ -184,7 +202,7 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
   });
 
   const submit = (payload: BookPayload, cover: File | null, intent: Intent) => {
-    if (current.kind === "borrowed" && !personName) {
+    if (!ebook && current.kind === "borrowed" && !personName) {
       setPersonMissing(true);
       return;
     }
@@ -194,13 +212,29 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
 
   const footer = (
     <>
-      <OwnershipFieldset
-        value={current}
-        onChange={(value) => {
-          setOwnership(value);
-          setPersonMissing(false);
-        }}
-      />
+      {ebook ? (
+        <p className="flex flex-wrap items-center gap-x-3 text-sm">
+          {t("upload.withFile", {
+            name: ebook.name,
+            size: format.fileSize(ebook.size),
+          })}
+          <button
+            type="button"
+            onClick={() => setEbook(undefined)}
+            className="cursor-pointer text-accent underline hover:text-accent-hover"
+          >
+            {t("upload.removeFile")}
+          </button>
+        </p>
+      ) : (
+        <OwnershipFieldset
+          value={current}
+          onChange={(value) => {
+            setOwnership(value);
+            setPersonMissing(false);
+          }}
+        />
+      )}
       {personMissing && <FormError>{t("add.choosePerson")}</FormError>}
       <FormError>
         {save.error && !isQuestion(save.error)
@@ -240,10 +274,17 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
     </form>
   );
 
-  const openManual = (values: Partial<BookPayload>) => {
-    setManual((m) => ({ key: m.key + 1, values }));
+  const openManual = (values: Partial<BookPayload>, coverPreview?: string) => {
+    setManual((m) => ({ key: m.key + 1, values, coverPreview }));
     setTab("manual");
   };
+  /** The EPUB's own cover is used when the book is added without a URL. */
+  const fromEbook = (candidate: Candidate): BookPayload => ({
+    ...fromCandidate(candidate),
+    coverUrl: ebook?.fileCoverUrl
+      ? undefined
+      : (candidate.coverUrl ?? undefined),
+  });
   const lookupProps = {
     onNotRight: (candidate: Candidate) => openManual(fromCandidate(candidate)),
     onManual: (isbn?: string) => openManual(isbn ? { isbns: [isbn] } : {}),
@@ -273,6 +314,43 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
         }
         onSkip={() => (question.save.intent === "add" ? onDone() : startNext())}
       />
+    );
+  }
+
+  if (question?.code === "format_exists" && ebook) {
+    return (
+      <KnownBook
+        bookId={question.bookId}
+        title={t("upload.replaceTitle", { format: ebook.format.toUpperCase() })}
+      >
+        <p className="text-sm">{t("upload.replaceText")}</p>
+        <FormError>
+          {save.error && !isQuestion(save.error)
+            ? bookErrorMessage(save.error)
+            : undefined}
+        </FormError>
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button
+            variant="secondary"
+            onClick={() =>
+              question.save.intent === "add" ? onDone() : startNext()
+            }
+          >
+            {t("upload.skip")}
+          </Button>
+          <Button
+            disabled={save.isPending}
+            onClick={() =>
+              save.mutate({
+                ...question.save,
+                answer: { ...question.save.answer, replace: true },
+              })
+            }
+          >
+            {t("upload.replace")}
+          </Button>
+        </div>
+      </KnownBook>
     );
   }
 
@@ -324,6 +402,9 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
         <Tabs.Trigger value="manual" className={tabClass}>
           {t("add.tabs.manual")}
         </Tabs.Trigger>
+        <Tabs.Trigger value="upload" className={tabClass}>
+          {t("add.tabs.upload")}
+        </Tabs.Trigger>
       </Tabs.List>
       {added && (
         <p role="status" className="text-accent text-sm">
@@ -341,7 +422,7 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
           key={manual.key}
           id="add-book"
           initialValues={manual.values}
-          coverUrl={manual.values.coverUrl}
+          coverUrl={manual.coverPreview ?? manual.values.coverUrl}
           onSubmit={({ sortAs: _, ...values }, cover, intent) =>
             submit(
               {
@@ -357,6 +438,33 @@ function AddBook({ own, onDone }: { own?: OwnershipKind; onDone: () => void }) {
         >
           {footer}
         </BookForm>
+      </Tabs.Content>
+      <Tabs.Content value="upload">
+        <EbookUpload
+          staged={ebook}
+          onStaged={setEbook}
+          onNotRight={(candidate) =>
+            openManual(fromEbook(candidate), ebook?.fileCoverUrl ?? undefined)
+          }
+          onOpenBook={onDone}
+        >
+          {(candidate) => (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                const submitter = (event.nativeEvent as SubmitEvent).submitter;
+                submit(
+                  fromEbook(candidate),
+                  null,
+                  intentOf(submitter?.getAttribute("value") ?? undefined),
+                );
+              }}
+              className="flex flex-col gap-5"
+            >
+              {footer}
+            </form>
+          )}
+        </EbookUpload>
       </Tabs.Content>
     </Tabs.Root>
   );

@@ -3,6 +3,7 @@ import { cn } from "../../lib/cn";
 import { PersonPicker } from "../contacts/person-picker";
 import type { ContactChoice } from "../contacts/queries";
 import { LocationSelect } from "../locations/location-select";
+import { todayIso } from "../reading/queries";
 
 export const ownershipKinds = ["library", "borrowed", "reading-list"] as const;
 export type OwnershipKind = (typeof ownershipKinds)[number];
@@ -19,6 +20,8 @@ export function ownershipJson(ownership: Ownership) {
     const person = ownership.person;
     return {
       borrowedFrom: "name" in person ? { name: person.name.trim() } : person,
+      // The loan starts on the reader's day, not the server's.
+      borrowedOn: todayIso(),
     };
   }
   if (ownership.kind === "reading-list") return { wantToRead: true };

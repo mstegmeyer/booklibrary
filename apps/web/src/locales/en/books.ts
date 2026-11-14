@@ -24,6 +24,7 @@ const books = {
       isbn: "ISBN",
       search: "Search by title",
       manual: "Enter manually",
+      upload: "Upload e-book",
     },
     thisBookIs: "This book is",
     inLibrary: "In our library",
@@ -45,6 +46,7 @@ const books = {
       borrowed: "“{{title}}” was already known. It is now under Borrowed.",
       "reading-list":
         "“{{title}}” was already known. It is now on your reading list.",
+      ebook: "“{{title}}” was already known. The e-book was added to it.",
     },
     statusKept:
       "“{{title}}” was already known and already has a reading status of yours, so that was left as it is.",
@@ -70,6 +72,47 @@ const books = {
     openlibrary: "Open Library",
     googlebooks: "Google Books",
     dnb: "Deutsche Nationalbibliothek",
+    epub: "the EPUB file",
+  },
+  upload: {
+    choose: "EPUB or PDF file",
+    hint: "The file goes into the library folder, named after the book.",
+    reading: "Reading the file…",
+    unsupported: "Only EPUB and PDF files can be added.",
+    tooLarge: "This file is too large.",
+    duplicate: "This file is already in the library.",
+    openBook: "Open that book",
+    identify:
+      "Now look the book up by ISBN, search for it by title or enter it by hand. It is added with this file.",
+    protected:
+      "This e-book is copy-protected. It is stored as it is: title, authors and cover are not written into it.",
+    withFile: "With the file {{name}} ({{size}})",
+    removeFile: "Leave out the file",
+    replaceTitle: "This book already has a {{format}} file",
+    replaceText: "The new file replaces it, and the old one is deleted.",
+    replace: "Replace the file",
+    skip: "Skip",
+  },
+  ebook: {
+    title: "E-book",
+    upload: "Upload e-book",
+    none: "There is no e-book file of this book.",
+    file: "{{format}} · {{size}}",
+    download: "Download",
+    remove: "Remove",
+    removeTitle: "Delete this file?",
+    removeText: "The file is deleted from the library folder.",
+    removeLast:
+      "The file is deleted from the library folder. It is the book's last copy or file, so the book leaves the library; if nobody has read or borrowed it, it is deleted.",
+    removeSubmit: "Delete file",
+    missing: "Missing from the library folder",
+    missingTitle: "Remove the missing file?",
+    missingText:
+      "The file is no longer in the library folder. This removes it from the catalogue.",
+    removeMissing: "Remove from catalogue",
+    protected:
+      "Copy-protected: title, authors and cover are not written into it.",
+    uploading: "Uploading…",
   },
   same: {
     title: "Same book?",

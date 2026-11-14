@@ -8,5 +8,11 @@ export function useFormat() {
     date: (value: number | Date) =>
       new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(value),
     number: (value: number) => new Intl.NumberFormat(locale).format(value),
+    fileSize: (bytes: number) =>
+      new Intl.NumberFormat(locale, {
+        style: "unit",
+        unit: bytes < 1_000_000 ? "kilobyte" : "megabyte",
+        maximumFractionDigits: 1,
+      }).format(bytes < 1_000_000 ? bytes / 1000 : bytes / 1_000_000),
   };
 }

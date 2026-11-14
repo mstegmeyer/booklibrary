@@ -234,11 +234,13 @@ function UnexpectedError({ error }: { error: Error }) {
 }
 
 /** The book a lookup found, as the add board shows it. */
-function CandidateCard({
+export function CandidateCard({
   candidate,
+  imageUrl = candidate.coverUrl,
   onNotRight,
 }: {
   candidate: Candidate;
+  imageUrl?: string | null;
   onNotRight: (candidate: Candidate) => void;
 }) {
   const { t, i18n } = useTranslation("books");
@@ -261,7 +263,7 @@ function CandidateCard({
         id={candidate.isbn13 ?? candidate.title}
         title={candidate.title}
         authors={candidate.authors}
-        imageUrl={candidate.coverUrl}
+        imageUrl={imageUrl}
         size="small"
       />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">

@@ -26,6 +26,7 @@ export default {
       isbn: "ISBN",
       search: "Titelsuche",
       manual: "Von Hand eingeben",
+      upload: "E-Book hochladen",
     },
     thisBookIs: "Dieses Buch ist",
     inLibrary: "In unserer Bibliothek",
@@ -49,6 +50,7 @@ export default {
         "„{{title}}“ war schon bekannt. Es steht jetzt unter Ausgeliehen.",
       "reading-list":
         "„{{title}}“ war schon bekannt. Es ist jetzt auf deiner Leseliste.",
+      ebook: "„{{title}}“ war schon bekannt. Das E-Book wurde hinzugefügt.",
     },
     statusKept:
       "„{{title}}“ war schon bekannt und hat bereits einen Lesestatus von dir. Der bleibt, wie er ist.",
@@ -74,6 +76,47 @@ export default {
     openlibrary: "Open Library",
     googlebooks: "Google Books",
     dnb: "Deutsche Nationalbibliothek",
+    epub: "der EPUB-Datei",
+  },
+  upload: {
+    choose: "EPUB- oder PDF-Datei",
+    hint: "Die Datei kommt in den Bibliotheksordner und wird nach dem Buch benannt.",
+    reading: "Die Datei wird gelesen …",
+    unsupported: "Nur EPUB- und PDF-Dateien können hinzugefügt werden.",
+    tooLarge: "Diese Datei ist zu groß.",
+    duplicate: "Diese Datei ist schon in der Bibliothek.",
+    openBook: "Dieses Buch öffnen",
+    identify:
+      "Suche das Buch jetzt über die ISBN oder den Titel oder gib es von Hand ein. Es wird mit dieser Datei hinzugefügt.",
+    protected:
+      "Dieses E-Book ist kopiergeschützt. Es wird unverändert gespeichert: Titel, Autoren und Titelbild werden nicht hineingeschrieben.",
+    withFile: "Mit der Datei {{name}} ({{size}})",
+    removeFile: "Datei weglassen",
+    replaceTitle: "Dieses Buch hat schon eine {{format}}-Datei",
+    replaceText: "Die neue Datei ersetzt sie, die alte wird gelöscht.",
+    replace: "Datei ersetzen",
+    skip: "Überspringen",
+  },
+  ebook: {
+    title: "E-Book",
+    upload: "E-Book hochladen",
+    none: "Von diesem Buch gibt es keine E-Book-Datei.",
+    file: "{{format}} · {{size}}",
+    download: "Herunterladen",
+    remove: "Entfernen",
+    removeTitle: "Diese Datei löschen?",
+    removeText: "Die Datei wird aus dem Bibliotheksordner gelöscht.",
+    removeLast:
+      "Die Datei wird aus dem Bibliotheksordner gelöscht. Es ist das letzte Exemplar oder die letzte Datei des Buchs, es verlässt also die Bibliothek; wenn niemand es gelesen oder ausgeliehen hat, wird es gelöscht.",
+    removeSubmit: "Datei löschen",
+    missing: "Fehlt im Bibliotheksordner",
+    missingTitle: "Fehlende Datei entfernen?",
+    missingText:
+      "Die Datei ist nicht mehr im Bibliotheksordner. Sie wird hiermit aus dem Katalog entfernt.",
+    removeMissing: "Aus dem Katalog entfernen",
+    protected:
+      "Kopiergeschützt: Titel, Autoren und Titelbild werden nicht hineingeschrieben.",
+    uploading: "Wird hochgeladen …",
   },
   same: {
     title: "Dasselbe Buch?",

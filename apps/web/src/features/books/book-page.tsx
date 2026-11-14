@@ -18,6 +18,7 @@ import {
   RemoveCopyDialog,
 } from "./copy-dialogs";
 import { CopyLoanActions } from "./copy-loan-actions";
+import { EbookSection } from "./ebook-section";
 import { EditBookDialog } from "./edit-book-dialog";
 import {
   type BookDetail,
@@ -85,6 +86,7 @@ export function BookPage() {
         </aside>
         <div className="flex min-w-0 flex-col gap-8 xl:col-start-1">
           <Copies book={book} />
+          <EbookSection book={book} titleClass={sectionTitle} />
           <Details book={book} />
         </div>
       </div>
