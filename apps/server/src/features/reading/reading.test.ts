@@ -316,14 +316,14 @@ describe("reading lists", () => {
     expect(within.total).toBe(2);
     expect(
       within.items
-        .map((i: { book: { title: string }; borrowed: boolean }) => [
+        .map((i: { book: { title: string }; borrowedFrom: string | null }) => [
           i.book.title,
-          i.borrowed,
+          i.borrowedFrom,
         ])
         .sort(),
     ).toEqual([
-      ["Borrowed", true],
-      ["Owned", false],
+      ["Borrowed", "Lena"],
+      ["Owned", null],
     ]);
     const wishlist = (await call("/reading/want?reach=wishlist")).body;
     expect(wishlist.total).toBe(2);

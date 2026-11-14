@@ -233,7 +233,9 @@ function CurrentlyReading() {
                     .filter(Boolean)
                     .join(" · ")}
                 </p>
-                {!item.inLibrary && <OutsideBadge />}
+                {!item.inLibrary && (
+                  <OutsideBadge borrowedFrom={item.borrowedFrom} />
+                )}
                 <div className="mt-auto flex flex-col gap-2 pt-2.5 md:pt-3">
                   <PageReached
                     page={item.page}
@@ -268,11 +270,13 @@ function CurrentlyReading() {
   );
 }
 
-function OutsideBadge() {
+function OutsideBadge({ borrowedFrom }: { borrowedFrom: string | null }) {
   const { t } = useTranslation("reading");
   return (
     <span className="mt-0.5 self-start rounded-full bg-[#e6e9e3] px-2 py-px font-medium text-ink-nav text-xs leading-[18px]">
-      {t("notInLibrary")}
+      {borrowedFrom
+        ? t("borrowedFrom", { name: borrowedFrom })
+        : t("notInLibrary")}
     </span>
   );
 }
@@ -366,7 +370,7 @@ function WantSection({
                 {item.book.title}
               </span>
               <span className="truncate text-ink-muted text-xs leading-[18px]">
-                {item.borrowed && !item.inLibrary
+                {item.borrowedFrom && !item.inLibrary
                   ? t("want.borrowed")
                   : item.book.authors.join(", ")}
               </span>
@@ -536,7 +540,9 @@ function FinishedSection() {
                     <td className={td}>
                       {item.inLibrary
                         ? t("finished.inLibrary")
-                        : t("notInLibrary")}
+                        : item.borrowedFrom
+                          ? t("borrowedFrom", { name: item.borrowedFrom })
+                          : t("notInLibrary")}
                     </td>
                   </tr>
                 ),

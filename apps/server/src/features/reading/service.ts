@@ -61,6 +61,9 @@ const lastPage = sql<
 /** Whether the household owns the read book as a copy or an e-book file. */
 export const owned = sql`(exists (select 1 from "copy" where "copy"."book_id" = "reading"."book_id") or exists (select 1 from "book_file" where "book_file"."book_id" = "reading"."book_id"))`;
 const borrowed = sql`exists (select 1 from "loan" where "loan"."book_id" = "reading"."book_id" and "loan"."direction" = 'borrowed' and "loan"."ended_on" is null)`;
+const borrowedFrom = sql<
+  string | null
+>`(select "contact"."name" from "loan" join "contact" on "contact"."id" = "loan"."contact_id" where "loan"."book_id" = "reading"."book_id" and "loan"."direction" = 'borrowed' and "loan"."ended_on" is null order by "loan"."started_on" desc limit 1)`;
 
 /** The signed-in user's reading of a book with their earlier read-throughs. */
 export function getMyReading(db: Db, userId: string, bookId: string) {
@@ -291,7 +294,7 @@ const listColumns = {
   createdAt: reading.createdAt,
   page: lastPage,
   inLibrary: owned.mapWith(Boolean),
-  borrowed: borrowed.mapWith(Boolean),
+  borrowedFrom,
   bookId: book.id,
   title: book.title,
   authors: book.authors,

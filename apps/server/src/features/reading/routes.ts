@@ -61,8 +61,9 @@ const ReadingItem = ReadThrough.extend({
   inLibrary: z
     .boolean()
     .openapi({ description: "The household owns a copy or an e-book file" }),
-  borrowed: z.boolean().openapi({
-    description: "The household has the book on a borrowed loan now",
+  borrowedFrom: z.string().nullable().openapi({
+    description:
+      "Who the household has the book on a borrowed loan from now, if anyone",
   }),
   book: z.object({
     id: z.string(),

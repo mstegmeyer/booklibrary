@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import { createBook } from "../catalogue.ts";
 import { expect, setupAdmin, test } from "../fixtures.ts";
+import { borrowBook } from "../loans.ts";
 import { addProgress, finishBook, setStatus, today } from "../reading.ts";
 
 /** On the phone the sections are tabs; on the desktop they are all shown. */
@@ -71,6 +72,32 @@ test("the Reading page sections", async ({ page, isMobile }) => {
   await expect(table.getByRole("row", { name: /Gilead/ })).toContainText(
     "Not in the library",
   );
+});
+
+test("borrowed books say who they are borrowed from", async ({
+  page,
+  isMobile,
+}) => {
+  await setupAdmin(page);
+  const current = await createBook(page, { title: "Buddenbrooks" });
+  await borrowBook(page, current.id, { name: "Sophie" });
+  await setStatus(page.request, current.id, "reading");
+  const finished = await createBook(page, { title: "Lolly Willowes" });
+  await borrowBook(page, finished.id, { name: "Sophie" });
+  await finishBook(page.request, finished.id, null);
+
+  await page.goto("/reading");
+  await expect(
+    page.getByRole("region", { name: "Currently reading" }),
+  ).toContainText("Borrowed from Sophie");
+
+  await openTab(page, isMobile, "Finished");
+  await page.getByRole("combobox", { name: "Year" }).selectOption("undated");
+  await expect(
+    page
+      .getByRole("table", { name: "Finished" })
+      .getByRole("row", { name: /Lolly Willowes/ }),
+  ).toContainText("Borrowed from Sophie");
 });
 
 test("abandoning a book and picking it up again", async ({

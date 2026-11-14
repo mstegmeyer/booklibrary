@@ -15,6 +15,7 @@ export default {
   pageOf: "Seite {{page}} von {{total}}",
   percent: "{{percent}} %",
   notInLibrary: "Nicht in der Bibliothek",
+  borrowedFrom: "Geliehen von {{name}}",
   showAll: "Alle anzeigen",
   showLess: "Weniger anzeigen",
   loadMore: "Mehr laden",

@@ -13,6 +13,7 @@ const reading = {
   pageOf: "Page {{page}} of {{total}}",
   percent: "{{percent}}%",
   notInLibrary: "Not in the library",
+  borrowedFrom: "Borrowed from {{name}}",
   showAll: "Show all",
   showLess: "Show less",
   loadMore: "Load more",
