@@ -5,3 +5,8 @@ packages:
 allowBuilds:
   better-sqlite3: true
   esbuild: true
+
+# The Docker image builds on glibc but runs on Alpine (musl): install sharp's
+# prebuilt binaries for both.
+supportedArchitectures:
+  libc: [current, musl]
