@@ -532,11 +532,13 @@ describe("looking up a cover", () => {
           });
     });
     vi.stubGlobal("fetch", fetch);
+    vi.stubEnv("DNB_COVERS_URL", "https://portal.dnb.de/opac/mvb/cover");
     return fetch;
   }
 
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 
   it("tries the book's ISBNs in turn and stores the first cover found", async () => {

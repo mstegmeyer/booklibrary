@@ -63,6 +63,8 @@ test("a book only the DNB knows arrives with its cover", async ({ page }) => {
   await lookUp(dialog, dnbOnlyIsbn);
   await expect(dialog).toContainText("Der Teepalast");
   await expect(dialog).toContainText("Found on Deutsche Nationalbibliothek");
+  // The DNB's cover service does not answer browsers, so nothing is previewed.
+  await expect(dialog.locator("img")).toHaveCount(0);
   await dialog.getByRole("button", { name: "Add", exact: true }).click();
   await expect(dialog).toBeHidden();
 

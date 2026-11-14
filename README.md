@@ -51,20 +51,38 @@ set. The base URLs exist so tests can point the server at a local stub.
 
 The cover comes from the first source that has one, in the order the sources
 are asked: the DNB first for ISBNs starting with 978-3, Open Library first for
-all others. The DNB's covers come from its cover service, which the server
-checks before offering one. When no source has a cover for the edition, the
-cover of another edition of the same work on Open Library is taken. A book
-without a cover offers "Look for a cover" on its page, which runs the same
-lookup for its ISBNs.
+all others. When no source has a cover for the edition, the cover of another
+edition of the same work on Open Library is taken. A book without a cover
+offers "Look for a cover" on its page, which runs the same lookup for its
+ISBNs.
 
-| Variable                  | Default                                | Purpose                      |
-| ------------------------- | -------------------------------------- | ---------------------------- |
-| `GOOGLE_BOOKS_API_KEY`    | unset                                  | Enables Google Books lookups |
-| `OPEN_LIBRARY_URL`        | `https://openlibrary.org`              | Open Library base URL        |
-| `OPEN_LIBRARY_COVERS_URL` | `https://covers.openlibrary.org`       | Open Library cover images    |
-| `GOOGLE_BOOKS_URL`        | `https://www.googleapis.com`           | Google Books base URL        |
-| `DNB_SRU_URL`             | `https://services.dnb.de/sru/dnb`      | DNB SRU catalogue endpoint   |
-| `DNB_COVERS_URL`          | `https://portal.dnb.de/opac/mvb/cover` | DNB cover images             |
+The DNB has covers for most German books, but the server does not ask for them
+unless you set `DNB_COVERS_URL` to `https://portal.dnb.de/opac/mvb/cover`.
+The DNB [shows these covers](https://www.dnb.de/EN/catalogueimage) in its own
+catalogue through the cover service of the VLB, under an agreement for
+libraries, and refers anyone who wants to re-use them to the VLB. Whether your
+use is covered is for you to decide. When it is set, a lookup shows no preview
+of such a cover, because the service does not answer browsers; the cover
+appears once the book is added.
+
+| Variable                  | Default                           | Purpose                      |
+| ------------------------- | --------------------------------- | ---------------------------- |
+| `GOOGLE_BOOKS_API_KEY`    | unset                             | Enables Google Books lookups |
+| `OPEN_LIBRARY_URL`        | `https://openlibrary.org`         | Open Library base URL        |
+| `OPEN_LIBRARY_COVERS_URL` | `https://covers.openlibrary.org`  | Open Library cover images    |
+| `GOOGLE_BOOKS_URL`        | `https://www.googleapis.com`      | Google Books base URL        |
+| `DNB_SRU_URL`             | `https://services.dnb.de/sru/dnb` | DNB SRU catalogue endpoint   |
+| `DNB_COVERS_URL`          | unset                             | Enables DNB cover images     |
+
+With Docker Compose, put your own settings in a `docker-compose.override.yml`
+next to the example. Compose merges it in, and git ignores it:
+
+```yaml
+services:
+  book-library:
+    environment:
+      GOOGLE_BOOKS_API_KEY: your-key
+```
 
 The container runs as the unprivileged `node` user (uid 1000). If you mount a
 host directory instead of a named volume, make sure that user can write to it.

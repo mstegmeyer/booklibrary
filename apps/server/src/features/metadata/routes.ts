@@ -17,7 +17,13 @@ export const Candidate = z
     pageCount: z.number().int().nullable(),
     publishedYear: z.number().int().nullable(),
     language: z.string().nullable().openapi({ description: "BCP 47" }),
-    coverUrl: z.string().nullable(),
+    coverUrl: z.string().nullable().openapi({
+      description: "Sent back when the book is added, so the server stores it",
+    }),
+    coverPreviewUrl: z.string().nullable().openapi({
+      description:
+        "`coverUrl` when a browser can load it; null for a cover only the server can fetch",
+    }),
     sources: z.array(z.enum(sourceNames)),
     bookId: z.string().nullable().openapi({
       description: "The book that already has this ISBN",

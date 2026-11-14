@@ -19,6 +19,7 @@ async function setup() {
 
 /** The recorded catalogues, with a real image for every cover. */
 async function stubCatalogues() {
+  vi.stubEnv("DNB_COVERS_URL", "https://portal.dnb.de/opac/mvb/cover");
   const png = await sharp({
     create: { width: 4, height: 6, channels: 3, background: "#aa5500" },
   })

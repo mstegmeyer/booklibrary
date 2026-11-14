@@ -360,7 +360,7 @@ function ScannedBook({ candidate }: { candidate: Candidate }) {
         id={candidate.isbn13 ?? candidate.title}
         title={candidate.title}
         authors={candidate.authors}
-        imageUrl={candidate.coverUrl}
+        imageUrl={candidate.coverPreviewUrl}
         size="small"
       />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">

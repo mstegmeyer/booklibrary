@@ -210,7 +210,7 @@ export function TitleSearch({
                     id={candidate.isbn13 ?? candidate.title}
                     title={candidate.title}
                     authors={candidate.authors}
-                    imageUrl={candidate.coverUrl}
+                    imageUrl={candidate.coverPreviewUrl}
                     size="spine"
                   />
                   <span className="flex min-w-0 flex-col">
@@ -258,7 +258,7 @@ function UnexpectedError({ error }: { error: Error }) {
 /** The book a lookup found, as the add board shows it. */
 export function CandidateCard({
   candidate,
-  imageUrl = candidate.coverUrl,
+  imageUrl = candidate.coverPreviewUrl,
   onNotRight,
 }: {
   candidate: Candidate;

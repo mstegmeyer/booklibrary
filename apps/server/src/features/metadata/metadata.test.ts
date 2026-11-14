@@ -34,13 +34,14 @@ function stubSources(
 const requestedUrls = () =>
   vi.mocked(fetch).mock.calls.map(([url]) => String(url));
 
-const dnbCoverUrl = (isbn: string) =>
-  `https://portal.dnb.de/opac/mvb/cover?isbn=${isbn}`;
+const dnbCovers = "https://portal.dnb.de/opac/mvb/cover";
+const dnbCoverUrl = (isbn: string) => `${dnbCovers}?isbn=${isbn}`;
 
 let warn: ReturnType<typeof vi.spyOn>;
 beforeEach(() => {
   warn = vi.spyOn(console, "warn").mockImplementation(() => {});
   vi.stubEnv("GOOGLE_BOOKS_API_KEY", "test-key");
+  vi.stubEnv("DNB_COVERS_URL", dnbCovers);
 });
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -71,6 +72,7 @@ describe("ISBN lookup", () => {
       publishedYear: 1997,
       language: "de",
       coverUrl: dnbCoverUrl("9783257229530"),
+      coverPreviewUrl: null,
       sources: ["dnb", "googlebooks"],
       bookId: null,
       genreId: expect.any(String),
@@ -119,13 +121,28 @@ describe("ISBN lookup", () => {
     });
   });
 
-  it("falls back to the cover of another edition", async () => {
+  it("leaves the DNB's cover service alone unless it is configured", async () => {
+    vi.stubEnv("DNB_COVERS_URL", "");
+    const get = await signedIn();
+    stubSources();
+    const res = await get("/isbn/9783442492114");
+    expect(await res.json()).toMatchObject({
+      title: "Der Teepalast",
+      coverUrl: null,
+    });
+    expect(requestedUrls()).not.toContainEqual(
+      expect.stringContaining("portal.dnb.de"),
+    );
+  });
+
+  it("falls back to the cover of another edition, which a browser can preview", async () => {
     const get = await signedIn();
     stubSources();
     const res = await get("/isbn/9781409150541");
     expect(await res.json()).toMatchObject({
       title: "Deal Breaker",
       coverUrl: "https://covers.openlibrary.org/b/id/8739250-L.jpg",
+      coverPreviewUrl: "https://covers.openlibrary.org/b/id/8739250-L.jpg",
       sources: ["openlibrary"],
     });
   });

@@ -106,7 +106,9 @@ export function EbookUpload({
             <>
               <CandidateCard
                 candidate={staged.candidate}
-                imageUrl={staged.fileCoverUrl ?? staged.candidate.coverUrl}
+                imageUrl={
+                  staged.fileCoverUrl ?? staged.candidate.coverPreviewUrl
+                }
                 onNotRight={onNotRight}
               />
               {children(staged.candidate)}

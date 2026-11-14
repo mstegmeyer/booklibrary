@@ -31,9 +31,9 @@ function baseUrls(env = process.env) {
       env.GOOGLE_BOOKS_URL || "https://www.googleapis.com",
     ),
     dnb: withoutSlash(env.DNB_SRU_URL || "https://services.dnb.de/sru/dnb"),
-    dnbCovers: withoutSlash(
-      env.DNB_COVERS_URL || "https://portal.dnb.de/opac/mvb/cover",
-    ),
+    // Off unless configured: the DNB shows these covers under an agreement
+    // for libraries and sends everyone else to the VLB for re-use.
+    dnbCovers: env.DNB_COVERS_URL ? withoutSlash(env.DNB_COVERS_URL) : null,
   };
 }
 
@@ -157,10 +157,20 @@ export async function searchBooks(
   return results.slice(0, maxResults);
 }
 
+/**
+ * The cover as a browser can show it before the book is added. The DNB's cover
+ * service answers browsers with a bot check, so its covers only show once the
+ * server has stored them.
+ */
+export function previewOf(coverUrl: string | null) {
+  const { dnbCovers } = baseUrls();
+  return dnbCovers && coverUrl?.startsWith(dnbCovers) ? null : coverUrl;
+}
+
 function isAllowedCoverUrl(url: URL) {
   if (url.protocol !== "https:" && url.protocol !== "http:") return false;
-  const sourceHosts = Object.values(baseUrls()).map(
-    (base) => new URL(base).host,
+  const sourceHosts = Object.values(baseUrls()).flatMap((base) =>
+    base ? [new URL(base).host] : [],
   );
   return (
     sourceHosts.includes(url.host) ||

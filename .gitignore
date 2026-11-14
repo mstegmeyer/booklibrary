@@ -11,3 +11,5 @@ e2e/test-results/
 /library/
 apps/server/library/
 .claude/
+# Local settings for the Compose example, such as API keys.
+/docker-compose.override.yml

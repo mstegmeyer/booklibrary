@@ -97,10 +97,11 @@ export function parseRecords(xml: string): Candidate[] {
  * known to answer with an image. Any failure means no cover.
  */
 async function checkedCover(
-  coversUrl: string,
+  coversUrl: string | null,
   isbn13: string,
   timeout: number,
 ) {
+  if (!coversUrl) return null;
   const url = new URL(coversUrl);
   url.searchParams.set("isbn", isbn13);
   try {
@@ -116,7 +117,7 @@ async function checkedCover(
   }
 }
 
-export function dnb(baseUrl: string, coversUrl: string): Source {
+export function dnb(baseUrl: string, coversUrl: string | null): Source {
   const searchRetrieve = async (query: string, maximumRecords: number) => {
     const url = new URL(baseUrl);
     url.search = new URLSearchParams({
