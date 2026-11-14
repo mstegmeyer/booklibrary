@@ -1,0 +1,36 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 2,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "fixture-vorleser",
+      "volumeInfo": {
+        "title": "Der Vorleser",
+        "subtitle": "Roman",
+        "authors": ["Bernhard Schlink"],
+        "publishedDate": "1997",
+        "description": "Ein Junge und eine ältere Frau, deren Vergangenheit ihn Jahre später einholt.",
+        "industryIdentifiers": [
+          { "type": "ISBN_13", "identifier": "9783257229530" }
+        ],
+        "pageCount": 207,
+        "language": "de"
+      }
+    },
+    {
+      "kind": "books#volume",
+      "id": "fixture-reader",
+      "volumeInfo": {
+        "title": "The Reader",
+        "authors": ["Bernhard Schlink"],
+        "publishedDate": "1998",
+        "industryIdentifiers": [
+          { "type": "ISBN_13", "identifier": "9780375707971" },
+          { "type": "OTHER", "identifier": "UOM:39015042131236" }
+        ],
+        "language": "en"
+      }
+    }
+  ]
+}

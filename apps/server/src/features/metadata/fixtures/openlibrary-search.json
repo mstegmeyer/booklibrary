@@ -1,0 +1,73 @@
+{
+  "numFound": 46,
+  "start": 0,
+  "docs": [
+    {
+      "author_name": ["Bernhard Schlink"],
+      "cover_i": 998445,
+      "first_publish_year": 1995,
+      "key": "/works/OL14871157W",
+      "language": ["ukr", "dut", "jpn", "tur", "ger"],
+      "title": "Der Vorleser",
+      "editions": {
+        "numFound": 89,
+        "start": 0,
+        "numFoundExact": true,
+        "docs": [
+          {
+            "key": "/books/OL18666592M",
+            "title": "Der Vorleser",
+            "cover_i": 8782586,
+            "language": ["ger"],
+            "publish_date": ["1997-06-30"],
+            "isbn": ["9783257229530", "3257229534"]
+          }
+        ]
+      }
+    },
+    {
+      "author_name": ["Dietmar Schäfer"],
+      "first_publish_year": 2000,
+      "key": "/works/OL13643367W",
+      "language": ["ger"],
+      "title": "Berhnard Schlink \"Der Vorleser\"",
+      "editions": {
+        "numFound": 1,
+        "start": 0,
+        "numFoundExact": true,
+        "docs": [
+          {
+            "key": "/books/OL22642561M",
+            "title": "Berhnard Schlink \"Der Vorleser\"",
+            "language": ["ger"],
+            "publish_date": ["2000"],
+            "isbn": ["3580633449", "9783580633448"]
+          }
+        ]
+      }
+    },
+    {
+      "author_name": ["Manfred Heigenmoser"],
+      "cover_i": 12660660,
+      "first_publish_year": 2005,
+      "key": "/works/OL10107653W",
+      "language": ["ger"],
+      "title": "Bernhard Schlink, Der Vorleser",
+      "editions": {
+        "numFound": 1,
+        "start": 0,
+        "numFoundExact": true,
+        "docs": [
+          {
+            "key": "/books/OL13635466M",
+            "title": "Bernhard Schlink, Der Vorleser",
+            "cover_i": 12660660,
+            "language": ["ger"],
+            "publish_date": ["2005"],
+            "isbn": ["3150160502", "9783150160503"]
+          }
+        ]
+      }
+    }
+  ]
+}

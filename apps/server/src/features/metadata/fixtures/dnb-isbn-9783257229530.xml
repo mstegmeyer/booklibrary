@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<searchRetrieveResponse xmlns="http://www.loc.gov/zing/srw/"><version>1.1</version><numberOfRecords>1</numberOfRecords><records><record><recordSchema>MARC21-xml</recordSchema><recordPacking>xml</recordPacking><recordData><record xmlns="http://www.loc.gov/MARC21/slim" type="Bibliographic">
+    <leader>00000nam a2200000 c 4500</leader>
+    <controlfield tag="001">950347590</controlfield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">9783257229530</subfield>
+      <subfield code="c">kart. : DM 14.90, S 109.00, sfr 14.90</subfield>
+    </datafield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">3257229534</subfield>
+      <subfield code="c">kart. : DM 14.90, S 109.00, sfr 14.90</subfield>
+    </datafield>
+    <datafield tag="041" ind1=" " ind2=" ">
+      <subfield code="a">ger</subfield>
+    </datafield>
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">Schlink, Bernhard</subfield>
+      <subfield code="d">1944-</subfield>
+      <subfield code="e">Verfasser</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="0">
+      <subfield code="a">&#152;Der&#156; Vorleser</subfield>
+      <subfield code="b">Roman</subfield>
+      <subfield code="c">Bernhard Schlink</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">Zürich</subfield>
+      <subfield code="b">Diogenes</subfield>
+      <subfield code="c">1997</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">206 S.</subfield>
+      <subfield code="c">18 cm</subfield>
+    </datafield>
+  </record></recordData><recordPosition>1</recordPosition></record></records></searchRetrieveResponse>

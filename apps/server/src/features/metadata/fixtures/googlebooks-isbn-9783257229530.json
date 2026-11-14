@@ -1,0 +1,25 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 1,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "fixture-vorleser",
+      "volumeInfo": {
+        "title": "Der Vorleser",
+        "subtitle": "Roman",
+        "authors": ["Bernhard Schlink"],
+        "publisher": "Diogenes",
+        "publishedDate": "1997",
+        "description": "Ein Junge und eine ältere Frau, deren Vergangenheit ihn Jahre später einholt.",
+        "industryIdentifiers": [
+          { "type": "ISBN_10", "identifier": "3257229534" },
+          { "type": "ISBN_13", "identifier": "9783257229530" }
+        ],
+        "pageCount": 207,
+        "printType": "BOOK",
+        "language": "de"
+      }
+    }
+  ]
+}

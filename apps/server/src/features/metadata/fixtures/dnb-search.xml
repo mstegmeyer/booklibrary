@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<searchRetrieveResponse xmlns="http://www.loc.gov/zing/srw/"><version>1.1</version><numberOfRecords>3</numberOfRecords><records><record><recordSchema>MARC21-xml</recordSchema><recordPacking>xml</recordPacking><recordData><record xmlns="http://www.loc.gov/MARC21/slim" type="Bibliographic">
+    <leader>00000pam a2200000 c 4500</leader>
+    <controlfield tag="001">1362348996</controlfield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">9783257073690</subfield>
+      <subfield code="c">Festeinband : circa EUR 19.00 (DE), circa EUR 19.60 (AT), circa CHF 26.00 (freier Preis)</subfield>
+    </datafield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">3257073690</subfield>
+    </datafield>
+    <datafield tag="041" ind1=" " ind2=" ">
+      <subfield code="a">ger</subfield>
+    </datafield>
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">Schlink, Bernhard</subfield>
+      <subfield code="d">1944-</subfield>
+      <subfield code="e">Verfasser</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="0">
+      <subfield code="a">&#152;Der&#156; Vorleser</subfield>
+      <subfield code="b">Roman</subfield>
+      <subfield code="c">Bernhard Schlink</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">Zürich</subfield>
+      <subfield code="b">Diogenes</subfield>
+      <subfield code="c">[2025]</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">206 Seiten</subfield>
+      <subfield code="c">19 cm</subfield>
+    </datafield>
+  </record></recordData><recordPosition>5</recordPosition></record><record><recordSchema>MARC21-xml</recordSchema><recordPacking>xml</recordPacking><recordData><record xmlns="http://www.loc.gov/MARC21/slim" type="Bibliographic">
+    <leader>00000nam a22000008c 4500</leader>
+    <controlfield tag="001">142337827X</controlfield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">9783963232176</subfield>
+      <subfield code="c">: EUR 22.85 (DE), EUR 23.50 (AT)</subfield>
+    </datafield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">396323217X</subfield>
+    </datafield>
+    <datafield tag="041" ind1=" " ind2=" ">
+      <subfield code="a">ger</subfield>
+    </datafield>
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">Heddrich, Dr. Gesine</subfield>
+      <subfield code="e">Verfasser</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="0">
+      <subfield code="a">&#152;Der&#156; Vorleser – Bernhard Schlink – Lehrerheft</subfield>
+      <subfield code="b">Unterricht, Lösungen, Didaktik, Methodik, Heft</subfield>
+      <subfield code="c">Dr. Gesine Heddrich</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">Berkheim</subfield>
+      <subfield code="b">Krapp &amp; Gutknecht Verlag</subfield>
+      <subfield code="c">2026</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">68 Seiten</subfield>
+      <subfield code="c">29.7 cm</subfield>
+    </datafield>
+  </record></recordData><recordPosition>1</recordPosition></record><record><recordSchema>MARC21-xml</recordSchema><recordPacking>xml</recordPacking><recordData><record xmlns="http://www.loc.gov/MARC21/slim" type="Bibliographic">
+    <leader>00000nam a2200000 c 4500</leader>
+    <controlfield tag="001">1354061470</controlfield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">9786192650483</subfield>
+      <subfield code="c">Broschur</subfield>
+    </datafield>
+    <datafield tag="041" ind1=" " ind2=" ">
+      <subfield code="a">bul</subfield>
+      <subfield code="h">ger</subfield>
+    </datafield>
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">Schlink, Bernhard</subfield>
+      <subfield code="d">1944-</subfield>
+      <subfield code="e">Verfasser</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="0">
+      <subfield code="a">Četecăt</subfield>
+      <subfield code="c">Bernchard Šlink ; prevod ot nemski Ljubomir Iliev</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">Sofija</subfield>
+      <subfield code="b">Krăg</subfield>
+      <subfield code="c">[2024]</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">221 Seiten</subfield>
+      <subfield code="c">20 cm</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Iliev, Ljubomir</subfield>
+      <subfield code="d">1949-</subfield>
+      <subfield code="e">Übersetzer</subfield>
+      <subfield code="4">trl</subfield>
+    </datafield>
+  </record></recordData><recordPosition>6</recordPosition></record></records></searchRetrieveResponse>

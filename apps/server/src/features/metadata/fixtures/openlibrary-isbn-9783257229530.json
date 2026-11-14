@@ -1,0 +1,25 @@
+{
+  "ISBN:9783257229530": {
+    "url": "http://openlibrary.org/books/OL31761782M/Der_Vorleser",
+    "key": "/books/OL31761782M",
+    "title": "Der Vorleser",
+    "authors": [
+      {
+        "url": "http://openlibrary.org/authors/OL24809A/Bernhard_Schlink",
+        "name": "Bernhard Schlink"
+      }
+    ],
+    "number_of_pages": 206,
+    "identifiers": {
+      "bookbrainz": ["f49aa32d-fdf3-4538-b790-1fcb2f71fa27"],
+      "isbn_10": ["3257229534"],
+      "openlibrary": ["OL31761782M"]
+    },
+    "publish_date": "2000",
+    "cover": {
+      "small": "https://covers.openlibrary.org/b/id/10527919-S.jpg",
+      "medium": "https://covers.openlibrary.org/b/id/10527919-M.jpg",
+      "large": "https://covers.openlibrary.org/b/id/10527919-L.jpg"
+    }
+  }
+}
