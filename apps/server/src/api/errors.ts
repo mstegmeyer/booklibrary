@@ -7,19 +7,36 @@ export type ErrorCode =
   | "forbidden"
   | "not_found"
   | "conflict"
-  | "internal";
+  | "internal"
+  | "isbn_taken"
+  | "copy_lent"
+  | "copy_has_loans"
+  | "location_not_empty"
+  | "location_cycle";
 
 export class ApiError extends Error {
   readonly status: ContentfulStatusCode;
   readonly code: ErrorCode;
+  /** Extra fields for the client, sent next to `code` and `message`. */
+  readonly details?: Record<string, unknown>;
 
-  constructor(status: ContentfulStatusCode, code: ErrorCode, message: string) {
+  constructor(
+    status: ContentfulStatusCode,
+    code: ErrorCode,
+    message: string,
+    details?: Record<string, unknown>,
+  ) {
     super(message);
     this.status = status;
     this.code = code;
+    this.details = details;
   }
 }
 
-export const errorBody = (code: string, message: string) => ({
-  error: { code, message },
+export const errorBody = (
+  code: string,
+  message: string,
+  details?: Record<string, unknown>,
+) => ({
+  error: { ...details, code, message },
 });

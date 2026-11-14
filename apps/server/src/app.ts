@@ -57,7 +57,7 @@ export function createApp(
 
   app.onError((err, c) => {
     if (err instanceof ApiError) {
-      return c.json(errorBody(err.code, err.message), err.status);
+      return c.json(errorBody(err.code, err.message, err.details), err.status);
     }
     if (err instanceof APIError || err instanceof HTTPException) {
       const status = (
