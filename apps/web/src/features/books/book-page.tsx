@@ -164,11 +164,11 @@ function BookHeader({
             {book.description}
           </p>
         )}
-        <div className="mt-2 hidden gap-2 md:flex">
+        <div className="mt-2 hidden flex-wrap gap-2 md:flex">
           <Button
             variant="secondary"
             onClick={onEdit}
-            className="h-[38px] px-3.5"
+            className="h-[38px] whitespace-nowrap px-3.5"
           >
             {t("page.editDetails")}
           </Button>
@@ -176,7 +176,10 @@ function BookHeader({
             <UpdateFromCatalogueDialog
               bookId={book.id}
               trigger={
-                <Button variant="secondary" className="h-[38px] px-3.5">
+                <Button
+                  variant="secondary"
+                  className="h-[38px] whitespace-nowrap px-3.5"
+                >
                   {t("update.action")}
                 </Button>
               }
