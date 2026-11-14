@@ -5,6 +5,7 @@ import {
   LogOut,
   MapPin,
   Server,
+  Tags,
   UserRound,
   Users,
 } from "lucide-react";
@@ -40,7 +41,7 @@ function Avatar({ name, size }: { name: string; size: "sm" | "md" }) {
 
 /** The account menu: a full-width row in the sidebar, an avatar at phone width. */
 export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
-  const { t, i18n } = useTranslation(["common", "account"]);
+  const { t, i18n } = useTranslation(["common", "account", "genres"]);
   const { data: session } = useSuspenseQuery(sessionQuery);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -106,6 +107,12 @@ export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
             </Link>
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem asChild>
+          <Link to="/genres">
+            <Tags aria-hidden size={16} />
+            {t("genres:title")}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/account">
             <UserRound aria-hidden size={16} />

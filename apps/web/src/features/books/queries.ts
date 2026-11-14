@@ -16,10 +16,10 @@ export const bookQuery = (id: string) =>
       !(error instanceof ApiError && error.status === 404) && failures < 3,
   });
 
-/** Refreshes everything that shows books, copies or location counts. */
+/** Refreshes everything that shows books, copies or location and genre counts. */
 export const refreshCatalogue = (queryClient: QueryClient) =>
   Promise.all(
-    [["library"], ["books"], ["locations"]].map((queryKey) =>
+    [["library"], ["books"], ["locations"], ["genres"]].map((queryKey) =>
       queryClient.invalidateQueries({ queryKey }),
     ),
   );
