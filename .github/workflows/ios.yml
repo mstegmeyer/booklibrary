@@ -1,0 +1,34 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/ios/**
+      - apps/web/src/lib/app-shell.ts
+      - .github/workflows/ios.yml
+  pull_request:
+    paths:
+      - apps/ios/**
+      - apps/web/src/lib/app-shell.ts
+      - .github/workflows/ios.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build for the simulator without signing
+        run: >
+          xcodebuild build
+          -project apps/ios/BookLibrary.xcodeproj
+          -scheme BookLibrary
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
