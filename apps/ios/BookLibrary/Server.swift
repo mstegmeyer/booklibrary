@@ -27,10 +27,14 @@ enum Server {
         return parts.url
     }
 
+    /// Name suffixes reserved or conventional for home networks. Info.plist
+    /// lists the same ones in `NSExceptionDomains`.
+    static let homeDomains = ["home.arpa", "fritz.box", "lan", "internal", "home"]
+
     /// Plain HTTP is only allowed to these hosts. They are the ones App
     /// Transport Security lets through with `NSAllowsLocalNetworking`
     /// (unqualified names, `.local` names, IP addresses), narrowed to private
-    /// IP ranges.
+    /// IP ranges, and names under `homeDomains`.
     static func isLocalNetwork(_ host: String) -> Bool {
         let host = host.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "[]"))
         if let ip = IPv4Address(host) {
@@ -43,6 +47,7 @@ enum Server {
             return ip.isLoopback || ip.isLinkLocal || b[0] & 0xFE == 0xFC
         }
         return !host.contains(".") || host.hasSuffix(".local")
+            || homeDomains.contains { host.hasSuffix("." + $0) }
     }
 
     /// Asks the server for `/api/v1/instance`, which every Book Library server

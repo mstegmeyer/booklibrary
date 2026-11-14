@@ -91,9 +91,11 @@ native barcode scanner that the web interface uses through
 its connect screen with the reason; "Change server" in the account menu returns
 there.
 
-Addresses inside your home network (such as `http://192.168.1.20:3000` or
-`http://nas.local:3000`) may use plain HTTP; anything on the internet needs
-HTTPS. Without a scheme the app assumes `https://`.
+Addresses inside your home network may use plain HTTP: private IP addresses
+(such as `http://192.168.1.20:3000`), names without a dot, and names ending in
+`.local`, `.home.arpa`, `.fritz.box`, `.lan`, `.internal` or `.home` (such as
+`http://nas.fritz.box:3000`). Anything else needs HTTPS. Without a scheme the
+app assumes `https://`.
 
 You need Xcode 26 or later. To run it in the simulator, open
 `apps/ios/BookLibrary.xcodeproj`, choose an iPhone simulator and press Run, or
