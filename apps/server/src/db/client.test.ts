@@ -24,28 +24,34 @@ function tempDir() {
   return dir;
 }
 
-/** A copy of the migrations folder that stops after the first migration. */
-function firstMigrationOnly() {
+/** A copy of the migrations folder that stops after the `tag` migration. */
+function migrationsUpTo(tag: string) {
   const folder = tempDir();
   const journal = JSON.parse(
     readFileSync(join(migrationsFolder, "meta/_journal.json"), "utf8"),
   );
-  const [first] = journal.entries;
+  const entries: { tag: string }[] = journal.entries.slice(
+    0,
+    journal.entries.findIndex((entry: { tag: string }) => entry.tag === tag) +
+      1,
+  );
   mkdirSync(join(folder, "meta"));
   writeFileSync(
     join(folder, "meta/_journal.json"),
-    JSON.stringify({ ...journal, entries: [first] }),
+    JSON.stringify({ ...journal, entries }),
   );
-  cpSync(
-    join(migrationsFolder, `${first.tag}.sql`),
-    join(folder, `${first.tag}.sql`),
-  );
+  for (const entry of entries) {
+    cpSync(
+      join(migrationsFolder, `${entry.tag}.sql`),
+      join(folder, `${entry.tag}.sql`),
+    );
+  }
   return folder;
 }
 
 it("migrates a database that already holds data", () => {
   const dataDir = tempDir();
-  const old = openDatabase(dataDir, firstMigrationOnly()).$client;
+  const old = openDatabase(dataDir, migrationsUpTo("0000_init")).$client;
   old.exec(`
     insert into user (id, name, email, email_verified, created_at, updated_at)
       values ('u1', 'Mara', 'mara@example.net', 0, 0, 0);
@@ -83,5 +89,32 @@ it("migrates a database that already holds data", () => {
     { is_protected: 0 },
   ]);
   expect(sqlite.pragma("foreign_keys", { simple: true })).toBe(1);
+  sqlite.close();
+});
+
+it("adds the built-in genres to a library that already has books", () => {
+  const dataDir = tempDir();
+  const old = openDatabase(
+    dataDir,
+    migrationsUpTo("0003_stiff_the_stranger"),
+  ).$client;
+  old.exec(`
+    insert into book (id, title, authors, sort_key, created_at, updated_at)
+      values ('b1', 'Dune', '["Frank Herbert"]', 'Herbert, Frank', 0, 0);
+    insert into copy (id, book_id, created_at) values ('c1', 'b1', 0);
+  `);
+  old.close();
+
+  const sqlite = openDatabase(dataDir).$client;
+
+  expect(sqlite.prepare("select title, genre_id from book").all()).toEqual([
+    { title: "Dune", genre_id: null },
+  ]);
+  const genres = sqlite
+    .prepare("select key, name from genre order by key")
+    .all() as { key: string; name: string | null }[];
+  expect(genres).toHaveLength(24);
+  expect(genres.every((genre) => genre.name === null)).toBe(true);
+  expect(genres.map((genre) => genre.key)).toContain("travel-guide");
   sqlite.close();
 });

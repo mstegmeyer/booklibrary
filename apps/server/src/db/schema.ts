@@ -107,6 +107,25 @@ export const readingStatuses = [
   "abandoned",
 ] as const;
 
+/**
+ * A built-in genre has a `key` and is shown in each person's language until
+ * someone renames it; a genre people add has only a `name`.
+ */
+export const genre = sqliteTable(
+  "genre",
+  {
+    id: id(),
+    key: text("key").unique(),
+    name: text("name"),
+  },
+  (t) => [
+    check(
+      "genre_key_or_name_check",
+      sql`${t.key} is not null or ${t.name} is not null`,
+    ),
+  ],
+);
+
 export const book = sqliteTable(
   "book",
   {
@@ -125,6 +144,9 @@ export const book = sqliteTable(
     language: text("language"),
     coverPath: text("cover_path"),
     metadataSource: text("metadata_source"),
+    genreId: text("genre_id").references(() => genre.id, {
+      onDelete: "restrict",
+    }),
     createdAt: timestamp("created_at"),
     // Removing a user keeps the books and copies they added.
     createdBy: text("created_by").references(() => user.id, {
@@ -135,6 +157,7 @@ export const book = sqliteTable(
   (t) => [
     index("book_title_idx").on(t.title),
     index("book_created_at_idx").on(t.createdAt),
+    index("book_genre_id_idx").on(t.genreId),
   ],
 );
 
