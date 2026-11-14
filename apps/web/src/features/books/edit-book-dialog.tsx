@@ -63,7 +63,17 @@ export function EditBookDialog({
           id={book.id}
           initialValues={book}
           coverUrl={book.thumbnailUrl}
-          onSubmit={(values, cover) => save.mutate({ values, cover })}
+          withSortAs
+          onSubmit={(values, cover) => {
+            // Kept as shown, the key would still sort by the old author.
+            const staleSortAs =
+              values.authors[0] !== book.authors[0] &&
+              values.sortAs === book.sortAs;
+            save.mutate({
+              values: staleSortAs ? { ...values, sortAs: "" } : values,
+              cover,
+            });
+          }}
         >
           <FormError>
             {save.error && bookErrorMessage(save.error)}

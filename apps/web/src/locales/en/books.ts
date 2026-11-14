@@ -14,6 +14,9 @@ const books = {
     chooseCover: "Choose image",
     isbnInvalid: "One of the ISBNs is not valid. Please check its digits.",
     imageInvalid: "This file is not an image we can read.",
+    sortAs: "Sort as",
+    sortAsHint:
+      "How the Library sorts this book by author. Leave empty to use the surname.",
   },
   add: {
     title: "Add a book",

@@ -16,6 +16,9 @@ export default {
     chooseCover: "Bild auswählen",
     isbnInvalid: "Eine der ISBNs ist ungültig. Bitte prüfe die Ziffern.",
     imageInvalid: "Diese Datei ist kein lesbares Bild.",
+    sortAs: "Sortieren als",
+    sortAsHint:
+      "So sortiert die Bibliothek dieses Buch nach Autor. Leer lassen, um nach dem Nachnamen zu sortieren.",
   },
   add: {
     title: "Buch hinzufügen",

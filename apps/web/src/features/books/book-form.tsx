@@ -10,6 +10,8 @@ export type BookFormValues = {
   title: string;
   subtitle: string | null;
   authors: string[];
+  /** Only when editing; empty means the server's guess. */
+  sortAs?: string;
   description: string | null;
   pageCount: number | null;
   publishedYear: number | null;
@@ -35,6 +37,7 @@ export function BookForm({
   id,
   initialValues = {},
   coverUrl = null,
+  withSortAs = false,
   onSubmit,
   children,
 }: {
@@ -42,6 +45,7 @@ export function BookForm({
   initialValues?: Partial<BookFormValues>;
   /** The current cover, shown until another image is chosen. */
   coverUrl?: string | null;
+  withSortAs?: boolean;
   /**
    * `intent` is the `value` of the submit button that was pressed, so a form
    * can offer several ways to submit.
@@ -74,6 +78,7 @@ export function BookForm({
         title: String(data.get("title")).trim(),
         subtitle: text(data.get("subtitle")),
         authors: list(data.get("authors"), /,/),
+        sortAs: withSortAs ? String(data.get("sortAs")).trim() : undefined,
         description: text(data.get("description")),
         pageCount: number(data.get("pageCount")),
         publishedYear: number(data.get("publishedYear")),
@@ -106,6 +111,15 @@ export function BookForm({
         name="authors"
         defaultValue={initialValues.authors?.join(", ")}
       />
+      {withSortAs && (
+        <Field
+          label={t("form.sortAs")}
+          hint={t("form.sortAsHint")}
+          name="sortAs"
+          defaultValue={initialValues.sortAs}
+          maxLength={200}
+        />
+      )}
       <div className="grid grid-cols-3 gap-3">
         <Field
           label={t("form.pages")}
