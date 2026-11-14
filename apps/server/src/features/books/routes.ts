@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { ApiError } from "../../api/errors.ts";
-import { ErrorSchema, errors, json } from "../../api/openapi.ts";
+import { errors, json } from "../../api/openapi.ts";
 import { PaginationQuery, page } from "../../api/pagination.ts";
 import { createRouter } from "../../api/router.ts";
 import { bookFormats, readingStatuses } from "../../db/schema.ts";
@@ -56,26 +56,6 @@ const CopyFields = z.object({
   format: z.enum(bookFormats).nullable().optional(),
   note: Text(500),
 });
-
-const IsbnTaken = z
-  .object({
-    error: z.object({
-      code: z.literal("isbn_taken"),
-      message: z.string(),
-      bookId: z.string(),
-    }),
-  })
-  .openapi("IsbnTaken");
-
-const conflictResponses = {
-  ...errors,
-  409: {
-    content: {
-      "application/json": { schema: z.union([IsbnTaken, ErrorSchema]) },
-    },
-    description: "An ISBN belongs to another book (`isbn_taken`)",
-  },
-};
 
 const ReadingSummary = z.object({
   status: z.enum(readingStatuses),
@@ -221,6 +201,8 @@ export const booksRoutes = router
       path: "/",
       tags: ["Books"],
       summary: "Create a book",
+      description:
+        "When an ISBN already belongs to a book: 409 `isbn_taken`, with that book's id as `error.bookId`.",
       request: {
         body: {
           content: {
@@ -230,7 +212,7 @@ export const booksRoutes = router
           },
         },
       },
-      responses: { 201: json(Book, "The new book"), ...conflictResponses },
+      responses: { 201: json(Book, "The new book"), ...errors },
     }),
     async (c) => {
       const id = createBook(c.var.db, c.var.user.id, c.req.valid("json"));
@@ -254,14 +236,15 @@ export const booksRoutes = router
       path: "/{id}",
       tags: ["Books"],
       summary: "Edit a book's metadata and ISBNs",
-      description: "`isbns`, when given, replaces the whole list.",
+      description:
+        "`isbns`, when given, replaces the whole list. An ISBN of another book gives 409 `isbn_taken` with `error.bookId`.",
       request: {
         params: BookParams,
         body: {
           content: { "application/json": { schema: BookFields.partial() } },
         },
       },
-      responses: { 200: json(Book, "The changed book"), ...conflictResponses },
+      responses: { 200: json(Book, "The changed book"), ...errors },
     }),
     async (c) => {
       const { id } = c.req.valid("param");
