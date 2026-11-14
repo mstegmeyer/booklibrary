@@ -61,7 +61,7 @@ export function EditBookDialog({
       >
         <BookForm
           id={book.id}
-          initialValues={book}
+          initialValues={{ ...book, genreId: book.genre?.id ?? null }}
           coverUrl={book.thumbnailUrl}
           withSortAs
           onSubmit={(values, cover) => {

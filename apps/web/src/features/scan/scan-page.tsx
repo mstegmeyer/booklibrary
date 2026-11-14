@@ -24,6 +24,7 @@ import { BookCover } from "../books/book-cover";
 import { useBookErrorMessage } from "../books/book-form";
 import { OwnershipFieldset } from "../books/ownership";
 import { type Candidate, lookupIsbn } from "../books/queries";
+import { GenreSelect } from "../genres/genre-select";
 
 /**
  * The scan screen on display, so that the late answer to an earlier
@@ -53,7 +54,11 @@ export function ScanPage() {
   /** The Add dialog is open, with manual entry when there is an ISBN. */
   const [adding, setAdding] = useState<{ isbn?: string }>();
   const isAdding = adding !== undefined;
-  const lookup = useMutation({ mutationFn: lookupIsbn });
+  const [genreId, setGenreId] = useState("");
+  const lookup = useMutation({
+    mutationFn: lookupIsbn,
+    onSuccess: () => setGenreId(""),
+  });
   const flow = useAddBook({
     onAdded: (message) => {
       setCount((count) => count + 1);
@@ -147,6 +152,10 @@ export function ScanPage() {
     sheet = (
       <>
         <ScannedBook candidate={candidate} />
+        <GenreSelect
+          value={genreId}
+          onChange={(event) => setGenreId(event.target.value)}
+        />
         <OwnershipFieldset
           value={flow.ownership}
           onChange={flow.setOwnership}
@@ -160,7 +169,12 @@ export function ScanPage() {
         <Button
           className="h-[50px] rounded-xl text-base"
           disabled={flow.isPending}
-          onClick={() => flow.submit(fromCandidate(candidate), null)}
+          onClick={() =>
+            flow.submit(
+              { ...fromCandidate(candidate), genreId: genreId || null },
+              null,
+            )
+          }
         >
           {t("addNext")}
         </Button>

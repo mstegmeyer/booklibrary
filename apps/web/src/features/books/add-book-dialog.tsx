@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button";
 import { Dialog, DialogContent } from "../../components/ui/dialog";
 import { FormError } from "../../components/ui/field";
 import { useFormat } from "../../lib/format";
+import { GenreSelect } from "../genres/genre-select";
 import {
   AddQuestion,
   type BookPayload,
@@ -23,6 +24,12 @@ type Intent = "add" | "next";
 
 const intentOf = (value: string | undefined): Intent =>
   value === "next" ? "next" : "add";
+
+/** The genre chosen in a lookup result's form. */
+const withGenre = (payload: BookPayload, form: HTMLFormElement) => ({
+  ...payload,
+  genreId: String(new FormData(form).get("genreId") ?? "") || null,
+});
 
 /** "Add a book": by ISBN, by a title search or by hand. */
 export function AddBookDialog({
@@ -162,13 +169,14 @@ function AddBook({
         event.preventDefault();
         const submitter = (event.nativeEvent as SubmitEvent).submitter;
         submit(
-          fromCandidate(candidate),
+          withGenre(fromCandidate(candidate), event.currentTarget),
           null,
           intentOf(submitter?.getAttribute("value") ?? undefined),
         );
       }}
       className="flex flex-col gap-5"
     >
+      <GenreSelect name="genreId" />
       {footer}
     </form>
   );
@@ -304,13 +312,14 @@ function AddBook({
                 event.preventDefault();
                 const submitter = (event.nativeEvent as SubmitEvent).submitter;
                 submit(
-                  fromEbook(candidate),
+                  withGenre(fromEbook(candidate), event.currentTarget),
                   null,
                   intentOf(submitter?.getAttribute("value") ?? undefined),
                 );
               }}
               className="flex flex-col gap-5"
             >
+              <GenreSelect name="genreId" />
               {footer}
             </form>
           )}

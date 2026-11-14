@@ -8,6 +8,7 @@ import { Button } from "../../components/ui/button";
 import { ApiError } from "../../lib/api";
 import { cn } from "../../lib/cn";
 import { useFormat } from "../../lib/format";
+import { useGenreName } from "../genres/queries";
 import { useReturnToLibrary } from "../library/return-to-library";
 import { formatPath } from "../locations/queries";
 import { BookAside } from "./book-aside";
@@ -304,14 +305,17 @@ function CopyRow({ book, copy }: { book: BookDetail; copy: CopyDetail }) {
 }
 
 function Details({ book }: { book: BookDetail }) {
-  const { t, i18n } = useTranslation("books");
+  const { t, i18n } = useTranslation(["books", "genres"]);
   const format = useFormat();
+  const genreName = useGenreName();
   return (
     <section aria-labelledby="details-title" className="flex flex-col gap-3">
       <h2 id="details-title" className={sectionTitle}>
         {t("details.title")}
       </h2>
       <dl className="grid grid-cols-[110px_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm leading-5 md:grid-cols-[140px_minmax(0,1fr)]">
+        <dt className="text-ink-muted">{t("genres:genre")}</dt>
+        <dd>{book.genre ? genreName(book.genre) : t("genres:none")}</dd>
         <dt className="text-ink-muted">{t("details.isbn")}</dt>
         <dd className="tabular-nums">
           {book.isbns.length > 0 ? book.isbns.join(" · ") : t("details.none")}

@@ -4,6 +4,7 @@ import { Field } from "../../components/ui/field";
 import { TextareaField } from "../../components/ui/textarea-field";
 import { ApiError } from "../../lib/api";
 import { useErrorMessage } from "../../lib/use-error-message";
+import { GenreSelect } from "../genres/genre-select";
 import { BookCover } from "./book-cover";
 
 export type BookFormValues = {
@@ -16,6 +17,7 @@ export type BookFormValues = {
   pageCount: number | null;
   publishedYear: number | null;
   language: string | null;
+  genreId: string | null;
   isbns: string[];
 };
 
@@ -83,6 +85,7 @@ export function BookForm({
         pageCount: number(data.get("pageCount")),
         publishedYear: number(data.get("publishedYear")),
         language: text(data.get("language")),
+        genreId: text(data.get("genreId")),
         isbns: list(data.get("isbns"), /[,;\n]/),
       },
       cover,
@@ -149,6 +152,7 @@ export function BookForm({
           className="w-full min-w-0"
         />
       </div>
+      <GenreSelect name="genreId" defaultValue={initialValues.genreId ?? ""} />
       <Field
         label={t("form.isbns")}
         hint={t("form.isbnsHint")}
