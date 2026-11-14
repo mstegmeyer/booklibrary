@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { createAuthMiddleware } from "better-auth/api";
 import { admin, bearer } from "better-auth/plugins";
 import { adminAc, userAc } from "better-auth/plugins/admin/access";
 import type { Config } from "./config.ts";
@@ -32,6 +33,15 @@ export function createAuth(db: Db, config: Config) {
       "/admin/set-user-password",
       "/admin/remove-user",
     ],
+    hooks: {
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path === "/change-password") {
+          return {
+            context: { body: { ...ctx.body, revokeOtherSessions: true } },
+          };
+        }
+      }),
+    },
     plugins: [
       admin({
         roles: { admin: adminAc, member: userAc },

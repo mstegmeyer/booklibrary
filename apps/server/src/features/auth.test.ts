@@ -47,6 +47,52 @@ describe("auth", () => {
     expect(await res.json()).toMatchObject({ error: { code: "not_found" } });
   });
 
+  it("lets users change their own name", async () => {
+    const { request, setupAdmin } = createTestApp();
+    const token = await setupAdmin();
+    const res = await request("/api/auth/update-user", {
+      method: "POST",
+      token,
+      body: { name: "Mara K." },
+    });
+    expect(res.status).toBe(200);
+    const current = await (
+      await request("/api/auth/get-session", { token })
+    ).json();
+    expect(current.user.name).toBe("Mara K.");
+  });
+
+  it("changes the own password only with the current one and ends other sessions", async () => {
+    const { request, setupAdmin, signIn } = createTestApp();
+    const token = await setupAdmin("admin@example.com");
+    const other = (await signIn("admin@example.com", "password123")).token;
+    const change = (currentPassword: string) =>
+      request("/api/auth/change-password", {
+        method: "POST",
+        token,
+        body: { currentPassword, newPassword: "another-password" },
+      });
+
+    expect((await change("wrong-password")).status).toBe(400);
+    expect(
+      (await request("/api/v1/users", { token: other ?? "" })).status,
+    ).toBe(200);
+
+    const res = await change("password123");
+    expect(res.status).toBe(200);
+    expect(
+      (await request("/api/v1/users", { token: other ?? "" })).status,
+    ).toBe(401);
+    const { token: kept } = await res.json();
+    expect((await request("/api/v1/users", { token: kept })).status).toBe(200);
+    expect((await signIn("admin@example.com", "password123")).res.status).toBe(
+      401,
+    );
+    expect(
+      (await signIn("admin@example.com", "another-password")).res.status,
+    ).toBe(200);
+  });
+
   describe("client address", () => {
     async function signInAddress(
       baseUrl: string | undefined,
