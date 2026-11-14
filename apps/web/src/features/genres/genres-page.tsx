@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState, PageHeader } from "../../components/shell/page-header";
 import { Button } from "../../components/ui/button";
@@ -43,6 +43,12 @@ export function GenresPage() {
   const genres = useSortedGenres();
   const [selectedId, setSelectedId] = useState<string>();
   const selected = genres.find((genre) => genre.id === selectedId);
+  const panel = useRef<HTMLElement>(null);
+
+  // On phones the panel sits below the whole list.
+  useEffect(() => {
+    if (selectedId) panel.current?.scrollIntoView({ block: "nearest" });
+  }, [selectedId]);
 
   return (
     <>
@@ -85,6 +91,7 @@ export function GenresPage() {
             ))}
           </ul>
           <section
+            ref={panel}
             aria-label={selected?.label}
             className="flex min-w-0 flex-[1_1_340px] flex-col gap-4 rounded-xl border border-border bg-surface p-5"
           >
@@ -132,7 +139,7 @@ function AddGenreDialog({ onCreated }: { onCreated: (id: string) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button>{t("add")}</Button>
+        <Button className="max-md:h-11 max-md:w-full">{t("add")}</Button>
       </DialogTrigger>
       <DialogContent title={t("addTitle")} closeLabel={t("common:form.cancel")}>
         <form onSubmit={submit} className="flex flex-col gap-4">
@@ -149,7 +156,7 @@ function AddGenreDialog({ onCreated }: { onCreated: (id: string) => void }) {
           <Button
             type="submit"
             disabled={create.isPending}
-            className="self-start"
+            className="self-start max-md:h-11"
           >
             {t("addSubmit")}
           </Button>
@@ -202,7 +209,11 @@ function GenrePanel({
           required
         />
         <FormError>{save.error && genreErrorMessage(save.error)}</FormError>
-        <Button type="submit" disabled={save.isPending} className="self-start">
+        <Button
+          type="submit"
+          disabled={save.isPending}
+          className="self-start max-md:h-11"
+        >
           {t("save")}
         </Button>
       </form>
@@ -243,7 +254,9 @@ function DeleteGenreDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="danger">{t("delete")}</Button>
+        <Button variant="danger" className="max-md:h-11">
+          {t("delete")}
+        </Button>
       </DialogTrigger>
       <DialogContent
         title={t("deleteTitle", { name: genre.label })}
