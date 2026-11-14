@@ -1,3 +1,4 @@
+import type { HttpBindings } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { APIError } from "better-auth/api";
 import { createMiddleware } from "hono/factory";
@@ -5,7 +6,7 @@ import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ApiError, errorBody } from "./api/errors.ts";
 import { createPublicRouter, type PublicEnv } from "./api/router.ts";
-import type { Auth } from "./auth.ts";
+import { type Auth, handleAuthRequest } from "./auth.ts";
 import { version } from "./config.ts";
 import type { Db } from "./db/client.ts";
 import { features } from "./features/index.ts";
@@ -36,7 +37,15 @@ export function createApp(
     c.set("auth", auth);
     await next();
   });
-  app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+  app.on(["GET", "POST"], "/api/auth/*", (c) => {
+    // Node's server passes the connection; app.request() in tests does not.
+    const env = c.env as Partial<HttpBindings> | undefined;
+    return handleAuthRequest(
+      auth,
+      c.req.raw,
+      env?.incoming?.socket.remoteAddress,
+    );
+  });
   app.use("/api/v1/*", async (c, next) => {
     const session = await auth.api.getSession({ headers: c.req.raw.headers });
     c.set("user", session?.user ?? null);

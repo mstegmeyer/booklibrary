@@ -9,6 +9,11 @@ import * as schema from "./db/schema.ts";
 export const roles = ["admin", "member"] as const;
 export type Role = (typeof roles)[number];
 
+// Better Auth takes the client address for rate limiting from a request
+// header. The server sets this one on every auth request, replacing any value
+// a client sent.
+const clientAddressHeader = "x-book-library-client-address";
+
 export function createAuth(db: Db, config: Config) {
   return betterAuth({
     secret: config.authSecret,
@@ -29,9 +34,30 @@ export function createAuth(db: Db, config: Config) {
     ],
     advanced: {
       database: { generateId: "uuid" },
+      ipAddress: { ipAddressHeaders: [clientAddressHeader] },
       ...(config.baseUrl ? {} : { useSecureCookies: false }),
     },
   });
 }
 
 export type Auth = ReturnType<typeof createAuth>;
+
+/**
+ * Passes a request to Better Auth together with the client's address. With
+ * BASE_URL set the server is behind a reverse proxy, so the connection comes
+ * from the proxy and the client's address is the one the proxy appended to
+ * X-Forwarded-For.
+ */
+export function handleAuthRequest(
+  auth: Auth,
+  request: Request,
+  connectionAddress: string | undefined,
+) {
+  const forwarded = auth.options.baseURL
+    ? request.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim()
+    : undefined;
+  const address = forwarded || connectionAddress;
+  if (address) request.headers.set(clientAddressHeader, address);
+  else request.headers.delete(clientAddressHeader);
+  return auth.handler(request);
+}

@@ -30,6 +30,14 @@ secret). Back up that volume.
 | `AUTH_SECRET` | generated into `DATA_DIR`    | Signs sessions                                                                                                                                        |
 | `BASE_URL`    | unset                        | Public address, such as `https://books.example.net`. Set it behind an HTTPS reverse proxy; then only that address is accepted and cookies are secure. |
 
+Sign-in and the other account requests are rate limited per client address.
+Without `BASE_URL` that is the address of the connection. With `BASE_URL` the
+server assumes it sits behind a reverse proxy and takes the client address from
+the last entry of `X-Forwarded-For`, so the proxy must set or append that
+header (nginx: `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;`;
+Caddy and Traefik do it by default). Do not expose the server directly when
+`BASE_URL` is set, or clients could choose their own address.
+
 Book metadata is looked up in Open Library and the catalogue of the Deutsche
 Nationalbibliothek. Google Books needs an API key and is only asked when one is
 set. The base URLs exist so tests can point the server at a local stub.
