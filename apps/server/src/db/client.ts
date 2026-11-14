@@ -2,9 +2,8 @@ import { join } from "node:path";
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import { migrationsFolder } from "../config.ts";
 import * as schema from "./schema.ts";
-
-const migrationsFolder = join(import.meta.dirname, "../../drizzle");
 
 export function openDatabase(dataDir: string) {
   const sqlite = new Database(join(dataDir, "library.db"));

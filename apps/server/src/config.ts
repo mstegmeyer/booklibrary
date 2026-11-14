@@ -5,6 +5,11 @@ import packageJson from "../package.json" with { type: "json" };
 
 export const version = packageJson.version;
 
+// Resolved from this module, which sits one level below the package root both
+// as src/config.ts and inside the production bundle dist/main.js.
+export const migrationsFolder = join(import.meta.dirname, "../drizzle");
+export const webRoot = join(import.meta.dirname, "../../web/dist");
+
 export type Config = {
   port: number;
   dataDir: string;
