@@ -23,10 +23,17 @@ export class ApiError extends Error {
   }
 }
 
+// From the body types of every response, not one inferred from them: which
+// one inference picks depends on the order of the union.
+type Success<Res extends { json(): Promise<unknown> }> = Exclude<
+  Awaited<ReturnType<Res["json"]>>,
+  { error: unknown }
+>;
+
 /** Returns the JSON body of a successful response and throws ApiError otherwise. */
-export async function unwrap<T>(
-  request: Promise<{ ok: boolean; status: number; json(): Promise<T> }>,
-): Promise<Exclude<T, { error: unknown }>> {
+export async function unwrap<
+  Res extends { ok: boolean; status: number; json(): Promise<unknown> },
+>(request: Promise<Res>): Promise<Success<Res>> {
   const res = await request;
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as {
@@ -39,6 +46,6 @@ export async function unwrap<T>(
     } = body?.error ?? {};
     throw new ApiError(res.status, code, message, details);
   }
-  if (res.status === 204) return undefined as Exclude<T, { error: unknown }>;
-  return (await res.json()) as Exclude<T, { error: unknown }>;
+  if (res.status === 204) return undefined as Success<Res>;
+  return (await res.json()) as Success<Res>;
 }
