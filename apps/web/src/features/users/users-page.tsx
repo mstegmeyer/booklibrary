@@ -1,16 +1,19 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "../../components/shell/page-header";
 import { Button } from "../../components/ui/button";
 import { useFormat } from "../../lib/format";
+import { sessionQuery } from "../../lib/session";
 import { AddUserDialog } from "./add-user-dialog";
 import { usersQuery } from "./queries";
 import { ResetPasswordDialog } from "./reset-password-dialog";
+import { RemoveUserDialog, RoleDialog } from "./user-actions";
 
 export function UsersPage() {
   const { t } = useTranslation("users");
   const format = useFormat();
   const users = useInfiniteQuery(usersQuery);
+  const { data: session } = useSuspenseQuery(sessionQuery);
 
   return (
     <>
@@ -41,7 +44,14 @@ export function UsersPage() {
                   {t("added", { date: format.date(user.createdAt) })}
                 </p>
               </div>
-              <ResetPasswordDialog user={user} />
+              {/* Your own password is changed on the Account page. */}
+              {user.id !== session?.user.id && (
+                <div className="flex flex-wrap gap-2">
+                  <ResetPasswordDialog user={user} />
+                  <RoleDialog user={user} />
+                  <RemoveUserDialog user={user} />
+                </div>
+              )}
             </li>
           ))}
       </ul>

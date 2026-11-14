@@ -56,6 +56,7 @@ export function ResetPasswordDialog({
           </p>
         ) : (
           <form onSubmit={submit} className="flex flex-col gap-4">
+            <p className="text-sm">{t("resetSignsOut", { name: user.name })}</p>
             <Field
               label={t("newPassword")}
               hint={t("common:form.passwordHint")}
