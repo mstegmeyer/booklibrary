@@ -168,6 +168,43 @@ describe("statistics", () => {
     });
   });
 
+  it("breaks the year's finished books down by genre", async () => {
+    const { call, mara, ben, readThrough, stats } = await setup();
+    const genres: { id: string; key: string }[] = (await call("/genres")).body
+      .items;
+    const genreId = (key: string) => genres.find((g) => g.key === key)?.id;
+    const addBook = async (key?: string) =>
+      (
+        await call("/books", "POST", {
+          title: "Book",
+          genreId: key ? genreId(key) : undefined,
+          copy: {},
+        })
+      ).body.id as string;
+    const crime = await addBook("crime");
+    const cookbook = await addBook("cookbook");
+    const none = await addBook();
+    readThrough(mara, crime, "read", "2025-01-01");
+    readThrough(ben, crime, "read", "2025-02-01");
+    readThrough(mara, none, "read", "2025-03-01");
+    readThrough(mara, none, "read", "2025-04-01");
+    readThrough(mara, none, "read", "2025-05-01");
+    readThrough(mara, cookbook, "read", "2025-06-01");
+    readThrough(mara, cookbook, "read", "2024-06-01");
+    readThrough(mara, cookbook, "reading", null);
+
+    const breakdown = (result: {
+      byGenre: { genre: { key: string } | null; books: number }[];
+    }) => result.byGenre.map((g) => [g.genre?.key ?? null, g.books]);
+    expect(breakdown(await stats(2025))).toEqual([
+      ["crime", 2],
+      ["cookbook", 1],
+      [null, 3],
+    ]);
+    expect(breakdown(await stats(2025, ben))).toEqual([["crime", 1]]);
+    expect(breakdown(await stats(2023))).toEqual([]);
+  });
+
   it("lists the members and rejects an unknown user", async () => {
     const { call } = await setup();
     expect((await call("/statistics/members")).body).toMatchObject([

@@ -1,7 +1,14 @@
 import { and, asc, eq } from "drizzle-orm";
 import { ApiError } from "../../api/errors.ts";
 import type { Db } from "../../db/client.ts";
-import { book, reading, readingProgress, user } from "../../db/schema.ts";
+import {
+  book,
+  genre,
+  reading,
+  readingProgress,
+  user,
+} from "../../db/schema.ts";
+import type { GenreRef } from "../books/service.ts";
 import { owned, today } from "../reading/service.ts";
 
 /** Everyone in the household, for choosing whose statistics to show. */
@@ -69,6 +76,24 @@ function daysPassed(year: number) {
   return days(end) - days(`${year}-01-01`) + 1;
 }
 
+/** Books per genre, most first; books without a genre last. */
+function perGenre(reads: { genre: GenreRef | null }[]) {
+  const counts = new Map<
+    string | null,
+    { genre: GenreRef | null; books: number }
+  >();
+  for (const read of reads) {
+    const id = read.genre?.id ?? null;
+    const entry = counts.get(id) ?? { genre: read.genre, books: 0 };
+    entry.books++;
+    counts.set(id, entry);
+  }
+  return [...counts.values()].sort(
+    (a, b) =>
+      Number(a.genre === null) - Number(b.genre === null) || b.books - a.books,
+  );
+}
+
 /**
  * Reading statistics of one user, or of the whole household when `userId` is
  * missing (a book read by two people counts twice).
@@ -84,9 +109,11 @@ export function statistics(db: Db, userId: string | undefined, year: number) {
       endedOn: reading.endedOn,
       pageCount: book.pageCount,
       inLibrary: owned.mapWith(Boolean),
+      genre: { id: genre.id, key: genre.key, name: genre.name },
     })
     .from(reading)
     .innerJoin(book, eq(book.id, reading.bookId))
+    .leftJoin(genre, eq(genre.id, book.genreId))
     .where(and(who, eq(reading.status, "read")))
     .all();
   const entries = db
@@ -139,6 +166,7 @@ export function statistics(db: Db, userId: string | undefined, year: number) {
     notInLibrary: finished.filter((read) => !read.inLibrary).length,
     booksPerMonth,
     pagesPerMonth,
+    byGenre: perGenre(finished),
     booksPerYear: [...perYear]
       .map(([y, books]) => ({ year: y, books }))
       .sort((a, b) => a.year - b.year),

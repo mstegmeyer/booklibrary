@@ -1,6 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { errors, json } from "../../api/openapi.ts";
 import { createRouter } from "../../api/router.ts";
+import { GenreRef } from "../genres/routes.ts";
 import { listMembers, statistics } from "./service.ts";
 
 const Months = z.array(z.number().int()).length(12).openapi({
@@ -21,6 +22,12 @@ const Statistics = z
     }),
     booksPerMonth: Months,
     pagesPerMonth: Months,
+    byGenre: z
+      .array(z.object({ genre: GenreRef.nullable(), books: z.number().int() }))
+      .openapi({
+        description:
+          "Books finished this year by genre, most first; those without a genre last",
+      }),
     booksPerYear: z.array(
       z.object({ year: z.number().int(), books: z.number().int() }),
     ),
