@@ -6,7 +6,7 @@ type FieldProps = ComponentProps<"input"> & { label: string; hint?: string };
 export function Field({ label, hint, className, ...props }: FieldProps) {
   const id = useId();
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={id} className="font-semibold text-[13px] leading-[18px]">
         {label}
       </label>
