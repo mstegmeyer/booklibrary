@@ -240,8 +240,9 @@ function ByGenre({
   rows: { genre: GenreRef | null; books: number }[];
   year: number;
 }) {
-  const { t } = useTranslation(["statistics", "genres"]);
+  const { t, i18n } = useTranslation(["statistics", "genres"]);
   const genreName = useGenreName();
+  const collator = new Intl.Collator(i18n.resolvedLanguage);
   if (rows.length === 0) {
     return (
       <p className="text-[13px] text-ink-muted leading-5">
@@ -252,11 +253,21 @@ function ByGenre({
   return (
     <PerYear
       labelClassName="w-[40%] max-w-44 break-words"
-      rows={rows.map((row) => ({
-        id: row.genre?.id ?? "none",
-        label: row.genre ? genreName(row.genre) : t("genres:none"),
-        books: row.books,
-      }))}
+      // The server's order (most first, no genre last); ties alphabetically
+      // by the names this language shows.
+      rows={rows
+        .map((row) => ({
+          id: row.genre?.id ?? "none",
+          label: row.genre ? genreName(row.genre) : t("genres:none"),
+          books: row.books,
+          none: row.genre === null,
+        }))
+        .sort(
+          (a, b) =>
+            Number(a.none) - Number(b.none) ||
+            b.books - a.books ||
+            collator.compare(a.label, b.label),
+        )}
     />
   );
 }
