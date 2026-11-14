@@ -10,7 +10,6 @@ export type ErrorCode =
   | "internal"
   | "isbn_taken"
   | "copy_lent"
-  | "copy_has_loans"
   | "location_not_empty"
   | "location_cycle";
 

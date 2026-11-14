@@ -11,7 +11,7 @@ import {
 } from "../../components/ui/dialog";
 import { FormError } from "../../components/ui/field";
 import { SelectField } from "../../components/ui/select";
-import { ApiError, api, unwrap } from "../../lib/api";
+import { api, unwrap } from "../../lib/api";
 import { useErrorMessage } from "../../lib/use-error-message";
 import { LocationSelect } from "../locations/location-select";
 import { type BookDetail, type CopyDetail, refreshCatalogue } from "./queries";
@@ -198,11 +198,7 @@ export function RemoveCopyDialog({
             : t("copies.removeOne")}
         </p>
         <FormError>
-          {remove.error &&
-            (remove.error instanceof ApiError &&
-            remove.error.code === "copy_has_loans"
-              ? t("copies.hasLoans")
-              : errorMessage(remove.error))}
+          {remove.error ? errorMessage(remove.error) : undefined}
         </FormError>
         <div className="flex flex-wrap justify-end gap-2">
           <DialogClose asChild>

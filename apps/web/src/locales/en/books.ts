@@ -72,7 +72,6 @@ const books = {
       "It is the last copy, so the book leaves the library. If nobody has read or borrowed it, it is deleted.",
     removeOne: "The other copies stay in the library.",
     removeSubmit: "Remove copy",
-    hasLoans: "This copy has been lent before, so it cannot be removed.",
   },
   details: {
     title: "Details",

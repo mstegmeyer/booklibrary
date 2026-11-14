@@ -75,8 +75,6 @@ export default {
       "Es ist das letzte Exemplar, das Buch verlässt also die Bibliothek. Wenn niemand es gelesen oder ausgeliehen hat, wird es gelöscht.",
     removeOne: "Die anderen Exemplare bleiben in der Bibliothek.",
     removeSubmit: "Exemplar entfernen",
-    hasLoans:
-      "Dieses Exemplar wurde schon verliehen und kann deshalb nicht entfernt werden.",
   },
   details: {
     title: "Angaben",

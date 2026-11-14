@@ -560,20 +560,10 @@ export async function updateCopy(
  */
 export async function removeCopy(db: Db, bookId: string, copyId: string) {
   await findCopy(db, bookId, copyId);
-  const loans = await db
-    .select({ endedOn: loan.endedOn })
-    .from(loan)
-    .where(eq(loan.copyId, copyId));
-  if (loans.some((l) => l.endedOn === null)) {
+  if (
+    await db.$count(loan, and(eq(loan.copyId, copyId), isNull(loan.endedOn)))
+  ) {
     throw new ApiError(409, "copy_lent", "The copy is lent out");
-  }
-  // A lent loan must name its copy, so the copy has to stay for its history.
-  if (loans.length > 0) {
-    throw new ApiError(
-      409,
-      "copy_has_loans",
-      "The copy has loan history and cannot be removed",
-    );
   }
   await db.delete(copy).where(eq(copy.id, copyId));
   const { kept } = await deleteBookIfUnreferenced(db, bookId);
