@@ -133,6 +133,67 @@ test.describe("inside the app", () => {
     ).toHaveText("Home");
   });
 
+  test("a book typed in the Add dialog counts in the session", async ({
+    page,
+  }) => {
+    const shell = await openScanner(page);
+    await shell.scan(fox);
+    await sheet(page)
+      .getByRole("button", { name: "Add and scan next" })
+      .click();
+    await expect(sheet(page)).toContainText("1 book added in this session");
+
+    await sheet(page).getByRole("button", { name: "Type an ISBN" }).click();
+    const dialog = page.getByRole("dialog", { name: "Add a book" });
+    await dialog.getByRole("textbox", { name: "ISBN" }).fill(hobbit);
+    await dialog.getByRole("button", { name: "Look up" }).click();
+    await dialog.getByRole("button", { name: "Add", exact: true }).click();
+
+    await expect(dialog).toBeHidden();
+    await expect(page).toHaveURL(/\/scan$/);
+    await expect(sheet(page)).toContainText("2 books added in this session");
+    await expect.poll(async () => (await shell.state()).scanning).toBe(true);
+    expect(await booksWithIsbn(page, hobbit)).toHaveLength(1);
+  });
+
+  test("closing the Add dialog returns to the scan screen", async ({
+    page,
+  }) => {
+    const shell = await openScanner(page);
+    await shell.scan(fox);
+    await sheet(page)
+      .getByRole("button", { name: "Add and scan next" })
+      .click();
+    await sheet(page).getByRole("button", { name: "Type an ISBN" }).click();
+    const dialog = page.getByRole("dialog", { name: "Add a book" });
+    await dialog.getByRole("button", { name: "Cancel" }).click();
+
+    await expect(dialog).toBeHidden();
+    await expect(page).toHaveURL(/\/scan$/);
+    await expect(sheet(page)).toContainText("1 book added in this session");
+    await expect.poll(async () => (await shell.state()).scanning).toBe(true);
+  });
+
+  test("the status bar is light while the scan screen shows", async ({
+    page,
+  }) => {
+    const shell = await openScanner(page);
+    const light = async () => (await shell.state()).lightStatusBar;
+    await expect.poll(light).toBe(true);
+
+    // The Add dialog covers the dark screen.
+    await sheet(page).getByRole("button", { name: "Type an ISBN" }).click();
+    await expect.poll(light).toBe(false);
+    await page
+      .getByRole("dialog", { name: "Add a book" })
+      .getByRole("button", { name: "Cancel" })
+      .click();
+    await expect.poll(light).toBe(true);
+
+    await page.getByRole("link", { name: "Close scanner" }).click();
+    await expect.poll(light).toBe(false);
+  });
+
   test("borrowed and reading-list books, with the choice kept", async ({
     page,
   }) => {
@@ -283,6 +344,15 @@ test.describe("inside the app", () => {
     ).toHaveAttribute("aria-selected", "true");
     await expect(dialog.getByRole("textbox", { name: "ISBN" })).toHaveValue(
       unknownIsbn,
+    );
+    await dialog
+      .getByRole("textbox", { name: "Title", exact: true })
+      .fill("Unknown book");
+    await dialog.getByRole("button", { name: "Add", exact: true }).click();
+    await expect(dialog).toBeHidden();
+    await expect(sheet(page)).toContainText("1 book added in this session");
+    await expect(sheet(page)).toContainText(
+      "Scan the barcode of a book to add it.",
     );
   });
 

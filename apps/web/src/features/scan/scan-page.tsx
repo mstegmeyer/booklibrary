@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { X, Zap } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,12 +10,14 @@ import {
   checkTorch,
   onBarcode,
   type ScanError,
+  setLightStatusBar,
   setTorch,
   startScan,
   stopScan,
 } from "../../lib/app-shell";
 import { cn } from "../../lib/cn";
 import { useErrorMessage } from "../../lib/use-error-message";
+import { AddBookDialog } from "../books/add-book-dialog";
 import { AddQuestion, fromCandidate, useAddBook } from "../books/add-book-flow";
 import { Problem } from "../books/add-book-lookup";
 import { BookCover } from "../books/book-cover";
@@ -38,7 +40,6 @@ const textButton =
  */
 export function ScanPage() {
   const { t } = useTranslation(["scan", "books"]);
-  const navigate = useNavigate();
   const errorMessage = useErrorMessage();
   const bookErrorMessage = useBookErrorMessage();
   const [camera, setCamera] = useState<"starting" | "running" | ScanError>(
@@ -49,6 +50,9 @@ export function ScanPage() {
   const [notIsbn, setNotIsbn] = useState(false);
   const [count, setCount] = useState(0);
   const [status, setStatus] = useState<string>();
+  /** The Add dialog is open, with manual entry when there is an ISBN. */
+  const [adding, setAdding] = useState<{ isbn?: string }>();
+  const isAdding = adding !== undefined;
   const lookup = useMutation({ mutationFn: lookupIsbn });
   const flow = useAddBook({
     onAdded: (message) => {
@@ -58,9 +62,13 @@ export function ScanPage() {
     },
   });
 
+  // The Add dialog covers the screen, so the camera is off while it is open.
   useEffect(() => {
+    if (isAdding) return;
     const self = Symbol();
     shown = self;
+    // The screen is dark at the top, with or without the camera.
+    setLightStatusBar(true).catch(() => {});
     startScan().then(
       () => {
         if (shown === self) setCamera("running");
@@ -78,8 +86,11 @@ export function ScanPage() {
     return () => {
       shown = undefined;
       stopScan().catch(() => {});
+      setLightStatusBar(false).catch(() => {});
+      setCamera("starting");
+      setTorchOn(undefined);
     };
-  }, []);
+  }, [isAdding]);
 
   useEffect(() => {
     if (camera !== "running") return;
@@ -113,11 +124,7 @@ export function ScanPage() {
   }, [notIsbn]);
 
   const typeIsbn = (
-    <button
-      type="button"
-      className={textButton}
-      onClick={() => navigate({ to: "/library", search: { add: true } })}
-    >
+    <button type="button" className={textButton} onClick={() => setAdding({})}>
       {t("typeIsbn")}
     </button>
   );
@@ -180,12 +187,10 @@ export function ScanPage() {
           <Problem text={t("books:lookup.notFound")}>
             <Button
               variant="secondary"
-              onClick={() =>
-                navigate({
-                  to: "/library",
-                  search: { add: true, isbn: lookup.variables },
-                })
-              }
+              onClick={() => {
+                setAdding({ isbn: lookup.variables });
+                lookup.reset();
+              }}
             >
               {t("enterByHand")}
             </Button>
@@ -293,6 +298,15 @@ export function ScanPage() {
           </Link>
         </div>
       </section>
+      <AddBookDialog
+        open={isAdding}
+        onOpenChange={(open) => !open && setAdding(undefined)}
+        isbn={adding?.isbn}
+        onAdded={(message) => {
+          setCount((count) => count + 1);
+          setStatus(message);
+        }}
+      />
     </div>
   );
 }

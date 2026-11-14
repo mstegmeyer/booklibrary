@@ -30,6 +30,7 @@ export function AddBookDialog({
   onOpenChange,
   own,
   isbn,
+  onAdded,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -37,6 +38,8 @@ export function AddBookDialog({
   own?: Exclude<OwnershipKind, "library">;
   /** Opens manual entry with this ISBN filled in. */
   isbn?: string;
+  /** Called with the confirmation for every book added. */
+  onAdded?: (message: string) => void;
 }) {
   const { t } = useTranslation(["books", "common"]);
   return (
@@ -47,7 +50,12 @@ export function AddBookDialog({
         layout="screen"
         className="max-w-[640px]"
       >
-        <AddBook own={own} isbn={isbn} onDone={() => onOpenChange(false)} />
+        <AddBook
+          own={own}
+          isbn={isbn}
+          onAdded={onAdded}
+          onDone={() => onOpenChange(false)}
+        />
       </DialogContent>
     </Dialog>
   );
@@ -56,10 +64,12 @@ export function AddBookDialog({
 function AddBook({
   own,
   isbn,
+  onAdded,
   onDone,
 }: {
   own?: OwnershipKind;
   isbn?: string;
+  onAdded?: (message: string) => void;
   onDone: () => void;
 }) {
   const { t } = useTranslation("books");
@@ -89,6 +99,7 @@ function AddBook({
     own,
     ebook,
     onAdded: (message, known) => {
+      onAdded?.(message);
       setEbook(undefined);
       if (intent === "add") return known ? setNotice(message) : onDone();
       setAdded(message);
