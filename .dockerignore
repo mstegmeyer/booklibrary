@@ -1,8 +1,9 @@
 **/node_modules
 **/dist
+**/*.test.ts
 data
 .git
 .github
 docs
-e2e
-**/*.test.ts
+e2e/*
+!e2e/package.json

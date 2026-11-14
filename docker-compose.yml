@@ -1,0 +1,15 @@
+services:
+  book-library:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - library-data:/data
+    environment:
+      # The public address, when the library is served over HTTPS through a
+      # reverse proxy. Leave it unset to accept whatever address is used.
+      # BASE_URL: https://books.example.net
+    restart: unless-stopped
+
+volumes:
+  library-data:
