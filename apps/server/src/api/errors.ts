@@ -9,6 +9,7 @@ export type ErrorCode =
   | "conflict"
   | "internal"
   | "isbn_taken"
+  | "same_book"
   | "copy_lent"
   | "location_not_empty"
   | "location_cycle"

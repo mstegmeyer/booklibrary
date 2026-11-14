@@ -4,11 +4,13 @@ import { errors, json } from "../../api/openapi.ts";
 import { PaginationQuery, page } from "../../api/pagination.ts";
 import { createRouter } from "../../api/router.ts";
 import { bookFormats, readingStatuses } from "../../db/schema.ts";
+import { ContactInput } from "../contacts/routes.ts";
+import { sourceNames } from "../metadata/source.ts";
+import { addBook } from "./add.ts";
 import { readCover, saveCover } from "./covers.ts";
 import { normalizeIsbn } from "./isbn.ts";
 import {
   addCopy,
-  createBook,
   getBook,
   librarySummary,
   listLibrary,
@@ -203,23 +205,55 @@ export const booksRoutes = router
       method: "post",
       path: "/",
       tags: ["Books"],
-      summary: "Create a book",
-      description:
-        "When an ISBN already belongs to a book: 409 `isbn_taken`, with that book's id as `error.bookId`.",
+      summary: "Add a book",
+      description: `Creates a book with at most one kind of ownership: \`copy\` (in the library), \`borrowedFrom\` (a borrowed loan from today, no copy) or \`wantToRead\` (the signed-in user's reading list, no copy). \`coverUrl\` and \`sources\` come from a metadata lookup; a cover that cannot be downloaded is skipped.
+
+When an ISBN already belongs to a book, the ownership is applied to that book (\`outcome: "known"\`). It is refused with 409 \`isbn_taken\` and the book's id as \`error.bookId\` when no ownership is given, or when a copy is to be added to a book the household already owns; add another copy through \`POST /books/{id}/copies\` instead.
+
+When the ISBNs are new but the title and first author match an existing book, it is refused with 409 \`same_book\` and that book's id as \`error.bookId\`. Send the request again with \`attachTo\` set to that id to add the ISBNs and the ownership to it (\`outcome: "attached"\`), or with \`keepSeparate: true\` to create a new book.
+
+\`statusKept\` is true when \`wantToRead\` left an existing reading status unchanged.`,
       request: {
         body: {
           content: {
             "application/json": {
-              schema: BookFields.extend({ copy: CopyFields.optional() }),
+              schema: BookFields.extend({
+                copy: CopyFields.optional(),
+                borrowedFrom: ContactInput.optional(),
+                wantToRead: z.boolean().optional(),
+                coverUrl: z.url().max(2000).optional(),
+                sources: z.array(z.enum(sourceNames)).optional(),
+                attachTo: z.string().optional(),
+                keepSeparate: z.boolean().optional(),
+              }).refine(
+                (input) =>
+                  [input.copy, input.borrowedFrom, input.wantToRead].filter(
+                    Boolean,
+                  ).length <= 1,
+                "Give at most one of copy, borrowedFrom and wantToRead",
+              ),
             },
           },
         },
       },
-      responses: { 201: json(Book, "The new book"), ...errors },
+      responses: {
+        201: json(
+          Book.extend({
+            outcome: z.enum(["created", "known", "attached"]),
+            statusKept: z.boolean(),
+          }),
+          "The book that was added to",
+        ),
+        ...errors,
+      },
     }),
     async (c) => {
-      const id = createBook(c.var.db, c.var.user.id, c.req.valid("json"));
-      return c.json(await getBook(c.var.db, id), 201);
+      const { bookId, ...added } = await addBook(
+        c.var.db,
+        c.var.user.id,
+        c.req.valid("json"),
+      );
+      return c.json({ ...(await getBook(c.var.db, bookId)), ...added }, 201);
     },
   )
   .openapi(

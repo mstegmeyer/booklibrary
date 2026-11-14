@@ -4,6 +4,7 @@ import { ErrorSchema, errors, json } from "../../api/openapi.ts";
 import { createRouter } from "../../api/router.ts";
 import { normalizeIsbn } from "../books/isbn.ts";
 import { lookupIsbn, searchBooks } from "./service.ts";
+import { sourceNames } from "./source.ts";
 
 const Candidate = z
   .object({
@@ -16,7 +17,7 @@ const Candidate = z
     publishedYear: z.number().int().nullable(),
     language: z.string().nullable().openapi({ description: "BCP 47" }),
     coverUrl: z.string().nullable(),
-    sources: z.array(z.enum(["openlibrary", "googlebooks", "dnb"])),
+    sources: z.array(z.enum(sourceNames)),
   })
   .openapi("MetadataCandidate");
 

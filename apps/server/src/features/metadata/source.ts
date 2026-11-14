@@ -1,6 +1,7 @@
 import { version } from "../../config.ts";
 
-export type SourceName = "openlibrary" | "googlebooks" | "dnb";
+export const sourceNames = ["openlibrary", "googlebooks", "dnb"] as const;
+export type SourceName = (typeof sourceNames)[number];
 
 export type Candidate = {
   isbn13: string | null;

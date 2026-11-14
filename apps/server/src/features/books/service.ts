@@ -404,7 +404,7 @@ export async function getBook(db: Db, id: string) {
   };
 }
 
-function assertIsbnsFree(db: Db, isbns: string[], bookId?: string) {
+export function assertIsbnsFree(db: Db, isbns: string[], bookId?: string) {
   if (isbns.length === 0) return;
   const taken = db
     .select({ bookId: bookIdentifier.bookId })
@@ -426,7 +426,10 @@ function assertIsbnsFree(db: Db, isbns: string[], bookId?: string) {
   }
 }
 
-function assertLocationExists(db: Db, locationId: string | null | undefined) {
+export function assertLocationExists(
+  db: Db,
+  locationId: string | null | undefined,
+) {
   if (!locationId) return;
   const found = db
     .select({ id: location.id })
@@ -446,13 +449,13 @@ const bookFields = (input: Partial<BookInput>) => ({
   language: input.language,
 });
 
-const unique = (values: string[]) => [...new Set(values)];
+export const unique = (values: string[]) => [...new Set(values)];
 
 /** Creates a book, optionally with its first copy. Returns the new id. */
 export function createBook(
   db: Db,
   userId: string,
-  input: BookInput & { copy?: CopyInput },
+  input: BookInput & { copy?: CopyInput; metadataSource?: string | null },
 ) {
   const isbns = unique(input.isbns ?? []);
   assertIsbnsFree(db, isbns);
@@ -464,6 +467,7 @@ export function createBook(
         ...bookFields(input),
         title: input.title,
         sortKey: guessSortKey(input.authors ?? []),
+        metadataSource: input.metadataSource,
         createdBy: userId,
       })
       .returning({ id: book.id })
