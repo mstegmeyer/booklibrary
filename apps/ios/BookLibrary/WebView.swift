@@ -36,6 +36,7 @@ struct WebView: UIViewRepresentable {
         let server: URL
         let shell: Shell
         let scanner = Scanner()
+        private let scanFeedback = UIImpactFeedbackGenerator(style: .medium)
         weak var webView: WKWebView?
 
         init(server: URL, shell: Shell) {
@@ -43,6 +44,7 @@ struct WebView: UIViewRepresentable {
             self.shell = shell
             super.init()
             scanner.onCode = { [weak self] code in
+                self?.scanFeedback.impactOccurred()
                 self?.webView?.callAsyncJavaScript(
                     "window.dispatchEvent(new CustomEvent('booklibrary:barcode', { detail: code }))",
                     arguments: ["code": code], in: nil, in: .page
