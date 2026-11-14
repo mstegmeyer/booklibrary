@@ -81,11 +81,48 @@ Before the first `pnpm e2e`, install the browsers:
 
 The API is described by OpenAPI at `/api/v1/openapi.json`.
 
+## iOS app
+
+`apps/ios` is a thin native shell for iPhone. You enter your server's address
+once; the app then shows that server's own web interface, so it always matches
+the server's version and you sign in exactly as in the browser. The app adds a
+native barcode scanner that the web interface uses through
+`apps/web/src/lib/app-shell.ts`. If the server cannot be reached, the app shows
+its connect screen with the reason; "Change server" in the account menu returns
+there.
+
+Addresses inside your home network (such as `http://192.168.1.20:3000` or
+`http://nas.local:3000`) may use plain HTTP; anything on the internet needs
+HTTPS. Without a scheme the app assumes `https://`.
+
+You need Xcode 26 or later. To run it in the simulator, open
+`apps/ios/BookLibrary.xcodeproj`, choose an iPhone simulator and press Run, or
+build from the command line:
+
+```sh
+xcodebuild build -project apps/ios/BookLibrary.xcodeproj -scheme BookLibrary \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
+
+In the simulator, `http://localhost:3000` reaches a server started on the same
+Mac with `pnpm build` and `NODE_ENV=production pnpm --filter @book-library/server start`.
+The simulator has no camera, so scanning only works on a device.
+
+To put the app on your iPhone, connect it, open the project in Xcode, select
+the BookLibrary target, and under Signing & Capabilities choose your own team
+(a free Apple account works for personal use). If the bundle identifier
+`dev.stegmeyer.booklibrary` is taken for your team, change it there as well.
+Do not commit the team: Xcode writes it into `project.pbxproj`, so discard
+that change before committing. Then choose your iPhone as the run destination
+and press Run; the first time, allow the developer in Settings → General → VPN
+& Device Management.
+
 ## Project structure
 
 ```
 apps/server   Hono API, Better Auth, Drizzle schema and migrations (SQLite)
 apps/web      React single-page app (Vite, TanStack Router and Query, Tailwind)
+apps/ios      iOS app shell (SwiftUI, WKWebView)
 e2e           Playwright end-to-end tests
 docs/design   Exported design boards, the visual reference for the web app
 ```
