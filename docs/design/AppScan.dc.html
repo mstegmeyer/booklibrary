@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scan barcodes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Literata:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F6B52}a:hover{color:#174F3D}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding-top: 54px; display: flex; flex-direction: column; background: #0E1110; font-family: Inter, system-ui, sans-serif; color: #FFFFFF; overflow: hidden">
+<div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 8px">
+<a href="AppLibrary.dc.html" aria-label="Close scanner" style="width: 44px; height: 44px; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</a>
+<span style="font-size: 16px; line-height: 22px; font-weight: 600">Scan books</span>
+<button aria-label="Torch" aria-pressed="false" style="width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
+</button>
+</div>
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px">
+<span style="font-size: 12px; line-height: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: #B9C0BA">Camera preview</span>
+<div aria-hidden="true" style="position: relative; width: 290px; height: 150px; box-sizing: border-box; border: 2px solid #FFFFFF; border-radius: 16px">
+<div style="position: absolute; left: 16px; right: 16px; top: 72px; height: 2px; border-radius: 1px; background: #7FD1AE"></div>
+</div>
+<p style="margin: 0; max-width: 250px; text-align: center; font-size: 14px; line-height: 20px; color: #D5D9D4">Hold the barcode on the back cover inside the frame</p>
+</div>
+<div style="padding: 20px 20px 34px; border-radius: 20px 20px 0 0; background: #FFFFFF; color: #1B1E1C; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; gap: 14px">
+<div aria-hidden="true" style="flex: 0 0 56px; height: 84px; box-sizing: border-box; padding: 7px 5px 5px 9px; border-radius: 2px 4px 4px 2px; background: #6E2F2A; color: #FFFFFF; box-shadow: inset 4px 0 0 rgba(0,0,0,0.16); font-family: Literata, Georgia, serif; font-size: 10px; line-height: 12px; font-weight: 600">The Name of the Rose</div>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: Literata, Georgia, serif; font-size: 18px; line-height: 23px; font-weight: 600">The Name of the Rose</span>
+<span style="font-size: 14px; line-height: 20px">Umberto Eco</span>
+<span style="font-size: 13px; line-height: 18px; color: #5A615C">536 pages · found on Open Library</span>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 11px; background: #ECEEE9">
+<button aria-pressed="{{ seg.ours.pressed }}" onClick="{{ pickOurs }}" style="height: 44px; padding: 0; border: 0; border-radius: 8px; background: {{ seg.ours.bg }}; color: {{ seg.ours.fg }}; font: inherit; font-size: 13px; font-weight: {{ seg.ours.w }}; cursor: pointer">In our library</button>
+<button aria-pressed="{{ seg.borrowed.pressed }}" onClick="{{ pickBorrowed }}" style="height: 44px; padding: 0; border: 0; border-radius: 8px; background: {{ seg.borrowed.bg }}; color: {{ seg.borrowed.fg }}; font: inherit; font-size: 13px; font-weight: {{ seg.borrowed.w }}; cursor: pointer">Borrowed</button>
+<button aria-pressed="{{ seg.list.pressed }}" onClick="{{ pickList }}" style="height: 44px; padding: 0; border: 0; border-radius: 8px; background: {{ seg.list.bg }}; color: {{ seg.list.fg }}; font: inherit; font-size: 13px; font-weight: {{ seg.list.w }}; cursor: pointer">Reading list only</button>
+</div>
+<div style="display: flex; flex-direction: column">
+<sc-if value="{{ isOurs }}" hint-placeholder-val="{{ true }}">
+<button style="display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 14px; border: 0; border-radius: 12px; background: #F2F3EF; color: #1B1E1C; font: inherit; text-align: left; cursor: pointer">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<span style="font-size: 12px; line-height: 16px; color: #5A615C">Shelve in</span>
+<span style="font-size: 15px; line-height: 20px; font-weight: 600">Living room › Shelf A</span>
+</span>
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A615C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</button>
+</sc-if>
+<sc-if value="{{ isBorrowed }}" hint-placeholder-val="{{ false }}">
+<button style="display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 14px; border: 0; border-radius: 12px; background: #F2F3EF; color: #1B1E1C; font: inherit; text-align: left; cursor: pointer">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<span style="font-size: 12px; line-height: 16px; color: #5A615C">Borrowed from</span>
+<span style="font-size: 15px; line-height: 20px; font-weight: 600">Choose a person</span>
+</span>
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A615C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</button>
+</sc-if>
+<sc-if value="{{ isListOnly }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; height: 56px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; background: #F2F3EF; color: #3C423E; font-size: 14px; line-height: 20px; display: flex; align-items: center">It goes on your reading list and stays out of the library.</p>
+</sc-if>
+</div>
+<button style="height: 50px; border: 0; border-radius: 12px; background: #1F6B52; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer">Add and scan next</button>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<button style="height: 44px; border: 0; border-radius: 10px; background: transparent; color: #1F6B52; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Not this book</button>
+<button style="height: 44px; border: 0; border-radius: 10px; background: transparent; color: #1F6B52; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Type an ISBN</button>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; border-top: 1px solid #E2E4DE">
+<span style="font-size: 13px; line-height: 18px; color: #5A615C">7 books added in this session</span>
+<a href="AppLibrary.dc.html" style="height: 44px; padding-left: 16px; font-size: 15px; font-weight: 600; text-decoration: none; display: flex; align-items: center">Done</a>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const mode = (this.state && this.state.mode) || 'ours';
+const seg = {};
+['ours', 'borrowed', 'list'].forEach((key) => {
+const on = key === mode;
+seg[key] = { bg: on ? '#FFFFFF' : 'transparent', fg: on ? '#1B1E1C' : '#3C423E', w: on ? 600 : 500, pressed: on ? 'true' : 'false' };
+});
+return {
+seg,
+isOurs: mode === 'ours',
+isBorrowed: mode === 'borrowed',
+isListOnly: mode === 'list',
+pickOurs: () => this.setState({ mode: 'ours' }),
+pickBorrowed: () => this.setState({ mode: 'borrowed' }),
+pickList: () => this.setState({ mode: 'list' })
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reading</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Literata:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F6B52}a:hover{color:#174F3D}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #FBFBF9; font-family: Inter, system-ui, sans-serif; color: #1B1E1C">
+<aside style="flex: 1 1 232px; background: #F2F3EF; border-right: 1px solid #E2E4DE">
+<dc-import name="Sidebar" active="reading" hint-size="232px,450px"></dc-import>
+</aside>
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 28px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div>
+<h1 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 30px; line-height: 36px; font-weight: 600">Reading</h1>
+<p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #5A615C">Mara · 23 books finished in 2026</p>
+</div>
+<button style="height: 40px; padding: 0 16px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Add a book from outside the library</button>
+</header>
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Currently reading</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px">
+<sc-for list="{{ current }}" as="c" hint-placeholder-count="2">
+<article style="display: flex; gap: 20px; padding: 20px; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF">
+<div aria-hidden="true" style="flex: 0 0 88px; height: 132px; box-sizing: border-box; padding: 10px 8px 8px 12px; border-radius: 2px 4px 4px 2px; background: {{ c.bg }}; color: #FFFFFF; box-shadow: inset 4px 0 0 rgba(0,0,0,0.16); font-family: Literata, Georgia, serif; font-size: 12px; line-height: 15px; font-weight: 600">{{ c.title }}</div>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<h3 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 18px; line-height: 24px; font-weight: 600">{{ c.title }}</h3>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5A615C">{{ c.author }} · {{ c.started }}</p>
+<sc-if value="{{ c.external }}" hint-placeholder-val="{{ false }}">
+<span style="align-self: flex-start; margin-top: 2px; padding: 1px 8px; border-radius: 10px; background: #E6E9E3; color: #3C423E; font-size: 12px; line-height: 18px; font-weight: 500">Not in the library</span>
+</sc-if>
+<div style="margin-top: auto; padding-top: 12px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+<span style="font-size: 14px; line-height: 20px; font-weight: 600">{{ c.page }}</span>
+<span style="font-size: 13px; line-height: 20px; color: #5A615C">{{ c.pct }}</span>
+</div>
+<div style="height: 8px; border-radius: 4px; background: #E2E4DE"><div style="width: {{ c.pct }}; height: 8px; border-radius: 4px; background: #1F6B52"></div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px">
+<button style="height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #1F6B52; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Update progress</button>
+<button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Finished</button>
+</div>
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Want to read</h2>
+<span style="font-size: 14px; line-height: 20px; color: #5A615C">34 books within reach · <a href="#all-wanted" style="font-weight: 600; text-decoration: none">Show all</a></span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(92px, 100%), 1fr)); grid-template-rows: auto; grid-auto-rows: 0; gap: 0 16px; overflow: hidden">
+<sc-for list="{{ wanted }}" as="w" hint-placeholder-count="10">
+<a href="WebBook.dc.html" style="min-width: 0; display: flex; flex-direction: column; color: #1B1E1C; text-decoration: none">
+<div aria-hidden="true" style="aspect-ratio: 2 / 3; box-sizing: border-box; padding: 12px 10px 10px 14px; border-radius: 2px 4px 4px 2px; background: {{ w.bg }}; color: #FFFFFF; box-shadow: inset 5px 0 0 rgba(0,0,0,0.16); font-family: Literata, Georgia, serif; font-size: 13px; line-height: 17px; font-weight: 600">{{ w.title }}</div>
+<span style="margin-top: 8px; font-size: 13px; line-height: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ w.title }}</span>
+<span style="font-size: 12px; line-height: 18px; color: #5A615C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ w.note }}</span>
+</a>
+</sc-for>
+</div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Wishlist</h2>
+<span style="font-size: 14px; line-height: 20px; color: #5A615C">27 books you do not own yet · <a href="#all-wished" style="font-weight: 600; text-decoration: none">Show all</a></span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(92px, 100%), 1fr)); grid-template-rows: auto; grid-auto-rows: 0; gap: 0 16px; overflow: hidden">
+<sc-for list="{{ wished }}" as="x" hint-placeholder-count="10">
+<a href="WebBook.dc.html" style="min-width: 0; display: flex; flex-direction: column; color: #1B1E1C; text-decoration: none">
+<div aria-hidden="true" style="aspect-ratio: 2 / 3; box-sizing: border-box; padding: 12px 10px 10px 14px; border-radius: 2px 4px 4px 2px; background: {{ x.bg }}; color: #FFFFFF; box-shadow: inset 5px 0 0 rgba(0,0,0,0.16); font-family: Literata, Georgia, serif; font-size: 13px; line-height: 17px; font-weight: 600">{{ x.title }}</div>
+<span style="margin-top: 8px; font-size: 13px; line-height: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ x.title }}</span>
+<span style="font-size: 12px; line-height: 18px; color: #5A615C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ x.author }}</span>
+</a>
+</sc-for>
+</div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Finished</h2>
+<div style="display: flex; align-items: center; gap: 16px">
+<a href="WebStats.dc.html" style="font-size: 14px; font-weight: 600; text-decoration: none">See statistics</a>
+<button style="height: 34px; padding: 0 10px 0 14px; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; cursor: pointer">2026
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+</div>
+</div>
+<div style="overflow-x: auto; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF">
+<table style="width: 100%; min-width: 600px; border-collapse: collapse; font-size: 14px; line-height: 20px">
+<thead>
+<tr>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Book</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Finished</th>
+<th scope="col" style="padding: 10px 16px; text-align: right; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Pages</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Read as</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">Stoner</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">John Williams</div></td>
+<td style="padding: 10px 16px">9 Nov 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">288</td>
+<td style="padding: 10px 16px">Library copy</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">The Dispossessed</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Ursula K. Le Guin</div></td>
+<td style="padding: 10px 16px">2 Nov 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">387</td>
+<td style="padding: 10px 16px">Library copy</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">Frankenstein</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Mary Shelley</div></td>
+<td style="padding: 10px 16px">21 Oct 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">273</td>
+<td style="padding: 10px 16px">E-book</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">A Wizard of Earthsea</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Ursula K. Le Guin</div></td>
+<td style="padding: 10px 16px">5 Oct 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">183</td>
+<td style="padding: 10px 16px">Not in the library</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">Dune</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Frank Herbert</div></td>
+<td style="padding: 10px 16px">24 Sep 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">612</td>
+<td style="padding: 10px 16px">Library copy</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">The Remains of the Day</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Kazuo Ishiguro</div></td>
+<td style="padding: 10px 16px">6 Sep 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">258</td>
+<td style="padding: 10px 16px">Library copy</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5A615C">Showing 6 of 23 · <a href="#all-finished">Show all</a></p>
+</section>
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Abandoned</h2>
+<div style="overflow-x: auto; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF">
+<table style="width: 100%; min-width: 600px; border-collapse: collapse; font-size: 14px; line-height: 20px">
+<thead>
+<tr>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Book</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Stopped</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Got to</th>
+<th scope="col" style="padding: 10px 16px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Action</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">Ulysses</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">James Joyce</div></td>
+<td style="padding: 10px 16px">14 Feb 2026</td>
+<td style="padding: 10px 16px">Page 148 of 732</td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Pick up again</button></td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">The Magic Mountain</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Thomas Mann</div></td>
+<td style="padding: 10px 16px">3 Jun 2025</td>
+<td style="padding: 10px 16px">Page 340 of 720</td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Pick up again</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+current: [
+{ title: 'The Name of the Rose', author: 'Umberto Eco', started: 'started 2 Nov', bg: '#6E2F2A', page: 'Page 212 of 536', pct: '40%', external: false },
+{ title: 'Klara and the Sun', author: 'Kazuo Ishiguro', started: 'started 28 Oct', bg: '#B4532A', page: 'Page 221 of 307', pct: '72%', external: true }
+],
+wanted: [
+{ title: 'Middlemarch', bg: '#5B3A5E', note: 'George Eliot' },
+{ title: 'Buddenbrooks', bg: '#2F4A3E', note: 'Thomas Mann' },
+{ title: 'Moby-Dick', bg: '#1F4A5C', note: 'Herman Melville' },
+{ title: 'Pride and Prejudice', bg: '#7A4458', note: 'Jane Austen' },
+{ title: 'Siddhartha', bg: '#9A6B1F', note: 'Hermann Hesse' },
+{ title: 'The Overstory', bg: '#3D5A2A', note: 'Borrowed' },
+{ title: 'Solaris', bg: '#2B3A55', note: 'Stanisław Lem' },
+{ title: 'Piranesi', bg: '#36514A', note: 'Susanna Clarke' },
+{ title: 'Anna Karenina', bg: '#6E3B3B', note: 'Leo Tolstoy' },
+{ title: 'The Brothers Karamazov', bg: '#3B3B5E', note: 'Fyodor Dostoevsky' },
+{ title: 'One Hundred Years of Solitude', bg: '#8A5A1F', note: 'Gabriel García Márquez' },
+{ title: 'Beloved', bg: '#5A2E2E', note: 'Toni Morrison' },
+{ title: 'Jane Eyre', bg: '#4A5A3A', note: 'Charlotte Brontë' },
+{ title: 'The Glass Bead Game', bg: '#2E5266', note: 'Hermann Hesse' },
+{ title: 'To the Lighthouse', bg: '#3F5E6B', note: 'Virginia Woolf' },
+{ title: 'The Count of Monte Cristo', bg: '#6B3F2A', note: 'Alexandre Dumas' },
+{ title: 'Wolf Hall', bg: '#7A3B2E', note: 'Hilary Mantel' },
+{ title: 'The Tin Drum', bg: '#A0522D', note: 'Günter Grass' },
+{ title: 'Austerlitz', bg: '#3A3F45', note: 'W. G. Sebald' },
+{ title: 'The Leopard', bg: '#7B6A4A', note: 'Giuseppe Tomasi di Lampedusa' }
+].slice(0, 12),
+wished: [
+{ title: 'Kindred', bg: '#5A2E2E', author: 'Octavia E. Butler' },
+{ title: 'Lonesome Dove', bg: '#7A5C3A', author: 'Larry McMurtry' },
+{ title: 'Gilead', bg: '#2E5266', author: 'Marilynne Robinson' },
+{ title: 'The Books of Jacob', bg: '#6B3F2A', author: 'Olga Tokarczuk' },
+{ title: 'Pachinko', bg: '#7A4458', author: 'Min Jin Lee' },
+{ title: 'The Buried Giant', bg: '#36514A', author: 'Kazuo Ishiguro' },
+{ title: 'Demon Copperhead', bg: '#8A5A1F', author: 'Barbara Kingsolver' },
+{ title: 'A Gentleman in Moscow', bg: '#2B3A55', author: 'Amor Towles' },
+{ title: 'The Shadow of the Wind', bg: '#4A4A4A', author: 'Carlos Ruiz Zafón' },
+{ title: 'Hamnet', bg: '#5B3A5E', author: "Maggie O'Farrell" },
+{ title: 'The Goldfinch', bg: '#9A6B1F', author: 'Donna Tartt' },
+{ title: 'Circe', bg: '#1F4A5C', author: 'Madeline Miller' },
+{ title: 'Station Eleven', bg: '#3F5E6B', author: 'Emily St. John Mandel' },
+{ title: 'The Sympathizer', bg: '#6E2F2A', author: 'Viet Thanh Nguyen' },
+{ title: 'Lincoln in the Bardo', bg: '#3A3F45', author: 'George Saunders' },
+{ title: 'The Night Watchman', bg: '#2F4A3E', author: 'Louise Erdrich' },
+{ title: 'Milkman', bg: '#7A3B2E', author: 'Anna Burns' },
+{ title: 'Shuggie Bain', bg: '#3B3B5E', author: 'Douglas Stuart' },
+{ title: 'Lessons in Chemistry', bg: '#A0522D', author: 'Bonnie Garmus' },
+{ title: 'Trust', bg: '#4A5A3A', author: 'Hernan Diaz' }
+].slice(0, 12)
+};
+}
+}
+</script>
+</body>
+</html>

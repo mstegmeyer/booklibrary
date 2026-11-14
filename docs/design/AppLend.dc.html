@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lend a book</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Literata:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F6B52}a:hover{color:#174F3D}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding-top: 70px; display: flex; flex-direction: column; justify-content: space-between; background: #5F6460; font-family: Inter, system-ui, sans-serif; color: #1B1E1C; overflow: hidden">
+<span style="align-self: center; font-size: 12px; line-height: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: #FFFFFF">Book screen, dimmed</span>
+<div style="padding: 10px 20px 34px; border-radius: 20px 20px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 18px">
+<span aria-hidden="true" style="align-self: center; width: 36px; height: 5px; border-radius: 3px; background: #C9CDC7"></span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 24px; line-height: 30px; font-weight: 600">Lend this book</h2>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #5A615C">The Name of the Rose · Paperback</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; line-height: 18px; font-weight: 600">Lend to</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button aria-pressed="true" style="height: 44px; padding: 0 16px; border: 1px solid #1B1E1C; border-radius: 22px; background: #1B1E1C; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">Lena K.</button>
+<button aria-pressed="false" style="height: 44px; padding: 0 16px; border: 1px solid #8A908B; border-radius: 22px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">Sophie</button>
+<button aria-pressed="false" style="height: 44px; padding: 0 16px; border: 1px solid #8A908B; border-radius: 22px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer">Tobias</button>
+<button style="height: 44px; padding: 0 16px 0 12px; border: 1px dashed #8A908B; border-radius: 22px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+New person
+</button>
+</div>
+</div>
+<button style="display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 14px; border: 0; border-radius: 12px; background: #F2F3EF; color: #1B1E1C; font: inherit; text-align: left; cursor: pointer">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<span style="font-size: 12px; line-height: 16px; color: #5A615C">Lent on</span>
+<span style="font-size: 15px; line-height: 20px; font-weight: 600">Today, 14 November</span>
+</span>
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A615C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</button>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 18px; font-weight: 600">Note (optional)
+<input type="text" style="height: 48px; box-sizing: border-box; padding: 0 14px; border: 1px solid #8A908B; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 16px; font-weight: 400; color: #1B1E1C">
+</label>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<button style="height: 50px; border: 0; border-radius: 12px; background: #1F6B52; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer">Lend to Lena K.</button>
+<a href="AppBook.dc.html" style="height: 44px; font-size: 15px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Cancel</a>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

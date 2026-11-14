@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Locations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Literata:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F6B52}a:hover{color:#174F3D}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #FBFBF9; font-family: Inter, system-ui, sans-serif; color: #1B1E1C">
+<aside style="flex: 1 1 232px; background: #F2F3EF; border-right: 1px solid #E2E4DE">
+<dc-import name="Sidebar" active="locations" hint-size="232px,450px"></dc-import>
+</aside>
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 28px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div>
+<h1 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 30px; line-height: 36px; font-weight: 600">Locations</h1>
+<p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #5A615C">Places, rooms and shelves, nested as deep as you need</p>
+</div>
+<button style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #1F6B52; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Add location</button>
+</header>
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 32px">
+<ul style="flex: 999 1 480px; min-width: 0; list-style: none; margin: 0; padding: 0; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF; overflow: hidden">
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+<li style="border-top: {{ r.line }}">
+<button aria-pressed="{{ r.pressed }}" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 44px; box-sizing: border-box; padding: 0 16px 0 {{ r.pad }}; border: 0; background: {{ r.bg }}; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: {{ r.weight }}; text-align: left; cursor: pointer">
+<sc-if value="{{ r.parent }}" hint-placeholder-val="{{ true }}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A615C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+</sc-if>
+<sc-if value="{{ r.leaf }}" hint-placeholder-val="{{ false }}">
+<span aria-hidden="true" style="width: 16px"></span>
+</sc-if>
+<span style="flex: 1; min-width: 0">{{ r.name }}</span>
+<span style="font-size: 13px; color: #5A615C; font-variant-numeric: tabular-nums">{{ r.count }}</span>
+</button>
+</li>
+</sc-for>
+</ul>
+<section style="flex: 1 1 340px; min-width: 0; box-sizing: border-box; padding: 20px; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; line-height: 18px; color: #5A615C">Home › Living room</span>
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 22px; line-height: 28px; font-weight: 600">Shelf A</h2>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<div aria-hidden="true" style="display: flex; align-items: flex-end; gap: 3px">
+<span style="width: 14px; height: 44px; border-radius: 2px; background: #6E2F2A"></span>
+<span style="width: 18px; height: 48px; border-radius: 2px; background: #8A5A1F"></span>
+<span style="width: 12px; height: 40px; border-radius: 2px; background: #3F5E6B"></span>
+<span style="width: 16px; height: 46px; border-radius: 2px; background: #6B5B4B"></span>
+<span style="width: 20px; height: 48px; border-radius: 2px; background: #6A4A2E"></span>
+<span style="width: 13px; height: 42px; border-radius: 2px; background: #2F4A3E"></span>
+<span style="width: 17px; height: 45px; border-radius: 2px; background: #5B3A5E"></span>
+</div>
+<a href="Main.dc.html" style="font-size: 14px; font-weight: 600; text-decoration: none">Show 96 books</a>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 18px; font-weight: 600">Name
+<input type="text" value="Shelf A" style="height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 400; color: #1B1E1C">
+</label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 18px; font-weight: 600">Inside
+<select style="height: 40px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 400; color: #1B1E1C">
+<option>Home › Living room</option>
+<option>Home › Study</option>
+<option>Home › Bedroom</option>
+<option>Lake house</option>
+</select>
+</label>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button style="height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: #1F6B52; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Save</button>
+<button style="height: 38px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Add a location inside</button>
+</div>
+<div style="border-top: 1px solid #E2E4DE; padding-top: 12px; display: flex; flex-direction: column; gap: 2px">
+<button style="align-self: flex-start; height: 36px; padding: 0; border: 0; background: transparent; color: #9B2C2C; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Delete location</button>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5A615C">Move its 96 books somewhere else first.</p>
+</div>
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":700}}'>
+class Component extends DCLogic {
+renderVals() {
+const tree = [
+['Home', 371, 0, true],
+['Living room', 214, 1, true],
+['Shelf A', 96, 2, false],
+['Shelf B', 118, 2, false],
+['Study', 112, 1, true],
+['Desk shelf', 112, 2, false],
+['Bedroom', 45, 1, true],
+['Nightstand', 45, 2, false],
+['Lake house', 41, 0, true],
+['Hallway shelf', 41, 1, false]
+];
+const selected = 'Shelf A';
+return {
+rows: tree.map((t, i) => {
+const on = t[0] === selected;
+return {
+name: t[0],
+count: String(t[1]),
+pad: (16 + t[2] * 24) + 'px',
+parent: t[3],
+leaf: !t[3],
+line: i === 0 ? '0' : '1px solid #E2E4DE',
+bg: on ? '#DDE9E2' : '#FFFFFF',
+weight: on || t[2] === 0 ? 600 : 400,
+pressed: on ? 'true' : 'false'
+};
+})
+};
+}
+}
+</script>
+</body>
+</html>

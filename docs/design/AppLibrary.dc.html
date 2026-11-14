@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Library on iPhone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Literata:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F6B52}a:hover{color:#174F3D}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding-top: 54px; display: flex; flex-direction: column; background: #FBFBF9; font-family: Inter, system-ui, sans-serif; color: #1B1E1C; overflow: hidden">
+<div style="padding: 0 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; justify-content: space-between; height: 44px">
+<h1 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 30px; line-height: 36px; font-weight: 600">Library</h1>
+<button aria-label="Account: Mara" style="width: 44px; height: 44px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: flex-end; cursor: pointer">
+<span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 17px; background: #1B1E1C; color: #FFFFFF; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">M</span>
+</button>
+</div>
+<label style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 10px; background: #ECEEE9; color: #5A615C">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+<input type="search" aria-label="Search the library" placeholder="Title, author or ISBN" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; color: #1B1E1C">
+</label>
+</div>
+<div style="display: flex; gap: 8px; padding: 4px 16px; overflow-x: auto">
+<button aria-pressed="true" style="flex: 0 0 auto; height: 44px; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer"><span style="height: 34px; padding: 0 14px; border-radius: 17px; background: #1B1E1C; color: #FFFFFF; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px">All <span style="color: #D5D9D4">412</span></span></button>
+<button aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer"><span style="height: 34px; padding: 0 14px; box-sizing: border-box; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font-size: 14px; font-weight: 500; display: flex; align-items: center">Home</span></button>
+<button aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer"><span style="height: 34px; padding: 0 14px; box-sizing: border-box; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font-size: 14px; font-weight: 500; display: flex; align-items: center">Lake house</span></button>
+<button aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer"><span style="height: 34px; padding: 0 14px; box-sizing: border-box; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font-size: 14px; font-weight: 500; display: flex; align-items: center">Lent out</span></button>
+<button aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer"><span style="height: 34px; padding: 0 14px; box-sizing: border-box; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font-size: 14px; font-weight: 500; display: flex; align-items: center">E-books</span></button>
+</div>
+<div style="flex: 1; min-height: 0; overflow: hidden; padding: 8px 16px 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 12px; align-content: start">
+<sc-for list="{{ books }}" as="b" hint-placeholder-count="9">
+<a href="AppBook.dc.html" style="display: flex; flex-direction: column; min-width: 0; color: #1B1E1C; text-decoration: none">
+<div style="position: relative; aspect-ratio: 2 / 3; box-sizing: border-box; padding: 10px 8px 8px 12px; border-radius: 2px 4px 4px 2px; background: {{ b.bg }}; color: #FFFFFF; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 4px 0 0 rgba(0,0,0,0.16)">
+<span style="padding-right: 14px; font-family: Literata, Georgia, serif; font-size: 13px; line-height: 16px; font-weight: 600">{{ b.title }}</span>
+<sc-if value="{{ b.lent }}" hint-placeholder-val="{{ false }}">
+<span style="align-self: flex-start; padding: 0 7px; border-radius: 9px; background: #FBEBD3; color: #8A4B08; font-size: 11px; line-height: 18px; font-weight: 600">Lent out</span>
+</sc-if>
+<sc-if value="{{ b.read }}" hint-placeholder-val="{{ false }}">
+<span style="position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; border-radius: 9px; background: #FFFFFF; color: #1F6B52; display: flex; align-items: center; justify-content: center">
+<svg role="img" aria-label="You have read this" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+</span>
+</sc-if>
+<sc-if value="{{ b.reading }}" hint-placeholder-val="{{ false }}">
+<span style="position: absolute; left: 4px; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,0.35)"><span style="display: block; width: {{ b.pct }}; height: 4px; background: #FFFFFF"></span></span>
+</sc-if>
+</div>
+<span style="margin-top: 6px; font-size: 13px; line-height: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ b.title }}</span>
+<span style="font-size: 12px; line-height: 16px; color: #5A615C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ b.author }}</span>
+</a>
+</sc-for>
+</div>
+<dc-import name="TabBar" active="library" hint-size="390px,83px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const book = (title, author, bg, extra) => Object.assign({ title, author, bg, lent: false, read: false, reading: false, pct: '0%' }, extra || {});
+return {
+books: [
+book('The Name of the Rose', 'Umberto Eco', '#6E2F2A', { reading: true, pct: '40%' }),
+book('Dune', 'Frank Herbert', '#8A5A1F', { read: true }),
+book('Momo', 'Michael Ende', '#2E4A62', { read: true }),
+book('The Left Hand of Darkness', 'Ursula K. Le Guin', '#3F5E6B', { lent: true }),
+book('Buddenbrooks', 'Thomas Mann', '#2F4A3E'),
+book('The Remains of the Day', 'Kazuo Ishiguro', '#7B6A4A', { read: true }),
+book('Solaris', 'Stanisław Lem', '#2B3A55'),
+book('Middlemarch', 'George Eliot', '#5B3A5E'),
+book('The Master and Margarita', 'Mikhail Bulgakov', '#262626', { read: true })
+]
+};
+}
+}
+</script>
+</body>
+</html>

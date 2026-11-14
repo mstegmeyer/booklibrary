@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Library list view</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Literata:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F6B52}a:hover{color:#174F3D}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #FBFBF9; font-family: Inter, system-ui, sans-serif; color: #1B1E1C">
+<aside style="flex: 1 1 232px; background: #F2F3EF; border-right: 1px solid #E2E4DE">
+<dc-import name="Sidebar" active="library" hint-size="232px,450px"></dc-import>
+</aside>
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div>
+<h1 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 30px; line-height: 36px; font-weight: 600">Library</h1>
+<p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #5A615C">412 books in 2 places · 4 lent out</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<label style="display: flex; align-items: center; gap: 8px; width: 320px; max-width: 100%; height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #5A615C">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+<input type="search" aria-label="Search the library" placeholder="Title, author or ISBN" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; color: #1B1E1C">
+</label>
+<div style="display: flex; border: 1px solid #8A908B; border-radius: 8px; overflow: hidden">
+<a href="Main.dc.html" aria-label="Grid view" style="width: 40px; height: 38px; background: #FFFFFF; color: #1B1E1C; display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+</a>
+<button aria-label="List view" aria-pressed="true" style="width: 40px; height: 38px; border: 0; background: #1B1E1C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path></svg>
+</button>
+</div>
+</div>
+</header>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<button aria-pressed="true" style="height: 34px; padding: 0 14px; border: 1px solid #1B1E1C; border-radius: 17px; background: #1B1E1C; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer">All places <span style="color: #D5D9D4">412</span></button>
+<button aria-pressed="false" style="height: 34px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer">Home <span style="color: #5A615C">371</span></button>
+<button aria-pressed="false" style="height: 34px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer">Lake house <span style="color: #5A615C">41</span></button>
+<span aria-hidden="true" style="width: 1px; height: 20px; margin: 0 8px; background: #C9CDC7"></span>
+<button style="height: 34px; padding: 0 10px 0 14px; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; cursor: pointer">Format
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+<button style="height: 34px; padding: 0 10px 0 14px; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; cursor: pointer">Availability
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+<button style="height: 34px; padding: 0 10px 0 14px; border: 1px solid #8A908B; border-radius: 17px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; cursor: pointer">My reading
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+<button style="margin-left: auto; height: 34px; padding: 0 6px 0 10px; border: 0; background: transparent; color: #1B1E1C; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; cursor: pointer">Recently added
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+</div>
+<div style="overflow-x: auto; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF">
+<div style="min-width: 760px">
+<div style="display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(0, 1.6fr) 130px 170px 64px; column-gap: 16px; padding: 10px 16px; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">
+<span>Book</span>
+<span>Location</span>
+<span>Format</span>
+<span>My reading</span>
+<span style="text-align: right">Pages</span>
+</div>
+<ul style="list-style: none; margin: 0; padding: 0">
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+<li style="border-top: 1px solid #E2E4DE">
+<a href="WebBook.dc.html" style="display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(0, 1.6fr) 130px 170px 64px; column-gap: 16px; align-items: center; min-height: 62px; box-sizing: border-box; padding: 8px 16px; color: #1B1E1C; font-size: 14px; line-height: 20px; text-decoration: none">
+<span style="display: flex; align-items: center; gap: 12px; min-width: 0">
+<span aria-hidden="true" style="flex: 0 0 28px; height: 42px; border-radius: 2px 3px 3px 2px; background: {{ r.bg }}; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16)"></span>
+<span style="min-width: 0; display: flex; flex-direction: column">
+<span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.title }}</span>
+<span style="font-size: 13px; line-height: 18px; color: #5A615C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.author }}</span>
+</span>
+</span>
+<span style="min-width: 0; display: flex; flex-direction: column; align-items: flex-start">
+<sc-if value="{{ r.shelved }}" hint-placeholder-val="{{ true }}">
+<span style="max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.where }}</span>
+</sc-if>
+<sc-if value="{{ r.lent }}" hint-placeholder-val="{{ false }}">
+<span style="padding: 1px 8px; border-radius: 10px; background: #FBEBD3; color: #8A4B08; font-size: 12px; line-height: 18px; font-weight: 500">Lent to {{ r.where }}</span>
+</sc-if>
+<sc-if value="{{ r.noShelf }}" hint-placeholder-val="{{ false }}">
+<span style="color: #5A615C">No shelf</span>
+</sc-if>
+<sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}">
+<span style="max-width: 100%; font-size: 12px; line-height: 18px; color: #5A615C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.note }}</span>
+</sc-if>
+</span>
+<span>{{ r.format }}</span>
+<span style="display: flex; align-items: center; gap: 8px">
+<sc-if value="{{ r.isRead }}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F6B52" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+</sc-if>
+<sc-if value="{{ r.hasStatus }}" hint-placeholder-val="{{ true }}">
+<span>{{ r.status }}</span>
+</sc-if>
+<sc-if value="{{ r.isReading }}" hint-placeholder-val="{{ false }}">
+<span aria-hidden="true" style="width: 48px; height: 6px; border-radius: 3px; background: #E2E4DE"><span style="display: block; width: {{ r.pct }}; height: 6px; border-radius: 3px; background: #1F6B52"></span></span>
+</sc-if>
+<sc-if value="{{ r.isNone }}" hint-placeholder-val="{{ false }}">
+<span style="color: #5A615C">No status</span>
+</sc-if>
+</span>
+<span style="text-align: right; font-variant-numeric: tabular-nums">{{ r.pages }}</span>
+</a>
+</li>
+</sc-for>
+</ul>
+</div>
+</div>
+<p style="margin: 0; text-align: center; font-size: 13px; line-height: 20px; color: #5A615C">12 of 412 shown · more load as you scroll</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+renderVals() {
+const shelf = (where, note) => ({ shelved: true, lent: false, noShelf: false, where, hasNote: Boolean(note), note: note || '' });
+const lentTo = (who) => ({ shelved: false, lent: true, noShelf: false, where: who, hasNote: false, note: '' });
+const noShelf = () => ({ shelved: false, lent: false, noShelf: true, where: '', hasNote: false, note: '' });
+const state = (status, kind, pct) => ({ status, hasStatus: kind !== 'none', isRead: kind === 'read', isReading: kind === 'reading', isNone: kind === 'none', pct: pct || '0%' });
+const read = () => state('Read', 'read');
+const want = () => state('Want to read', 'plain');
+const none = () => state('', 'none');
+const row = (title, author, bg, format, pages, place, reading) => Object.assign({ title, author, bg, format, pages: String(pages) }, place, reading);
+return {
+rows: [
+row('The Name of the Rose', 'Umberto Eco', '#6E2F2A', 'Print · E-book', 536, shelf('Living room · Shelf A', '1 more copy lent to Lena K.'), state('Reading · 40%', 'reading', '40%')),
+row('Dune', 'Frank Herbert', '#8A5A1F', 'Print', 612, shelf('Living room · Shelf A'), read()),
+row('Momo', 'Michael Ende', '#2E4A62', 'Print', 304, shelf('Study · Desk shelf'), read()),
+row('The Left Hand of Darkness', 'Ursula K. Le Guin', '#3F5E6B', 'Print', 304, lentTo('Lena K.'), none()),
+row('Buddenbrooks', 'Thomas Mann', '#2F4A3E', 'Print', 731, shelf('Living room · Shelf B'), want()),
+row('The Remains of the Day', 'Kazuo Ishiguro', '#7B6A4A', 'Print', 258, shelf('Lake house · Hallway shelf'), read()),
+row('Solaris', 'Stanisław Lem', '#2B3A55', 'E-book', 204, noShelf(), none()),
+row('Middlemarch', 'George Eliot', '#5B3A5E', 'Print', 880, shelf('Living room · Shelf B'), want()),
+row('The Master and Margarita', 'Mikhail Bulgakov', '#262626', 'Print', 412, shelf('Study · Desk shelf'), read()),
+row('Invisible Cities', 'Italo Calvino', '#A0522D', 'Print', 165, lentTo('Tobias'), none()),
+row('Piranesi', 'Susanna Clarke', '#36514A', 'Print', 272, shelf('Bedroom · Nightstand'), none()),
+row('Stoner', 'John Williams', '#6B5B4B', 'Print', 288, shelf('Living room · Shelf A'), read())
+]
+};
+}
+}
+</script>
+</body>
+</html>

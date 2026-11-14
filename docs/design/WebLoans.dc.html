@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Loans</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Literata:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F6B52}a:hover{color:#174F3D}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #FBFBF9; font-family: Inter, system-ui, sans-serif; color: #1B1E1C">
+<aside style="flex: 1 1 232px; background: #F2F3EF; border-right: 1px solid #E2E4DE">
+<dc-import name="Sidebar" active="loans" hint-size="232px,450px"></dc-import>
+</aside>
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 28px">
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div>
+<h1 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 30px; line-height: 36px; font-weight: 600">Loans</h1>
+<p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #5A615C">4 books lent out · 2 borrowed</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button style="height: 40px; padding: 0 16px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Add a borrowed book</button>
+<button style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #1F6B52; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Lend a book</button>
+</div>
+</header>
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 32px">
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Lent out</h2>
+<div style="overflow-x: auto; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF">
+<table style="width: 100%; min-width: 680px; border-collapse: collapse; font-size: 14px; line-height: 20px">
+<thead>
+<tr>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Book</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Lent to</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Since</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Goes back to</th>
+<th scope="col" style="padding: 10px 16px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Action</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="flex: 0 0 32px; height: 48px; border-radius: 2px 3px 3px 2px; background: #6E2F2A; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16)"></span><div><div style="font-weight: 600">The Name of the Rose</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Umberto Eco · Hardcover</div></div></div></td>
+<td style="padding: 10px 16px">Lena K.</td>
+<td style="padding: 10px 16px"><div>2 Oct 2026</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">43 days</div></td>
+<td style="padding: 10px 16px">Lake house · Hallway shelf</td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Mark returned</button></td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="flex: 0 0 32px; height: 48px; border-radius: 2px 3px 3px 2px; background: #4A4A4A; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16)"></span><div><div style="font-weight: 600">The Trial</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Franz Kafka</div></div></div></td>
+<td style="padding: 10px 16px">Sophie</td>
+<td style="padding: 10px 16px"><div>20 Sep 2026</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">55 days</div></td>
+<td style="padding: 10px 16px">Study · Desk shelf</td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Mark returned</button></td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="flex: 0 0 32px; height: 48px; border-radius: 2px 3px 3px 2px; background: #3F5E6B; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16)"></span><div><div style="font-weight: 600">The Left Hand of Darkness</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Ursula K. Le Guin</div></div></div></td>
+<td style="padding: 10px 16px">Lena K.</td>
+<td style="padding: 10px 16px"><div>18 Aug 2026</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">88 days</div></td>
+<td style="padding: 10px 16px">Living room · Shelf A</td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Mark returned</button></td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="flex: 0 0 32px; height: 48px; border-radius: 2px 3px 3px 2px; background: #A0522D; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16)"></span><div><div style="font-weight: 600">Invisible Cities</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Italo Calvino</div></div></div></td>
+<td style="padding: 10px 16px">Tobias</td>
+<td style="padding: 10px 16px"><div>3 May 2026</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">195 days</div></td>
+<td style="padding: 10px 16px">Living room · Shelf B</td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Mark returned</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Borrowed</h2>
+<div style="overflow-x: auto; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF">
+<table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; line-height: 20px">
+<thead>
+<tr>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Book</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Borrowed from</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Since</th>
+<th scope="col" style="padding: 10px 16px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Action</span></th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="flex: 0 0 32px; height: 48px; border-radius: 2px 3px 3px 2px; background: #B4532A; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16)"></span><div><div style="font-weight: 600">Klara and the Sun</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Kazuo Ishiguro</div></div></div></td>
+<td style="padding: 10px 16px">Sophie</td>
+<td style="padding: 10px 16px"><div>28 Oct 2026</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">17 days</div></td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Mark returned</button></td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="flex: 0 0 32px; height: 48px; border-radius: 2px 3px 3px 2px; background: #3D5A2A; box-shadow: inset 3px 0 0 rgba(0,0,0,0.16)"></span><div><div style="font-weight: 600">The Overstory</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Richard Powers</div></div></div></td>
+<td style="padding: 10px 16px">Tobias</td>
+<td style="padding: 10px 16px"><div>6 Sep 2026</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">69 days</div></td>
+<td style="padding: 10px 16px; text-align: right"><button style="height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer">Mark returned</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5A615C">Borrowed books are not part of your library. They stay in your reading history after you give them back.</p>
+</section>
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: Literata, Georgia, serif; font-size: 20px; line-height: 26px; font-weight: 600">Returned</h2>
+<div style="overflow-x: auto; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF">
+<table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; line-height: 20px">
+<thead>
+<tr>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Book</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Loan</th>
+<th scope="col" style="padding: 10px 16px; text-align: left; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Period</th>
+<th scope="col" style="padding: 10px 16px; text-align: right; font-size: 12px; line-height: 18px; font-weight: 600; color: #5A615C">Days</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">A Wizard of Earthsea</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Ursula K. Le Guin</div></td>
+<td style="padding: 10px 16px">Borrowed from Lena K.</td>
+<td style="padding: 10px 16px">20 Sep – 12 Oct 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">22</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">Dune</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Frank Herbert</div></td>
+<td style="padding: 10px 16px">Lent to Sophie</td>
+<td style="padding: 10px 16px">12 Jan – 2 Mar 2026</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">49</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">Momo</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">Michael Ende</div></td>
+<td style="padding: 10px 16px">Lent to Tobias</td>
+<td style="padding: 10px 16px">4 Nov – 20 Dec 2025</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">46</td>
+</tr>
+<tr style="border-top: 1px solid #E2E4DE">
+<td style="padding: 10px 16px"><div style="font-weight: 600">Stoner</div><div style="font-size: 13px; line-height: 18px; color: #5A615C">John Williams</div></td>
+<td style="padding: 10px 16px">Lent to Lena K.</td>
+<td style="padding: 10px 16px">1 Jun – 15 Jul 2025</td>
+<td style="padding: 10px 16px; text-align: right; font-variant-numeric: tabular-nums">44</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<section style="flex: 1 1 260px; min-width: 0; padding: 20px; border: 1px solid #E2E4DE; border-radius: 12px; background: #FFFFFF; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5A615C">People</h2>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+<li style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 16px; background: #E6E9E3; color: #1B1E1C; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">L</span>
+<div style="display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Lena K.</span><span style="font-size: 13px; line-height: 18px; color: #5A615C">Has 2 of your books</span></div>
+</li>
+<li style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 16px; background: #E6E9E3; color: #1B1E1C; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">S</span>
+<div style="display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Sophie</span><span style="font-size: 13px; line-height: 18px; color: #5A615C">Has 1 of your books · lent you 1</span></div>
+</li>
+<li style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 16px; background: #E6E9E3; color: #1B1E1C; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">T</span>
+<div style="display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Tobias</span><span style="font-size: 13px; line-height: 18px; color: #5A615C">Has 1 of your books · lent you 1</span></div>
+</li>
+</ul>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5A615C">People you lend to or borrow from are just names. They do not need an account.</p>
+<button style="align-self: flex-start; height: 36px; padding: 0 14px; border: 1px solid #8A908B; border-radius: 8px; background: #FFFFFF; color: #1B1E1C; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Add a person</button>
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
