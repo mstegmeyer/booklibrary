@@ -28,6 +28,18 @@ async function setup() {
 }
 
 describe("loans", () => {
+  it("lends to the known person when a typed name already exists", async () => {
+    const { call, addBook, lend } = await setup();
+    const dune = await addBook("Dune");
+    const momo = await addBook("Momo");
+
+    await lend(dune.copies[0]?.id ?? "", { name: "Lena K." });
+    await lend(momo.copies[0]?.id ?? "", { name: "lena k." });
+
+    const people = (await call("/contacts")).body.items;
+    expect(people).toMatchObject([{ name: "Lena K.", lent: 2 }]);
+  });
+
   it("lends a copy to a new person and lists it with where it goes back", async () => {
     const { call, addBook, lend } = await setup();
     const shelf = (await call("/locations", "POST", { name: "Shelf A" })).body;

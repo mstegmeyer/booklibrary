@@ -7,6 +7,7 @@ import {
   lt,
   or,
   type SQL,
+  sql,
 } from "drizzle-orm";
 import { ApiError } from "../../api/errors.ts";
 import { decodeCursor, toPage } from "../../api/pagination.ts";
@@ -157,9 +158,18 @@ function assertOrder(startedOn: string, endedOn: string | null) {
   }
 }
 
-/** The person's id, creating them first when they are new. */
-function contactIdOf(tx: Pick<Db, "insert">, input: ContactInput) {
+/**
+ * The person's id. A name that someone already has means that person, so
+ * typing a known name while lending does not create a double.
+ */
+function contactIdOf(tx: Pick<Db, "insert" | "select">, input: ContactInput) {
   if ("id" in input) return input.id;
+  const known = tx
+    .select({ id: contact.id })
+    .from(contact)
+    .where(sql`${contact.name} = ${input.name} collate nocase`)
+    .get();
+  if (known) return known.id;
   return tx.insert(contact).values({ name: input.name }).returning().get().id;
 }
 
