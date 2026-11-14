@@ -33,6 +33,7 @@ import {
   uploadCover,
 } from "./files.ts";
 import { normalizeIsbn } from "./isbn.ts";
+import { refreshFromCatalogue } from "./refresh.ts";
 import {
   addCopy,
   getBook,
@@ -489,6 +490,30 @@ A file of a format the book already has is refused with 409 \`format_exists\`; s
       const { id } = c.req.valid("param");
       await lookUpCover(c.var.db, id);
       await syncFiles(c.var.db, c.var.libraryDir, id, { cover: true });
+      return c.json(await getBook(c.var.db, c.var.libraryDir, id), 200);
+    },
+  )
+  .openapi(
+    createRoute({
+      method: "post",
+      path: "/{id}/lookup",
+      tags: ["Books"],
+      summary: "Update a book from the catalogues",
+      description:
+        "Looks up the book's ISBNs like `GET /metadata/isbn/{isbn}` and replaces title, subtitle, authors, description, page count, year, language, cover and genre with what the catalogues say. A field they have nothing for keeps its value, and the genre stays without a guess. With exactly one ISBN, every copy takes the binding the catalogues state. `sortAs` is guessed anew only when the authors change. The e-book files follow as for an edit. 404 `metadata_not_found` when no catalogue knows the book (or it has no ISBN), 502 `metadata_unavailable` when they could not be reached; nothing changes then.",
+      request: { params: BookParams },
+      responses: { 200: json(Book, "The updated book"), ...errors },
+    }),
+    async (c) => {
+      const { id } = c.req.valid("param");
+      const { titleOrAuthorsChanged, coverStored } = await refreshFromCatalogue(
+        c.var.db,
+        id,
+      );
+      await syncFiles(c.var.db, c.var.libraryDir, id, {
+        metadata: titleOrAuthorsChanged,
+        cover: coverStored,
+      });
       return c.json(await getBook(c.var.db, c.var.libraryDir, id), 200);
     },
   )
