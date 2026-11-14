@@ -7,7 +7,7 @@ export const DropdownMenuTrigger = Primitive.Trigger;
 export const DropdownMenuRadioGroup = Primitive.RadioGroup;
 
 const itemClass =
-  "flex h-9 cursor-pointer select-none items-center gap-2 rounded-md px-2 text-ink text-sm no-underline outline-none data-[highlighted]:bg-sidebar data-[highlighted]:text-ink";
+  "flex h-9 cursor-pointer select-none items-center gap-2 rounded-md px-2 text-ink text-sm no-underline outline-none data-[highlighted]:bg-sidebar data-[highlighted]:text-ink max-md:h-11";
 
 export function DropdownMenuContent({
   className,
