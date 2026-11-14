@@ -1,17 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
-import { EmptyState, PageHeader } from "../../components/shell/page-header";
+import { LoansPage } from "../../features/loans/loans-page";
 
 export const Route = createFileRoute("/_app/loans")({
-  component: Page,
+  component: LoansPage,
 });
-
-function Page() {
-  const { t } = useTranslation();
-  return (
-    <>
-      <PageHeader title={t("nav.loans")} />
-      <EmptyState>{t("pages.empty")}</EmptyState>
-    </>
-  );
-}
