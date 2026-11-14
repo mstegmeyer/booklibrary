@@ -279,6 +279,7 @@ describe("books", () => {
           `/books?sort=${sort}&limit=3${cursor ? `&cursor=${cursor}` : ""}`,
         );
         expect(body.items.length).toBeLessThanOrEqual(3);
+        expect(body.total).toBe(7);
         seen.push(...body.items.map((b: { title: string }) => b.title));
         cursor = body.nextCursor ?? "";
       } while (cursor);

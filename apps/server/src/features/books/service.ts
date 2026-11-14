@@ -153,7 +153,10 @@ function after(keys: SortKey[], dir: "asc" | "desc", values: unknown[]) {
   );
 }
 
-/** The books the household owns, filtered and sorted for the Library. */
+/**
+ * The books the household owns, filtered and sorted for the Library. `total`
+ * counts every match, not just this page.
+ */
 export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
   const sort = sorts[query.sort ?? "added"];
   const conditions: (SQL | undefined)[] = [ownedBook];
@@ -207,6 +210,7 @@ export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
   } else if (query.reading) {
     conditions.push(sql`${currentReadingStatus(userId)} = ${query.reading}`);
   }
+  const total = await db.$count(book, and(...conditions));
   if (query.cursor) {
     conditions.push(after(sort.keys, sort.dir, decodeCursor(query.cursor)));
   }
@@ -232,6 +236,7 @@ export async function listLibrary(db: Db, userId: string, query: LibraryQuery) {
   return {
     items: await toLibraryItems(db, userId, page.items),
     nextCursor: page.nextCursor,
+    total,
   };
 }
 

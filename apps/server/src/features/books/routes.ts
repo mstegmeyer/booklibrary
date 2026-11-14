@@ -182,7 +182,10 @@ export const booksRoutes = router
         "Books the household owns (at least one copy), filtered and sorted.",
       request: { query: LibraryQuery },
       responses: {
-        200: json(page(LibraryItem), "A page of books"),
+        200: json(
+          page(LibraryItem).extend({ total: z.number().int() }),
+          "A page of books and the number of all matches",
+        ),
         ...errors,
       },
     }),
