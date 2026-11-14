@@ -9,4 +9,4 @@ e2e/playwright-report/
 e2e/test-results/
 
 # Agent worktrees
-.claude/worktrees/
+.claude/
