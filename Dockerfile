@@ -19,15 +19,16 @@ RUN pnpm build \
 FROM node:${NODE_VERSION}-alpine
 ENV NODE_ENV=production \
     DATA_DIR=/data \
+    LIBRARY_DIR=/library \
     PORT=3000
 WORKDIR /app
 COPY --from=build /out/server/node_modules apps/server/node_modules
 COPY --from=build /app/apps/server/dist apps/server/dist
 COPY --from=build /app/apps/server/drizzle apps/server/drizzle
 COPY --from=build /app/apps/web/dist apps/web/dist
-RUN mkdir /data && chown node:node /data
+RUN mkdir /data /library && chown node:node /data /library
 USER node
-VOLUME /data
+VOLUME /data /library
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --start-interval=2s \
   CMD ["node", "-e", "fetch(`http://localhost:${process.env.PORT}/api/v1/health`).then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]

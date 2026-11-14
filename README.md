@@ -19,16 +19,23 @@ after that there is no public sign-up, and the admin adds household members on
 the Users page.
 
 All data lives in the `/data` volume (`library.db` and the generated auth
-secret). Back up that volume.
+secret). E-book files live in the `/library` volume, organised as
+`<author>/<title>.epub` (or `.pdf`), with the author written surname first as
+the book's "Sort as" value. The server owns that folder: it renames and moves
+files when a book's title or "Sort as" changes, and writes title, authors and
+cover into EPUBs that are not copy-protected. The folder may be synced
+elsewhere, for example to an e-reader, but nothing else should write into it.
+Back up both volumes.
 
 ### Configuration
 
-| Variable      | Default                      | Purpose                                                                                                                                               |
-| ------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`        | `3000`                       | HTTP port                                                                                                                                             |
-| `DATA_DIR`    | `./data` (`/data` in Docker) | Where the database lives                                                                                                                              |
-| `AUTH_SECRET` | generated into `DATA_DIR`    | Signs sessions                                                                                                                                        |
-| `BASE_URL`    | unset                        | Public address, such as `https://books.example.net`. Set it behind an HTTPS reverse proxy; then only that address is accepted and cookies are secure. |
+| Variable      | Default                            | Purpose                                                                                                                                               |
+| ------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`        | `3000`                             | HTTP port                                                                                                                                             |
+| `DATA_DIR`    | `./data` (`/data` in Docker)       | Where the database lives; keep it on a local disk                                                                                                     |
+| `LIBRARY_DIR` | `./library` (`/library` in Docker) | Where the e-book files live; may be a synced or network folder                                                                                        |
+| `AUTH_SECRET` | generated into `DATA_DIR`          | Signs sessions                                                                                                                                        |
+| `BASE_URL`    | unset                              | Public address, such as `https://books.example.net`. Set it behind an HTTPS reverse proxy; then only that address is accepted and cookies are secure. |
 
 Sign-in and the other account requests are rate limited per client address.
 Without `BASE_URL` that is the address of the connection. With `BASE_URL` the

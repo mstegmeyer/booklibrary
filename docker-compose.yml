@@ -5,6 +5,9 @@ services:
       - "3000:3000"
     volumes:
       - library-data:/data
+      # The e-book files, as <author>/<title>.epub. This may be a host folder
+      # that is synced elsewhere, e.g. ./Books:/library.
+      - library-files:/library
     environment:
       # The public address, when the library is served over HTTPS through a
       # reverse proxy. Leave it unset to accept whatever address is used.
@@ -13,3 +16,4 @@ services:
 
 volumes:
   library-data:
+  library-files:

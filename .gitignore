@@ -8,5 +8,6 @@ apps/web/src/routeTree.gen.ts
 e2e/playwright-report/
 e2e/test-results/
 
-# Agent worktrees
+/library/
+apps/server/library/
 .claude/
