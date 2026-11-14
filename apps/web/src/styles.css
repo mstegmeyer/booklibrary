@@ -24,6 +24,18 @@
   --font-serif: "Literata Variable", Georgia, serif;
 }
 
+/*
+ * iOS zooms into a field that gets focus when its text is smaller than 16px.
+ * Outside any layer, so it wins over the utilities on every field.
+ */
+@media (width < 48rem), (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 @layer base {
   body {
     @apply bg-ground font-sans text-ink antialiased;
