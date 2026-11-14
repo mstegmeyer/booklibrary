@@ -116,6 +116,8 @@ export const book = sqliteTable(
       .$type<string[]>()
       .notNull()
       .default(sql`'[]'`),
+    // "Eco, Umberto": the first author as the Library sorts by author.
+    sortKey: text("sort_key").notNull().default(""),
     description: text("description"),
     pageCount: integer("page_count"),
     publishedYear: integer("published_year"),

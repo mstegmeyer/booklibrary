@@ -1,0 +1,1 @@
+ALTER TABLE `book` ADD `sort_key` text DEFAULT '' NOT NULL;
