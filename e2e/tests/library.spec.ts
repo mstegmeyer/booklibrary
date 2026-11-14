@@ -1,5 +1,38 @@
+import type { Locator } from "@playwright/test";
 import { createBook, createLocation } from "../catalogue.ts";
 import { expect, setupAdmin, test } from "../fixtures.ts";
+import { setStatus } from "../reading.ts";
+
+/** The lines the title on a placeholder cover is set in. */
+function coverTitleLines(cover: Locator) {
+  return cover
+    .locator("span[aria-hidden]")
+    .first()
+    .evaluate((title) => {
+      const text = document.createRange();
+      text.selectNodeContents(title);
+      return new Set([...text.getClientRects()].map((line) => line.top)).size;
+    });
+}
+
+test("a long one-word title is not cut on its placeholder cover", async ({
+  page,
+}) => {
+  await setupAdmin(page);
+  const book = await createBook(page, { title: "Buddenbrooks", copy: {} });
+  await setStatus(page.request, book.id, "reading");
+
+  await page.goto("/library");
+  const card = page.getByRole("link", { name: /Buddenbrooks/ });
+  await expect.poll(() => coverTitleLines(card)).toBe(1);
+
+  await page.goto("/reading");
+  const reading = page.getByRole("region", { name: "Currently reading" });
+  await expect(reading).toContainText("Buddenbrooks");
+  await expect
+    .poll(() => coverTitleLines(reading.getByRole("listitem")))
+    .toBe(1);
+});
 
 test("adding a book by hand shows it in the grid", async ({ page }) => {
   await setupAdmin(page);

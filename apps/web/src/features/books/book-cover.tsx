@@ -1,6 +1,35 @@
 import type { ReactNode } from "react";
 import { cn } from "../../lib/cn";
 
+/**
+ * Shrinks the title until its longest word fits on a line. Words are never
+ * broken: a cut wherever the cover ends leaves fragments like "Buddenbrook" +
+ * "s", and hyphenation depends on the browser knowing the title's language.
+ */
+function fitTitle(title: HTMLElement | null) {
+  const box = title?.parentElement;
+  if (!title || !box) return;
+  const fit = () => {
+    title.style.zoom = "";
+    const style = getComputedStyle(title);
+    const available =
+      title.clientWidth -
+      Number.parseFloat(style.paddingLeft) -
+      Number.parseFloat(style.paddingRight);
+    // With words unbroken, the widest line is the longest word if it overflows.
+    const text = document.createRange();
+    text.selectNodeContents(title);
+    // The range is measured after transforms, such as a dialog's opening scale.
+    const scale = title.getBoundingClientRect().width / title.offsetWidth;
+    const ratio = (available * scale) / text.getBoundingClientRect().width;
+    if (ratio < 1) title.style.zoom = String(Math.floor(ratio * 100) / 100);
+  };
+  const observer = new ResizeObserver(fit);
+  observer.observe(box);
+  document.fonts.ready.then(fit);
+  return () => observer.disconnect();
+}
+
 /** Cloth colours for books without a cover image. */
 export const coverColors = [
   "#6e2f2a",
@@ -95,11 +124,10 @@ export function BookCover({
       ) : (
         <>
           <span
+            key={title}
+            ref={fitTitle}
             aria-hidden
-            className={cn(
-              "font-semibold font-serif [overflow-wrap:anywhere]",
-              style.title,
-            )}
+            className={cn("font-semibold font-serif", style.title)}
           >
             {title}
           </span>
