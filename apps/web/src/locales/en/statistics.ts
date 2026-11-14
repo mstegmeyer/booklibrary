@@ -32,6 +32,10 @@ const statistics = {
     allTime_other: "All time: {{count}} books.",
     untilToday: "{{year}} counts up to today, {{date}}.",
   },
+  byGenre: {
+    title: "By genre",
+    none: "No books finished in {{year}}.",
+  },
 };
 
 export default statistics;

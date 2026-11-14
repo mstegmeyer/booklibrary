@@ -6,6 +6,7 @@ import { PageHeader } from "../../components/shell/page-header";
 import { cn } from "../../lib/cn";
 import { useFormat } from "../../lib/format";
 import { sessionQuery } from "../../lib/session";
+import { type GenreRef, useGenreName } from "../genres/queries";
 import { Card } from "./card";
 import { MonthChart } from "./month-chart";
 import { membersQuery, statisticsQuery } from "./queries";
@@ -161,6 +162,9 @@ export function StatisticsPage() {
                   })}`}
               </p>
             </Card>
+            <Card title={t("byGenre.title")}>
+              <ByGenre rows={stats.byGenre} year={year} />
+            </Card>
           </div>
         </div>
       )}
@@ -229,13 +233,52 @@ function Tile({
   );
 }
 
-function PerYear({ rows }: { rows: { label: string; books: number }[] }) {
+function ByGenre({
+  rows,
+  year,
+}: {
+  rows: { genre: GenreRef | null; books: number }[];
+  year: number;
+}) {
+  const { t } = useTranslation(["statistics", "genres"]);
+  const genreName = useGenreName();
+  if (rows.length === 0) {
+    return (
+      <p className="text-[13px] text-ink-muted leading-5">
+        {t("byGenre.none", { year })}
+      </p>
+    );
+  }
+  return (
+    <PerYear
+      labelClassName="w-[40%] max-w-44 break-words"
+      rows={rows.map((row) => ({
+        id: row.genre?.id ?? "none",
+        label: row.genre ? genreName(row.genre) : t("genres:none"),
+        books: row.books,
+      }))}
+    />
+  );
+}
+
+function PerYear({
+  rows,
+  labelClassName = "min-w-10 tabular-nums",
+}: {
+  rows: { id?: string; label: string; books: number }[];
+  labelClassName?: string;
+}) {
   const max = Math.max(1, ...rows.map((row) => row.books));
   return (
     <dl className="flex flex-col gap-2.5">
       {rows.map((row) => (
-        <div key={row.label} className="flex items-center gap-3">
-          <dt className="min-w-10 text-[13px] text-ink-muted tabular-nums leading-5">
+        <div key={row.id ?? row.label} className="flex items-center gap-3">
+          <dt
+            className={cn(
+              "shrink-0 text-[13px] text-ink-muted leading-5",
+              labelClassName,
+            )}
+          >
             {row.label}
           </dt>
           <dd className="flex min-w-0 flex-1 items-center gap-2">

@@ -34,4 +34,8 @@ export default {
     allTime_other: "Insgesamt {{count}} Bücher gelesen.",
     untilToday: "{{year}} zählt bis heute, {{date}}.",
   },
+  byGenre: {
+    title: "Nach Genre",
+    none: "{{year}} noch keine Bücher gelesen.",
+  },
 } satisfies Translation<"statistics">;
