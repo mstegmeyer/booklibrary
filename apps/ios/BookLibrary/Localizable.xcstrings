@@ -1,0 +1,54 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Book Library" : {
+      "shouldTranslate" : false
+    },
+    "Connect" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbinden" } }
+      }
+    },
+    "Connect to your library" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mit deiner Bibliothek verbinden" } }
+      }
+    },
+    "Enter the address of the server that hosts your library." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gib die Adresse des Servers ein, auf dem deine Bibliothek läuft." } }
+      }
+    },
+    "Enter the address of your server, for example books.example.net." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gib die Adresse deines Servers ein, zum Beispiel books.example.net." } }
+      }
+    },
+    "Server address" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Serveradresse" } }
+      }
+    },
+    "The server at this address is not a Book Library server." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unter dieser Adresse läuft kein Book-Library-Server." } }
+      }
+    },
+    "The server cannot be reached. Check the address and that the server is running." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Der Server ist nicht erreichbar. Prüfe die Adresse und ob der Server läuft." } }
+      }
+    },
+    "This address is outside your home network, so the connection needs HTTPS. Use an address that starts with https://." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Diese Adresse liegt außerhalb deines Heimnetzes, deshalb ist HTTPS nötig. Verwende eine Adresse, die mit https:// beginnt." } }
+      }
+    },
+    "Try again" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erneut versuchen" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

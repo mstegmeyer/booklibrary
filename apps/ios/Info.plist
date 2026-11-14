@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Plain HTTP only to unqualified names, .local names and IP addresses.
+	     The connect screen narrows IP addresses to private ranges. -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Book Library uses the camera to scan the barcodes on your books.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Book Library connects to your library's server when it runs in your home network.</string>
+</dict>
+</plist>
