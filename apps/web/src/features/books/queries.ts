@@ -60,6 +60,9 @@ export const fileUrl = (bookId: string, fileId: string) =>
 export const lookUpCover = (bookId: string) =>
   unwrap(api.books[":id"].cover.lookup.$post({ param: { id: bookId } }));
 
+export const updateFromCatalogue = (bookId: string) =>
+  unwrap(api.books[":id"].lookup.$post({ param: { id: bookId } }));
+
 export async function uploadCover(bookId: string, file: File) {
   return unwrap(
     api.books[":id"].cover.$put({ param: { id: bookId }, form: { file } }),

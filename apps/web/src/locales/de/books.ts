@@ -181,6 +181,13 @@ export default {
     manual: "Von Hand eingegeben",
     none: "Keine",
   },
+  update: {
+    action: "Aus dem Katalog aktualisieren",
+    title: "Aus dem Katalog aktualisieren?",
+    text: "Titel, Autoren und die übrigen Angaben, das Cover, das Genre und das Format der Exemplare werden durch die Angaben der Kataloge ersetzt. Eigene Korrekturen gehen dabei verloren.",
+    submit: "Aktualisieren",
+    notFound: "Die Kataloge kennen dieses Buch nicht.",
+  },
   edit: {
     title: "Angaben bearbeiten",
     isbnTaken: "Ein anderes Buch hat bereits diese ISBN.",

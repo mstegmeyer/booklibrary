@@ -176,6 +176,13 @@ const books = {
     manual: "Entered by hand",
     none: "None",
   },
+  update: {
+    action: "Update from the catalogue",
+    title: "Update from the catalogue?",
+    text: "Title, authors and the other details, the cover, the genre and the copies' format will be replaced by what the catalogues say. Corrections made by hand are lost.",
+    submit: "Update",
+    notFound: "The catalogues do not know this book.",
+  },
   edit: {
     title: "Edit details",
     isbnTaken: "Another book already has this ISBN.",

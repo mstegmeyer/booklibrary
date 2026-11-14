@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "../../components/shell/page-header";
@@ -30,6 +30,7 @@ import {
   lookUpCover,
   refreshCatalogue,
 } from "./queries";
+import { UpdateFromCatalogueDialog } from "./update-dialog";
 
 const rowButton =
   "h-11 rounded-[10px] px-3.5 text-[15px] md:h-9 md:rounded-lg md:text-sm";
@@ -63,13 +64,29 @@ export function BookPage() {
           <ChevronLeft aria-hidden size={24} />
           {t("page.library")}
         </Link>
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          className="h-11 cursor-pointer px-2 font-medium text-accent text-base"
-        >
-          {t("page.edit")}
-        </button>
+        <div className="flex items-center">
+          {book.isbns.length > 0 && (
+            <UpdateFromCatalogueDialog
+              bookId={book.id}
+              trigger={
+                <button
+                  type="button"
+                  aria-label={t("update.action")}
+                  className="flex size-11 cursor-pointer items-center justify-center text-accent"
+                >
+                  <RefreshCw aria-hidden size={20} />
+                </button>
+              }
+            />
+          )}
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="h-11 cursor-pointer px-2 font-medium text-accent text-base"
+          >
+            {t("page.edit")}
+          </button>
+        </div>
       </div>
       <nav
         aria-label={t("page.breadcrumb")}
@@ -155,6 +172,16 @@ function BookHeader({
           >
             {t("page.editDetails")}
           </Button>
+          {book.isbns.length > 0 && (
+            <UpdateFromCatalogueDialog
+              bookId={book.id}
+              trigger={
+                <Button variant="secondary" className="h-[38px] px-3.5">
+                  {t("update.action")}
+                </Button>
+              }
+            />
+          )}
         </div>
       </div>
     </div>
