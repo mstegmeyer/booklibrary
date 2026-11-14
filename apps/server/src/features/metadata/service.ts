@@ -66,9 +66,10 @@ async function askAll<T>(list: Source[], ask: (source: Source) => Promise<T>) {
   };
 }
 
-/** Fills the fields `base` lacks from `extra`. */
+/** Fills the fields `base` lacks from `extra`; the categories of both count. */
 export function merge(base: Candidate, extra: Candidate): Candidate {
-  const merged: Candidate = {
+  const categories = [...base.categories, ...extra.categories];
+  const merged: Omit<Candidate, "categories"> = {
     isbn13: base.isbn13 ?? extra.isbn13,
     title: base.title,
     subtitle: base.subtitle ?? extra.subtitle,
@@ -80,12 +81,12 @@ export function merge(base: Candidate, extra: Candidate): Candidate {
     coverUrl: base.coverUrl ?? extra.coverUrl,
     sources: base.sources,
   };
-  const contributed = (Object.keys(merged) as (keyof Candidate)[]).some(
+  const contributed = (Object.keys(merged) as (keyof typeof merged)[]).some(
     (key) => merged[key] !== base[key],
   );
   return contributed
-    ? { ...merged, sources: [...base.sources, ...extra.sources] }
-    : merged;
+    ? { ...merged, categories, sources: [...base.sources, ...extra.sources] }
+    : { ...merged, categories };
 }
 
 export async function lookupIsbn(

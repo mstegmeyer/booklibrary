@@ -1,0 +1,36 @@
+{
+  "ISBN:9781640973985": {
+    "url": "http://openlibrary.org/books/OL34146149M/Fodor's_San_Francisco",
+    "key": "/books/OL34146149M",
+    "title": "Fodor's San Francisco",
+    "subtitle": "With the Best of Napa and Sonoma",
+    "authors": [
+      {
+        "url": "http://openlibrary.org/authors/OL6822463A/Fodor's_Travel_Guides_(Firm)",
+        "name": "Fodor's Travel Guides (Firm)"
+      }
+    ],
+    "number_of_pages": 400,
+    "identifiers": {
+      "isbn_13": ["9781640973985"],
+      "openlibrary": ["OL34146149M"]
+    },
+    "publishers": [
+      {
+        "name": "Fodor's Travel"
+      }
+    ],
+    "publish_date": "2021",
+    "subjects": [
+      {
+        "name": "Travel",
+        "url": "https://openlibrary.org/subjects/travel"
+      }
+    ],
+    "cover": {
+      "small": "https://covers.openlibrary.org/b/id/14041408-S.jpg",
+      "medium": "https://covers.openlibrary.org/b/id/14041408-M.jpg",
+      "large": "https://covers.openlibrary.org/b/id/14041408-L.jpg"
+    }
+  }
+}

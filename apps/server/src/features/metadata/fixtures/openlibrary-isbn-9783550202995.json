@@ -1,0 +1,75 @@
+{
+  "ISBN:9783550202995": {
+    "url": "http://openlibrary.org/books/OL52947467M/Views",
+    "key": "/books/OL52947467M",
+    "title": "Views",
+    "authors": [
+      {
+        "url": "http://openlibrary.org/authors/OL7210658A/Marc-Uwe_Kling",
+        "name": "Marc-Uwe Kling"
+      }
+    ],
+    "identifiers": {
+      "isbn_13": ["9783550202995"],
+      "openlibrary": ["OL52947467M"]
+    },
+    "publishers": [
+      {
+        "name": "Ullstein Buchverlage"
+      }
+    ],
+    "publish_places": [
+      {
+        "name": "Berlin"
+      }
+    ],
+    "publish_date": "2024-06-27",
+    "subjects": [
+      {
+        "name": "Thriller",
+        "url": "https://openlibrary.org/subjects/thriller"
+      },
+      {
+        "name": "Fiction",
+        "url": "https://openlibrary.org/subjects/fiction"
+      },
+      {
+        "name": "Mystery",
+        "url": "https://openlibrary.org/subjects/mystery"
+      },
+      {
+        "name": "Crime",
+        "url": "https://openlibrary.org/subjects/crime"
+      },
+      {
+        "name": "German literature",
+        "url": "https://openlibrary.org/subjects/german_literature"
+      }
+    ],
+    "subject_places": [
+      {
+        "name": "Berlin (Germany)",
+        "url": "https://openlibrary.org/subjects/place:berlin_(germany)"
+      }
+    ],
+    "links": [
+      {
+        "title": "goodreads.com",
+        "url": "https://www.goodreads.com/book/show/210822100-views"
+      },
+      {
+        "title": "Publisher Website",
+        "url": "https://www.ullstein.de/werke/views/hardcover/9783550202995"
+      },
+      {
+        "title": "Deutschlandfunk Kultur review",
+        "url": "https://www.deutschlandfunkkultur.de/marc-uwe-kling-ueber-eine-gesellschaft-die-aus-den-fugen-geraten-ist-dlf-kultur-98e4b7bb-100.html"
+      }
+    ],
+    "cover": {
+      "small": "https://covers.openlibrary.org/b/id/14651318-S.jpg",
+      "medium": "https://covers.openlibrary.org/b/id/14651318-M.jpg",
+      "large": "https://covers.openlibrary.org/b/id/14651318-L.jpg"
+    }
+  }
+}

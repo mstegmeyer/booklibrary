@@ -1,0 +1,30 @@
+{
+  "ISBN:9783442774241": {
+    "url": "http://openlibrary.org/books/OL61447857M/Zwischen_Welten",
+    "key": "/books/OL61447857M",
+    "title": "Zwischen Welten",
+    "authors": [
+      {
+        "url": "http://openlibrary.org/authors/OL7413462A/Simon_Urban",
+        "name": "Simon Urban"
+      }
+    ],
+    "number_of_pages": 444,
+    "by_statement": "Juli Zeh",
+    "identifiers": {
+      "isbn_13": ["9783442774241"],
+      "openlibrary": ["OL61447857M"]
+    },
+    "publishers": [
+      {
+        "name": "Btb-Verlag"
+      }
+    ],
+    "publish_date": "2024",
+    "cover": {
+      "small": "https://covers.openlibrary.org/b/id/15201367-S.jpg",
+      "medium": "https://covers.openlibrary.org/b/id/15201367-M.jpg",
+      "large": "https://covers.openlibrary.org/b/id/15201367-L.jpg"
+    }
+  }
+}

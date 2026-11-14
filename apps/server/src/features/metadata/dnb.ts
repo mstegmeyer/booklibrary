@@ -66,6 +66,11 @@ function parseRecord(record: Element): Candidate | null {
       first(record, "264", "c") ?? first(record, "260", "c"),
     ),
     language: languageOf(first(record, "041", "a")),
+    // Subject headings, genre terms and the publisher's keywords, among them
+    // the product group as "(VLB-WN)…" and BISAC codes.
+    categories: ["650", "655", "689", "653"].flatMap((tag) =>
+      datafields(record, tag).flatMap((field) => values(field, "a")),
+    ),
   });
 }
 

@@ -1,0 +1,12 @@
+{
+  "ISBN:9783749902484": {
+    "url": "http://openlibrary.org/books/OL49809078M/Bridgerton_-_Der_Duke_und_ich",
+    "key": "/books/OL49809078M",
+    "title": "Bridgerton - Der Duke und ich",
+    "identifiers": {
+      "isbn_10": ["3749902488"],
+      "isbn_13": ["9783749902484"],
+      "openlibrary": ["OL49809078M"]
+    }
+  }
+}

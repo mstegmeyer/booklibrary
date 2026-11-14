@@ -15,6 +15,7 @@ type Book = {
   number_of_pages?: number;
   publish_date?: string;
   cover?: { large?: string };
+  subjects?: { name: string }[];
 };
 
 type Edition = {
@@ -49,6 +50,7 @@ export function parseBook(
     pageCount: book.number_of_pages,
     publishedYear: yearOf(book.publish_date),
     coverUrl: book.cover?.large,
+    categories: book.subjects?.map((subject) => subject.name),
   });
 }
 

@@ -24,7 +24,16 @@ describe("Open Library", () => {
       language: null,
       coverUrl: "https://covers.openlibrary.org/b/id/15152634-L.jpg",
       sources: ["openlibrary"],
+      categories: [],
     });
+  });
+
+  it("takes the subjects as categories", () => {
+    const book = parseBook(
+      json("openlibrary-isbn-9781640973985.json"),
+      "9781640973985",
+    );
+    expect(book?.categories).toEqual(["Travel"]);
   });
 
   it("returns null for an unknown ISBN", () => {
@@ -45,6 +54,7 @@ describe("Open Library", () => {
       language: "de",
       coverUrl: "https://covers.openlibrary.org/b/id/8782586-L.jpg",
       sources: ["openlibrary"],
+      categories: [],
     });
   });
 });
@@ -64,12 +74,22 @@ describe("Google Books", () => {
         coverUrl:
           "https://books.google.com/books/content?id=fixture-mr-fox&printsec=frontcover&img=1&zoom=1&source=gbs_api",
         sources: ["googlebooks"],
+        categories: [],
       },
     ]);
   });
 
   it("parses an empty result", () => {
     expect(parseVolumes(json("googlebooks-empty.json"))).toEqual([]);
+  });
+
+  it("takes the categories", () => {
+    const [volume] = parseVolumes({
+      items: [
+        { volumeInfo: { title: "Born a Crime", categories: ["Biography"] } },
+      ],
+    });
+    expect(volume?.categories).toEqual(["Biography"]);
   });
 });
 
@@ -87,6 +107,7 @@ describe("DNB", () => {
         language: "de",
         coverUrl: null,
         sources: ["dnb"],
+        categories: [],
       },
     ]);
   });
@@ -108,5 +129,22 @@ describe("DNB", () => {
 
   it("parses an empty result", () => {
     expect(parseRecords(fixture("dnb-empty.xml"))).toEqual([]);
+  });
+
+  it("collects subject headings, genre terms and keywords as categories", () => {
+    const [record] = parseRecords(fixture("dnb-isbn-9783442492114.xml"));
+    expect(record?.categories).toEqual(
+      expect.arrayContaining([
+        "Historische Romane und Erzählungen",
+        "Krimis, Thriller, Spionage",
+        "Historischer Roman",
+        "(VLB-WN)2121: Taschenbuch / Belletristik/Krimis, Thriller, Spionage",
+        "(BISAC Subject Heading)FIC014000",
+      ]),
+    );
+    const [cookbook] = parseRecords(fixture("dnb-isbn-9783897484832.xml"));
+    expect(cookbook?.categories).toEqual(
+      expect.arrayContaining(["Kochbuch", "Kindersachbuch"]),
+    );
   });
 });

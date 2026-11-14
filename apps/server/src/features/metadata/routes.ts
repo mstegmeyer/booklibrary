@@ -3,6 +3,7 @@ import { ApiError } from "../../api/errors.ts";
 import { ErrorSchema, errors, json } from "../../api/openapi.ts";
 import { createRouter } from "../../api/router.ts";
 import { normalizeIsbn } from "../books/isbn.ts";
+import { withGuesses } from "./guesses.ts";
 import { lookupIsbn, searchBooks } from "./service.ts";
 import { sourceNames } from "./source.ts";
 
@@ -18,6 +19,13 @@ export const Candidate = z
     language: z.string().nullable().openapi({ description: "BCP 47" }),
     coverUrl: z.string().nullable(),
     sources: z.array(z.enum(sourceNames)),
+    bookId: z.string().nullable().openapi({
+      description: "The book that already has this ISBN",
+    }),
+    genreId: z.string().nullable().openapi({
+      description:
+        "The built-in genre the sources' categories point to; null when they leave it unclear or `bookId` is set",
+    }),
   })
   .openapi("MetadataCandidate");
 
@@ -60,7 +68,7 @@ export const metadataRoutes = createRouter()
           "No source knows this ISBN",
         );
       }
-      return c.json(result, 200);
+      return c.json(withGuesses(c.var.db, result), 200);
     },
   )
   .openapi(
@@ -81,6 +89,9 @@ export const metadataRoutes = createRouter()
     async (c) => {
       const result = await searchBooks(c.req.valid("query").q);
       if (result === "unavailable") throw unavailableError();
-      return c.json({ items: result }, 200);
+      return c.json(
+        { items: result.map((found) => withGuesses(c.var.db, found)) },
+        200,
+      );
     },
   );

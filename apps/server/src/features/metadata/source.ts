@@ -20,6 +20,8 @@ export type Candidate = {
   language: string | null;
   coverUrl: string | null;
   sources: SourceName[];
+  /** Subjects, genre terms and keywords; what the genre is guessed from. */
+  categories: string[];
 };
 
 export type Source = {
@@ -59,6 +61,7 @@ export function candidate(
     language: fields.language ?? null,
     coverUrl: fields.coverUrl ?? null,
     sources: [source],
+    categories: fields.categories ?? [],
   };
 }
 

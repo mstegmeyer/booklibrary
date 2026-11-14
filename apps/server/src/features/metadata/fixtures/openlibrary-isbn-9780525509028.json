@@ -1,0 +1,205 @@
+{
+  "ISBN:9780525509028": {
+    "url": "http://openlibrary.org/books/OL32987385M/Born_a_Crime",
+    "key": "/books/OL32987385M",
+    "title": "Born a Crime",
+    "subtitle": "Stories from a South African Childhood",
+    "authors": [
+      {
+        "url": "http://openlibrary.org/authors/OL7406196A/Trevor_Noah",
+        "name": "Trevor Noah"
+      }
+    ],
+    "identifiers": {
+      "isbn_10": ["052550902X"],
+      "isbn_13": ["9780525509028"],
+      "openlibrary": ["OL32987385M"]
+    },
+    "publishers": [
+      {
+        "name": "JOHN MURRAY"
+      },
+      {
+        "name": "Penguin Publishing Group"
+      }
+    ],
+    "publish_date": "2017",
+    "subjects": [
+      {
+        "name": "apartheid",
+        "url": "https://openlibrary.org/subjects/apartheid"
+      },
+      {
+        "name": "PERFORMING ARTS",
+        "url": "https://openlibrary.org/subjects/performing_arts"
+      },
+      {
+        "name": "HUMOR",
+        "url": "https://openlibrary.org/subjects/humor"
+      },
+      {
+        "name": "Television personalities",
+        "url": "https://openlibrary.org/subjects/television_personalities"
+      },
+      {
+        "name": "Personal Memoirs",
+        "url": "https://openlibrary.org/subjects/personal_memoirs"
+      },
+      {
+        "name": "PERFORMING ARTS / Comedy",
+        "url": "https://openlibrary.org/subjects/performing_arts_/_comedy"
+      },
+      {
+        "name": "BIOGRAPHY & AUTOBIOGRAPHY",
+        "url": "https://openlibrary.org/subjects/biography_&_autobiography"
+      },
+      {
+        "name": "HUMOR / Form / Essays",
+        "url": "https://openlibrary.org/subjects/humor_/_form_/_essays"
+      },
+      {
+        "name": "Essays",
+        "url": "https://openlibrary.org/subjects/essays"
+      },
+      {
+        "name": "Comedy",
+        "url": "https://openlibrary.org/subjects/comedy"
+      },
+      {
+        "name": "HUMOR / Essays",
+        "url": "https://openlibrary.org/subjects/humor_/_essays"
+      },
+      {
+        "name": "Comedians",
+        "url": "https://openlibrary.org/subjects/comedians"
+      },
+      {
+        "name": "Biography",
+        "url": "https://openlibrary.org/subjects/biography"
+      },
+      {
+        "name": "Comedians, biography",
+        "url": "https://openlibrary.org/subjects/comedians,_biography"
+      },
+      {
+        "name": "South africa, biography",
+        "url": "https://openlibrary.org/subjects/south_africa,_biography"
+      },
+      {
+        "name": "Mothers and sons",
+        "url": "https://openlibrary.org/subjects/mothers_and_sons"
+      },
+      {
+        "name": "South africa, history",
+        "url": "https://openlibrary.org/subjects/south_africa,_history"
+      },
+      {
+        "name": "South africa, social conditions",
+        "url": "https://openlibrary.org/subjects/south_africa,_social_conditions"
+      },
+      {
+        "name": "nyt:combined-print-and-e-book-nonfiction=2016-12-04",
+        "url": "https://openlibrary.org/subjects/nyt:combined-print-and-e-book-nonfiction=2016-12-04"
+      },
+      {
+        "name": "New York Times bestseller",
+        "url": "https://openlibrary.org/subjects/new_york_times_bestseller"
+      },
+      {
+        "name": "BIOGRAPHY & AUTOBIOGRAPHY / Personal Memoirs",
+        "url": "https://openlibrary.org/subjects/biography_&_autobiography_/_personal_memoirs"
+      },
+      {
+        "name": "HUMOR / Topic / Cultural, Ethnic & Regional",
+        "url": "https://openlibrary.org/subjects/humor_/_topic_/_cultural,_ethnic_&_regional"
+      },
+      {
+        "name": "Racially mixed people",
+        "url": "https://openlibrary.org/subjects/racially_mixed_people"
+      },
+      {
+        "name": "Comiques",
+        "url": "https://openlibrary.org/subjects/comiques"
+      },
+      {
+        "name": "Biographies",
+        "url": "https://openlibrary.org/subjects/biographies"
+      },
+      {
+        "name": "M\u00e9tis",
+        "url": "https://openlibrary.org/subjects/m\u00e9tis"
+      },
+      {
+        "name": "Vedettes de t\u00e9l\u00e9vision",
+        "url": "https://openlibrary.org/subjects/vedettes_de_t\u00e9l\u00e9vision"
+      },
+      {
+        "name": "Childhood and youth",
+        "url": "https://openlibrary.org/subjects/childhood_and_youth"
+      },
+      {
+        "name": "History",
+        "url": "https://openlibrary.org/subjects/history"
+      },
+      {
+        "name": "Social conditions",
+        "url": "https://openlibrary.org/subjects/social_conditions"
+      }
+    ],
+    "subject_places": [
+      {
+        "name": "South Africa",
+        "url": "https://openlibrary.org/subjects/place:south_africa"
+      },
+      {
+        "name": "Soweto",
+        "url": "https://openlibrary.org/subjects/place:soweto"
+      }
+    ],
+    "subject_people": [
+      {
+        "name": "Trevor Noah",
+        "url": "https://openlibrary.org/subjects/person:trevor_noah"
+      }
+    ],
+    "subject_times": [
+      {
+        "name": "1980s - 2016",
+        "url": "https://openlibrary.org/subjects/time:1980s_-_2016"
+      }
+    ],
+    "excerpts": [
+      {
+        "text": "Sometimes in big Hollywood movies they\u2019ll have these crazy chase scenes where somebody jumps or gets thrown from a moving car.",
+        "comment": "First sentence."
+      }
+    ],
+    "links": [
+      {
+        "title": "Author's book page",
+        "url": "http://www.trevornoah.com/store/"
+      },
+      {
+        "title": "Born a Crime - Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Born_a_Crime"
+      },
+      {
+        "title": "\u2018Born a Crime,\u2019 Trevor Noah\u2019s Raw Account of Life Under Apartheid - The New York Times",
+        "url": "https://www.nytimes.com/2016/11/28/books/review-born-a-crime-trevor-noahs-raw-account-of-life-under-apartheid.html"
+      },
+      {
+        "title": "Born a Crime: Trevor Noah charts his rise from South Africa's townships | The Guardian",
+        "url": "https://www.theguardian.com/world/2016/nov/25/born-a-crime-trevor-noah-south-africa-townships-daily-show"
+      },
+      {
+        "title": "Born a Crime: A Memoir of Love, Hope, and Resistance - Los Angeles Review of Books",
+        "url": "https://lareviewofbooks.org/article/born-crime-memoir-love-hope-resistance/#!"
+      }
+    ],
+    "cover": {
+      "small": "https://covers.openlibrary.org/b/id/11619168-S.jpg",
+      "medium": "https://covers.openlibrary.org/b/id/11619168-M.jpg",
+      "large": "https://covers.openlibrary.org/b/id/11619168-L.jpg"
+    }
+  }
+}

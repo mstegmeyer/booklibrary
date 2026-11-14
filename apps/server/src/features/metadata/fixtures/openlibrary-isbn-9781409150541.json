@@ -14,6 +14,160 @@
       "isbn_13": ["9781409150541"],
       "openlibrary": ["OL29171687M"]
     },
-    "publish_date": "2014"
+    "classifications": {
+      "lc_classifications": ["PS3553.O225"]
+    },
+    "publishers": [
+      {
+        "name": "Orion Publishing Group, Limited"
+      }
+    ],
+    "publish_date": "2014",
+    "subjects": [
+      {
+        "name": "Sports agents",
+        "url": "https://openlibrary.org/subjects/sports_agents"
+      },
+      {
+        "name": "Quarterbacks (Football)",
+        "url": "https://openlibrary.org/subjects/quarterbacks_(football)"
+      },
+      {
+        "name": "Fiction",
+        "url": "https://openlibrary.org/subjects/fiction"
+      },
+      {
+        "name": "Football players",
+        "url": "https://openlibrary.org/subjects/football_players"
+      },
+      {
+        "name": "Myron Bolitar (Fictitious character)",
+        "url": "https://openlibrary.org/subjects/myron_bolitar_(fictitious_character)"
+      },
+      {
+        "name": "Extortion",
+        "url": "https://openlibrary.org/subjects/extortion"
+      },
+      {
+        "name": "Detective and mystery stories",
+        "url": "https://openlibrary.org/subjects/detective_and_mystery_stories"
+      },
+      {
+        "name": "Large type books",
+        "url": "https://openlibrary.org/subjects/large_type_books"
+      },
+      {
+        "name": "French fiction",
+        "url": "https://openlibrary.org/subjects/french_fiction"
+      },
+      {
+        "name": "Sportifs",
+        "url": "https://openlibrary.org/subjects/sportifs"
+      },
+      {
+        "name": "Romans, nouvelles",
+        "url": "https://openlibrary.org/subjects/romans,_nouvelles"
+      },
+      {
+        "name": "Footballeurs",
+        "url": "https://openlibrary.org/subjects/footballeurs"
+      },
+      {
+        "name": "Agents d'affaires (Sports)",
+        "url": "https://openlibrary.org/subjects/agents_d'affaires_(sports)"
+      },
+      {
+        "name": "Extorsion",
+        "url": "https://openlibrary.org/subjects/extorsion"
+      },
+      {
+        "name": "Fiction, mystery & detective, general",
+        "url": "https://openlibrary.org/subjects/fiction,_mystery_&_detective,_general"
+      },
+      {
+        "name": "Fiction, thrillers, suspense",
+        "url": "https://openlibrary.org/subjects/fiction,_thrillers,_suspense"
+      },
+      {
+        "name": "Bolitar, myron (fictitious character), fiction",
+        "url": "https://openlibrary.org/subjects/bolitar,_myron_(fictitious_character),_fiction"
+      },
+      {
+        "name": "Mystery and detective",
+        "url": "https://openlibrary.org/subjects/mystery_and_detective"
+      },
+      {
+        "name": "Fiction, thrillers, general",
+        "url": "https://openlibrary.org/subjects/fiction,_thrillers,_general"
+      },
+      {
+        "name": "Crime, fiction",
+        "url": "https://openlibrary.org/subjects/crime,_fiction"
+      },
+      {
+        "name": "Quarts-arri\u00e8res",
+        "url": "https://openlibrary.org/subjects/quarts-arri\u00e8res"
+      },
+      {
+        "name": "Bolitar, Myron (Personaje literario)",
+        "url": "https://openlibrary.org/subjects/bolitar,_myron_(personaje_literario)"
+      },
+      {
+        "name": "Novela",
+        "url": "https://openlibrary.org/subjects/novela"
+      },
+      {
+        "name": "Jugadores de f\u00fatbol americano",
+        "url": "https://openlibrary.org/subjects/jugadores_de_f\u00fatbol_americano"
+      },
+      {
+        "name": "Agentes de deportes",
+        "url": "https://openlibrary.org/subjects/agentes_de_deportes"
+      },
+      {
+        "name": "Chantaje",
+        "url": "https://openlibrary.org/subjects/chantaje"
+      },
+      {
+        "name": "New york (n.y.), fiction",
+        "url": "https://openlibrary.org/subjects/new_york_(n.y.),_fiction"
+      },
+      {
+        "name": "Fiction, suspense",
+        "url": "https://openlibrary.org/subjects/fiction,_suspense"
+      },
+      {
+        "name": "Series:Myron-Bolitar",
+        "url": "https://openlibrary.org/subjects/series:myron-bolitar"
+      }
+    ],
+    "subject_places": [
+      {
+        "name": "New York (N.Y.)",
+        "url": "https://openlibrary.org/subjects/place:new_york_(n.y.)"
+      },
+      {
+        "name": "United States",
+        "url": "https://openlibrary.org/subjects/place:united_states"
+      },
+      {
+        "name": "New York (State)",
+        "url": "https://openlibrary.org/subjects/place:new_york_(state)"
+      },
+      {
+        "name": "New York",
+        "url": "https://openlibrary.org/subjects/place:new_york"
+      }
+    ],
+    "subject_people": [
+      {
+        "name": "Myron Bolitar (Fictitious character)",
+        "url": "https://openlibrary.org/subjects/person:myron_bolitar_(fictitious_character)"
+      },
+      {
+        "name": "Myron Bolitar",
+        "url": "https://openlibrary.org/subjects/person:myron_bolitar"
+      }
+    ]
   }
 }

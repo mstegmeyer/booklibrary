@@ -19,6 +19,7 @@ type Volume = {
     pageCount?: number;
     language?: string;
     imageLinks?: { thumbnail?: string };
+    categories?: string[];
   };
 };
 
@@ -39,6 +40,7 @@ export function parseVolumes(json: { items?: Volume[] }): Candidate[] {
         publishedYear: yearOf(info.publishedDate),
         language: languageOf(info.language),
         coverUrl: info.imageLinks?.thumbnail?.replace(/^http:/, "https:"),
+        categories: info.categories,
       }),
     ];
   });

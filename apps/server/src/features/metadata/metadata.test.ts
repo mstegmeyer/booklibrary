@@ -72,6 +72,8 @@ describe("ISBN lookup", () => {
       language: "de",
       coverUrl: dnbCoverUrl("9783257229530"),
       sources: ["dnb", "googlebooks"],
+      bookId: null,
+      genreId: expect.any(String),
     });
     expect(asked).toEqual(["dnb", "openlibrary", "googlebooks"]);
   });
@@ -217,6 +219,60 @@ describe("ISBN lookup", () => {
     expect(res.status).toBe(400);
     expect(await res.json()).toMatchObject({ error: { code: "invalid_isbn" } });
     expect(asked).toEqual([]);
+  });
+});
+
+describe("genre guess", () => {
+  async function setup() {
+    const { request, setupAdmin } = createTestApp();
+    const token = await setupAdmin();
+    const call = async (path: string, method = "GET", body?: unknown) => {
+      const res = await request(`/api/v1${path}`, { method, token, body });
+      return res.status === 204 ? null : res.json();
+    };
+    const genres: { id: string; key: string }[] = (await call("/genres")).items;
+    const idOf = (key: string) => genres.find((g) => g.key === key)?.id;
+    stubSources();
+    return { call, idOf };
+  }
+
+  it("prefills the built-in genre the categories point to", async () => {
+    const { call, idOf } = await setup();
+    const found = await call("/metadata/isbn/9783957334466");
+    expect(found).toMatchObject({
+      bookId: null,
+      genreId: idOf("travel-guide"),
+    });
+    expect(found).not.toHaveProperty("categories");
+  });
+
+  it("never guesses a built-in genre that was deleted", async () => {
+    const { call, idOf } = await setup();
+    await call(`/genres/${idOf("cookbook")}`, "DELETE");
+    expect(await call("/metadata/isbn/9783897484832")).toMatchObject({
+      genreId: null,
+    });
+  });
+
+  it("still guesses a renamed built-in genre", async () => {
+    const { call, idOf } = await setup();
+    await call(`/genres/${idOf("cookbook")}`, "PATCH", { name: "Küche" });
+    expect(await call("/metadata/isbn/9783897484832")).toMatchObject({
+      genreId: idOf("cookbook"),
+    });
+  });
+
+  it("guesses nothing for a book the library already has", async () => {
+    const { call } = await setup();
+    const book = await call("/books", "POST", {
+      title: "1000 places to see before you die",
+      isbns: ["9783957334466"],
+      copy: {},
+    });
+    expect(await call("/metadata/isbn/9783957334466")).toMatchObject({
+      bookId: book.id,
+      genreId: null,
+    });
   });
 });
 

@@ -10,6 +10,7 @@ import { createRouter } from "../../api/router.ts";
 import { bookFormats, fileFormats, readingStatuses } from "../../db/schema.ts";
 import { ContactInput } from "../contacts/routes.ts";
 import { GenreRef } from "../genres/routes.ts";
+import { withGuesses } from "../metadata/guesses.ts";
 import { Candidate } from "../metadata/routes.ts";
 import { lookupIsbn, merge } from "../metadata/service.ts";
 import {
@@ -225,6 +226,7 @@ async function candidateOf(upload: Upload): Promise<CandidateValue | null> {
         language: epub.language,
         coverUrl: null,
         sources: ["epub"],
+        categories: [],
       }
     : null;
   const isbn = epub?.isbns[0];
@@ -586,7 +588,9 @@ A file that is already in the library is refused with 409 \`duplicate_file\` and
           format: upload.format,
           size: upload.bytes.length,
           isProtected: upload.epub?.isProtected ?? false,
-          candidate: await candidateOf(upload),
+          candidate: await candidateOf(upload).then(
+            (found) => found && withGuesses(c.var.db, found),
+          ),
           fileCoverUrl: upload.epub?.cover
             ? `/api/v1/books/uploads/${id}/cover`
             : null,
