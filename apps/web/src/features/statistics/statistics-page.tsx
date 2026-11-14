@@ -204,13 +204,17 @@ function Tile({
   className?: string;
 }) {
   return (
-    <div
+    <section
+      aria-label={label}
       className={cn(
         "flex flex-col rounded-xl border border-border bg-surface px-3.5 py-2.5 md:gap-0.5 md:px-5 md:py-4",
         className,
       )}
     >
-      <span className="text-ink-muted text-xs leading-4 md:text-[13px] md:leading-[18px]">
+      <span
+        aria-hidden
+        className="text-ink-muted text-xs leading-4 md:text-[13px] md:leading-[18px]"
+      >
         {label}
       </span>
       <span className="font-semibold font-serif text-2xl tabular-nums leading-[30px] md:text-[32px] md:leading-10">
@@ -221,7 +225,7 @@ function Tile({
           {note}
         </span>
       )}
-    </div>
+    </section>
   );
 }
 
