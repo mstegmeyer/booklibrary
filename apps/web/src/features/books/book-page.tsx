@@ -79,7 +79,7 @@ export function BookPage() {
 
       <div className="grid items-start gap-6 md:gap-8 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-x-10">
         <BookHeader book={book} onEdit={() => setEditing(true)} />
-        <aside className="flex flex-col gap-4 empty:hidden xl:col-start-2 xl:row-span-2 xl:row-start-1">
+        <aside className="flex flex-col gap-4 empty:hidden max-xl:contents xl:col-start-2 xl:row-span-2 xl:row-start-1">
           <BookAside book={book} />
         </aside>
         <div className="flex min-w-0 flex-col gap-8 xl:col-start-1">
