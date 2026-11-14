@@ -7,13 +7,30 @@ const read = (name: string) => {
   return existsSync(file) ? readFileSync(file, "utf8") : null;
 };
 
+/** The ISBNs the DNB cover service had an image for when recorded. */
+export const dnbCoverIsbns = [
+  "9783257229530",
+  "9783257073690",
+  "9783963232176",
+  "9783442492114",
+];
+
 /**
  * The recorded answer to a request to one of the sources, chosen by path and
  * query. Unknown ISBNs get the service's empty answer. Shared by the unit tests
- * and the end-to-end stub server.
+ * and the end-to-end stub server. A DNB cover is answered without its image.
  */
 export function recordedResponse(url: URL) {
   const params = url.searchParams;
+  if (url.pathname.endsWith("/opac/mvb/cover")) {
+    const found = dnbCoverIsbns.includes(params.get("isbn") ?? "");
+    return {
+      source: "dnb" as SourceName,
+      status: found ? 200 : 404,
+      body: "",
+      contentType: found ? "image/jpeg" : "text/html",
+    };
+  }
   // Only digits reach the file name.
   const isbn = (value: string | undefined) =>
     value && /^\d{13}$/.test(value) ? value : "unknown";
@@ -44,10 +61,12 @@ export function recordedResponse(url: URL) {
           "openlibrary",
           url.pathname.endsWith("/api/books")
             ? `openlibrary-isbn-${isbn(params.get("bibkeys")?.slice(5))}.json`
-            : "openlibrary-search.json",
+            : params.get("q")?.startsWith("isbn:")
+              ? `openlibrary-work-${isbn(params.get("q")?.slice(5))}.json`
+              : "openlibrary-search.json",
           "openlibrary-empty.json",
           "application/json",
         ];
   const body = read(file) ?? read(fallback) ?? "";
-  return { source, body, contentType };
+  return { source, status: 200, body, contentType };
 }

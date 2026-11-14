@@ -6,10 +6,15 @@ import {
   get,
   languageOf,
   type Source,
+  timeoutMs,
+  userAgent,
   yearOf,
 } from "./source.ts";
 
 const marcNamespace = "http://www.loc.gov/MARC21/slim";
+
+// Shorter than a lookup's, so that a slow cover service cannot stall a search.
+const searchCoverTimeoutMs = 2000;
 
 const datafields = (record: Element, tag: string) =>
   [...record.getElementsByTagNameNS(marcNamespace, "datafield")].filter(
@@ -72,7 +77,32 @@ export function parseRecords(xml: string): Candidate[] {
   );
 }
 
-export function dnb(baseUrl: string): Source {
+/**
+ * The DNB cover service's URL for the ISBN when it has an image for it. SRU
+ * records carry no cover, and the service is only worth linking once it is
+ * known to answer with an image. Any failure means no cover.
+ */
+async function checkedCover(
+  coversUrl: string,
+  isbn13: string,
+  timeout: number,
+) {
+  const url = new URL(coversUrl);
+  url.searchParams.set("isbn", isbn13);
+  try {
+    const res = await fetch(url, {
+      method: "HEAD",
+      headers: { "user-agent": userAgent },
+      signal: AbortSignal.timeout(timeout),
+    });
+    const isImage = res.headers.get("content-type")?.startsWith("image/");
+    return res.status === 200 && isImage ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+export function dnb(baseUrl: string, coversUrl: string): Source {
   const searchRetrieve = async (query: string, maximumRecords: number) => {
     const url = new URL(baseUrl);
     url.search = new URLSearchParams({
@@ -87,13 +117,29 @@ export function dnb(baseUrl: string): Source {
   return {
     name: "dnb",
     async byIsbn(isbn13) {
+      const cover = checkedCover(coversUrl, isbn13, timeoutMs);
       const [found] = await searchRetrieve(`isbn=${isbn13}`, 1);
-      return found ? { ...found, isbn13 } : null;
+      return found ? { ...found, isbn13, coverUrl: await cover } : null;
     },
-    search: (query) =>
-      searchRetrieve(
+    async search(query) {
+      const found = await searchRetrieve(
         `WOE all "${query.replace(/["\\]/g, " ")}" and mat=books`,
         10,
-      ),
+      );
+      return Promise.all(
+        found.map(async (result) =>
+          result.isbn13
+            ? {
+                ...result,
+                coverUrl: await checkedCover(
+                  coversUrl,
+                  result.isbn13,
+                  searchCoverTimeoutMs,
+                ),
+              }
+            : result,
+        ),
+      );
+    },
   };
 }

@@ -31,6 +31,9 @@ function baseUrls(env = process.env) {
       env.GOOGLE_BOOKS_URL || "https://www.googleapis.com",
     ),
     dnb: withoutSlash(env.DNB_SRU_URL || "https://services.dnb.de/sru/dnb"),
+    dnbCovers: withoutSlash(
+      env.DNB_COVERS_URL || "https://portal.dnb.de/opac/mvb/cover",
+    ),
   };
 }
 
@@ -41,7 +44,7 @@ function sources(env = process.env) {
     openLibrary: openLibrary(urls.openLibrary, urls.openLibraryCovers),
     // Google requires an API key for every request, so it is only asked when one is configured.
     googleBooks: key ? googleBooks(urls.googleBooks, key) : null,
-    dnb: dnb(urls.dnb),
+    dnb: dnb(urls.dnb, urls.dnbCovers),
   };
 }
 
@@ -99,7 +102,21 @@ export async function lookupIsbn(
   if (allFailed) return "unavailable";
   const found = answers.filter((answer) => answer !== null);
   const [base, ...rest] = found;
-  return base ? rest.reduce(merge, base) : "not_found";
+  if (!base) return "not_found";
+  const merged = rest.reduce(merge, base);
+  if (merged.coverUrl) return merged;
+  // Asked only now, so that lookups that already have a cover cost nothing extra.
+  try {
+    const coverUrl = await openLibrary.otherEditionCover(isbn13);
+    if (!coverUrl) return merged;
+    const sources = new Set([...merged.sources, openLibrary.name]);
+    return { ...merged, coverUrl, sources: [...sources] };
+  } catch (error) {
+    console.warn(
+      `Metadata source openlibrary failed: ${(error as Error).message}`,
+    );
+    return merged;
+  }
 }
 
 export async function searchBooks(

@@ -94,7 +94,10 @@ const searchFields = [
   "editions.cover_i",
 ].join(",");
 
-export function openLibrary(baseUrl: string, coversUrl: string): Source {
+export function openLibrary(
+  baseUrl: string,
+  coversUrl: string,
+): Source & { otherEditionCover: (isbn13: string) => Promise<string | null> } {
   return {
     name: "openlibrary",
     async byIsbn(isbn13) {
@@ -114,6 +117,21 @@ export function openLibrary(baseUrl: string, coversUrl: string): Source {
         fields: searchFields,
       }).toString();
       return parseSearch(await (await get(url)).json(), coversUrl);
+    },
+    /**
+     * The cover of the work the ISBN belongs to. An edition record often has
+     * none while another edition of the same work does.
+     */
+    async otherEditionCover(isbn13) {
+      const url = new URL(`${baseUrl}/search.json`);
+      url.search = new URLSearchParams({
+        q: `isbn:${isbn13}`,
+        fields: "cover_i",
+        limit: "1",
+      }).toString();
+      const json: { docs?: Work[] } = await (await get(url)).json();
+      const id = json.docs?.[0]?.cover_i;
+      return id ? `${coversUrl}/b/id/${id}-L.jpg` : null;
     },
   };
 }

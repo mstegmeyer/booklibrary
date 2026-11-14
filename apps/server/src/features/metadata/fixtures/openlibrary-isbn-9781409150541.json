@@ -1,0 +1,19 @@
+{
+  "ISBN:9781409150541": {
+    "url": "http://openlibrary.org/books/OL29171687M/Deal_Breaker",
+    "key": "/books/OL29171687M",
+    "title": "Deal Breaker",
+    "authors": [
+      {
+        "url": "http://openlibrary.org/authors/OL39821A/Harlan_Coben",
+        "name": "Harlan Coben"
+      }
+    ],
+    "number_of_pages": 400,
+    "identifiers": {
+      "isbn_13": ["9781409150541"],
+      "openlibrary": ["OL29171687M"]
+    },
+    "publish_date": "2014"
+  }
+}
