@@ -13,6 +13,7 @@ const fetchPage = (filters: LibraryFilters, cursor?: string) =>
         availability: filters.availability,
         format: filters.format,
         reading: filters.reading,
+        genre: filters.genre,
         sort: filters.sort,
         cursor,
         limit: String(pageSize),

@@ -34,6 +34,7 @@ const library = {
     abandoned: "Abandoned",
     none: "No status",
   },
+  anyGenre: "Any genre",
   sort: {
     label: "Sort",
     added: "Recently added",

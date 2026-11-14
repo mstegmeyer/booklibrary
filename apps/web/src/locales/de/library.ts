@@ -36,6 +36,7 @@ export default {
     abandoned: "Abgebrochen",
     none: "Kein Status",
   },
+  anyGenre: "Alle Genres",
   sort: {
     label: "Sortierung",
     added: "Zuletzt hinzugefügt",

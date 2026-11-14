@@ -34,6 +34,7 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { cn } from "../../lib/cn";
 import { AddBookDialog } from "../books/add-book-dialog";
+import { useSortedGenres } from "../genres/queries";
 import { formatPath, locationsQuery } from "../locations/queries";
 import { BookGrid, BookList } from "./book-views";
 import { libraryQuery, summaryQuery } from "./queries";
@@ -61,8 +62,21 @@ const subscribeDesktop = (onChange: () => void) => {
 const useDesktop = () =>
   useSyncExternalStore(subscribeDesktop, () => matchMedia(desktop).matches);
 
+/** "No genre", then the genres alphabetically. */
+function useGenreOptions() {
+  const { t } = useTranslation("genres");
+  return [
+    { value: "none", label: t("none") },
+    ...useSortedGenres().map((genre) => ({
+      value: genre.id,
+      label: genre.label,
+    })),
+  ];
+}
+
 export function LibraryPage() {
-  const { t } = useTranslation("library");
+  const { t } = useTranslation(["library", "genres"]);
+  const genreOptions = useGenreOptions();
   const search = useSearch({ from: "/_app/library" });
   const navigate = useNavigate({ from: "/library" });
   const filters = filtersOf(search);
@@ -221,6 +235,13 @@ export function LibraryPage() {
             }))}
             anyLabel={t("reading.any")}
             onChange={(reading) => setSearch({ reading })}
+          />
+          <FilterMenu
+            label={t("genres:genre")}
+            value={filters.genre}
+            options={genreOptions}
+            anyLabel={t("anyGenre")}
+            onChange={(genre) => setSearch({ genre })}
           />
         </div>
         <div className="ml-auto hidden md:block">
@@ -493,11 +514,16 @@ function SortFilterSheet({
   filters: LibraryFilters;
   onChange: (changes: Partial<LibrarySearch>) => void;
 }) {
-  const { t } = useTranslation("library");
+  const { t } = useTranslation(["library", "genres"]);
+  const genreOptions = useGenreOptions();
   const activeId = useId();
   const [open, setOpen] = useState(false);
   const active = Boolean(
-    filters.sort || filters.format || filters.availability || filters.reading,
+    filters.sort ||
+      filters.format ||
+      filters.availability ||
+      filters.reading ||
+      filters.genre,
   );
 
   return (
@@ -568,6 +594,15 @@ function SortFilterSheet({
           ]}
           onChange={(reading) => onChange({ reading })}
         />
+        <Choices
+          label={t("genres:genre")}
+          value={filters.genre}
+          options={[
+            { value: undefined, label: t("anyGenre") },
+            ...genreOptions,
+          ]}
+          onChange={(genre) => onChange({ genre })}
+        />
         <div className="mt-1 grid grid-cols-2 gap-2">
           <Button
             variant="secondary"
@@ -577,6 +612,7 @@ function SortFilterSheet({
                 format: undefined,
                 availability: undefined,
                 reading: undefined,
+                genre: undefined,
               })
             }
             className="h-12 rounded-xl text-base"

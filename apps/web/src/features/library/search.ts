@@ -17,6 +17,8 @@ export type LibrarySearch = {
   availability?: (typeof availabilities)[number];
   format?: (typeof formats)[number];
   reading?: (typeof readingFilters)[number];
+  /** A genre's id, or "none". */
+  genre?: string;
   sort?: Exclude<(typeof sorts)[number], "added">;
   /** Opens the "Add a book" dialog. */
   add?: boolean;
@@ -40,6 +42,7 @@ export function parseLibrarySearch(
     availability: oneOf(availabilities, search.availability),
     format: oneOf(formats, search.format),
     reading: oneOf(readingFilters, search.reading),
+    genre: text(search.genre),
     sort: oneOf(["title", "author"] as const, search.sort),
     add: search.add === true || undefined,
     own: oneOf(owns, search.own),
