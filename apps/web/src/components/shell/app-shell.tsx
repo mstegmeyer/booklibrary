@@ -5,6 +5,11 @@ import { TabBar } from "./tab-bar";
 export function AppShell() {
   return (
     <div className="min-h-dvh md:flex">
+      {/* In the iOS app the page scrolls under the status bar; keep it readable. */}
+      <div
+        aria-hidden
+        className="fixed inset-x-0 top-0 z-10 h-[env(safe-area-inset-top)] bg-ground"
+      />
       <aside className="sticky top-0 hidden h-dvh w-[232px] shrink-0 border-border border-r bg-sidebar md:block">
         <Sidebar />
       </aside>
