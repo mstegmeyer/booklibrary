@@ -1,6 +1,6 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { ChevronsUpDown, LogOut, Users } from "lucide-react";
+import { ChevronsUpDown, LogOut, UserRound, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { type Language, languages } from "../../i18n";
 import { authClient, sessionQuery } from "../../lib/session";
@@ -32,7 +32,7 @@ function Avatar({ name, size }: { name: string; size: "sm" | "md" }) {
 
 /** The account menu: a full-width row in the sidebar, an avatar at phone width. */
 export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["common", "account"]);
   const { data: session } = useSuspenseQuery(sessionQuery);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -89,6 +89,12 @@ export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
           ))}
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/account">
+            <UserRound aria-hidden size={16} />
+            {t("account:title")}
+          </Link>
+        </DropdownMenuItem>
         {session?.user.role === "admin" && (
           <DropdownMenuItem asChild>
             <Link to="/users">
