@@ -471,7 +471,7 @@ A file of a format the book already has is refused with 409 \`format_exists\`; s
       tags: ["Books"],
       summary: "Look up a cover in the catalogues",
       description:
-        "Looks up the book's ISBNs in turn, like `GET /metadata/isbn/{isbn}`, and stores the first cover found as the book's cover, also in its EPUB. 404 `cover_not_found` when no catalogue has one, also for a book without ISBNs.",
+        "Looks up the book's ISBNs in turn, like `GET /metadata/isbn/{isbn}`, and stores the first cover found as the book's cover, also in its EPUB. 404 `cover_not_found` when no catalogue has one, also for a book without ISBNs; 502 `metadata_unavailable` when the catalogues could not be reached.",
       request: { params: BookParams },
       responses: { 200: json(Book, "The book with its new cover"), ...errors },
     }),

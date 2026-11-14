@@ -167,8 +167,7 @@ function CoverLookup({ bookId }: { bookId: string }) {
     mutationFn: () => lookUpCover(bookId),
     onSuccess: () => refreshCatalogue(queryClient),
   });
-  const notFound =
-    lookUp.error instanceof ApiError && lookUp.error.code === "cover_not_found";
+  const code = lookUp.error instanceof ApiError ? lookUp.error.code : null;
   return (
     <>
       <button
@@ -184,7 +183,11 @@ function CoverLookup({ bookId }: { bookId: string }) {
           role="status"
           className="text-center text-[13px] text-ink-muted leading-[18px]"
         >
-          {notFound ? t("page.coverNotFound") : t("common:errors.generic")}
+          {code === "cover_not_found"
+            ? t("page.coverNotFound")
+            : code === "metadata_unavailable"
+              ? t("lookup.unavailable")
+              : t("common:errors.generic")}
         </p>
       )}
     </>

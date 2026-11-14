@@ -563,6 +563,20 @@ describe("looking up a cover", () => {
     expect((await call(`/books/${book.id}`)).body.coverUrl).toBeNull();
   });
 
+  it("answers 502 when the catalogues cannot be reached", async () => {
+    const { call, addBook } = await setup();
+    const book = await addBook({ title: "Codex", isbns: ["9783442492114"] });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        throw new Error("offline");
+      }),
+    );
+    const res = await call(`/books/${book.id}/cover/lookup`, "POST");
+    expect(res.status).toBe(502);
+    expect(res.body).toMatchObject({ error: { code: "metadata_unavailable" } });
+  });
+
   it("answers 404 for a book without ISBNs without asking anyone", async () => {
     const { call, addBook } = await setup();
     const book = await addBook({ title: "Codex" });

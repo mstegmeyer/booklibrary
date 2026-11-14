@@ -71,7 +71,8 @@ export async function saveCover(db: Db, bookId: string, image: Uint8Array) {
 
 /**
  * Looks up the book's ISBNs in turn and stores the first cover the catalogues
- * have, as `saveCover` does. 404 `cover_not_found` when none has one.
+ * have, as `saveCover` does. 404 `cover_not_found` when none has one, 502
+ * `metadata_unavailable` when a lookup could not reach them.
  */
 export async function lookUpCover(db: Db, bookId: string) {
   const exists = db
@@ -86,8 +87,10 @@ export async function lookUpCover(db: Db, bookId: string) {
     .where(eq(bookIdentifier.bookId, bookId))
     .orderBy(asc(bookIdentifier.isbn13))
     .all();
+  let unreachable = false;
   for (const { isbn13 } of identifiers) {
     const found = await lookupIsbn(isbn13);
+    if (found === "unavailable") unreachable = true;
     if (typeof found === "string" || !found.coverUrl) continue;
     try {
       const { bytes } = await downloadCover(found.coverUrl);
@@ -96,6 +99,13 @@ export async function lookUpCover(db: Db, bookId: string) {
     } catch (error) {
       console.warn(`Cover ${found.coverUrl} not stored: ${error}`);
     }
+  }
+  if (unreachable) {
+    throw new ApiError(
+      502,
+      "metadata_unavailable",
+      "No metadata source could be reached",
+    );
   }
   throw new ApiError(
     404,
