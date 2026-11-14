@@ -104,6 +104,7 @@ describe("auth", () => {
       const auth = createAuth(db, {
         port: 0,
         dataDir: "",
+        libraryDir: "",
         authSecret: "a-test-secret-that-is-long-enough",
         baseUrl,
       });

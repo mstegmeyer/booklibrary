@@ -75,6 +75,13 @@ it("migrates a database that already holds data", () => {
   expect(sqlite.prepare("select count(*) as n from reading").get()).toEqual({
     n: 1,
   });
+  sqlite.exec(`
+    insert into book_file (id, book_id, format, path, size, sha256, upload_sha256, created_at)
+      values ('f1', 'b1', 'epub', 'Herbert, Frank/Dune.epub', 1, 'a', 'a', 0);
+  `);
+  expect(sqlite.prepare("select is_protected from book_file").all()).toEqual([
+    { is_protected: 0 },
+  ]);
   expect(sqlite.pragma("foreign_keys", { simple: true })).toBe(1);
   sqlite.close();
 });

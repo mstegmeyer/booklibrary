@@ -28,13 +28,14 @@ const codeForStatus: Record<number, string> = {
 export function createApp(
   db: Db,
   auth: Auth,
-  options: { webRoot?: string } = {},
+  options: { libraryDir: string; webRoot?: string },
 ) {
   const app = createPublicRouter();
 
   app.use("/api/*", async (c, next) => {
     c.set("db", db);
     c.set("auth", auth);
+    c.set("libraryDir", options.libraryDir);
     await next();
   });
   app.on(["GET", "POST"], "/api/auth/*", (c) => {

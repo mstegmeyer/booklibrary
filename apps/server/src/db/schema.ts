@@ -6,6 +6,7 @@ import {
   integer,
   sqliteTable,
   text,
+  uniqueIndex,
 } from "drizzle-orm/sqlite-core";
 
 // Better Auth tables (core plus the admin plugin's fields). Better Auth works
@@ -188,6 +189,41 @@ export const copy = sqliteTable(
       "copy_format_check",
       sql`${t.format} in ('paperback', 'hardcover', 'other')`,
     ),
+  ],
+);
+
+export const fileFormats = ["epub", "pdf"] as const;
+
+/** An e-book file in the library folder. */
+export const bookFile = sqliteTable(
+  "book_file",
+  {
+    id: id(),
+    bookId: text("book_id")
+      .notNull()
+      .references(() => book.id, { onDelete: "restrict" }),
+    format: text("format", { enum: fileFormats }).notNull(),
+    // Relative to the library folder, with "/" separators.
+    path: text("path").notNull().unique(),
+    size: integer("size").notNull(),
+    // Of the file as it is on disk, which differs from the upload once
+    // metadata has been written into it. Both identify a duplicate upload.
+    sha256: text("sha256").notNull(),
+    uploadSha256: text("upload_sha256").notNull(),
+    isProtected: integer("is_protected", { mode: "boolean" })
+      .notNull()
+      .default(false),
+    createdAt: timestamp("created_at"),
+    // Removing a user keeps the files they added.
+    createdBy: text("created_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+  },
+  (t) => [
+    uniqueIndex("book_file_book_format_idx").on(t.bookId, t.format),
+    index("book_file_sha256_idx").on(t.sha256),
+    index("book_file_upload_sha256_idx").on(t.uploadSha256),
+    check("book_file_format_check", sql`${t.format} in ('epub', 'pdf')`),
   ],
 );
 

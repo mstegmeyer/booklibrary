@@ -17,9 +17,14 @@ afterEach(() => {
 export function createTestApp() {
   const dataDir = mkdtempSync(join(tmpdir(), "book-library-test-"));
   dirs.push(dataDir);
-  const config = loadConfig({ DATA_DIR: dataDir });
+  const config = loadConfig({
+    DATA_DIR: dataDir,
+    LIBRARY_DIR: join(dataDir, "library"),
+  });
   const db = openDatabase(config.dataDir);
-  const app = createApp(db, createAuth(db, config));
+  const app = createApp(db, createAuth(db, config), {
+    libraryDir: config.libraryDir,
+  });
 
   const request = (
     path: string,
@@ -57,5 +62,12 @@ export function createTestApp() {
     return { res, token: res.headers.get("set-auth-token") };
   };
 
-  return { app, db, request, setupAdmin, signIn };
+  return {
+    app,
+    db,
+    libraryDir: config.libraryDir,
+    request,
+    setupAdmin,
+    signIn,
+  };
 }

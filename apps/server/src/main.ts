@@ -11,8 +11,10 @@ const production = process.env.NODE_ENV === "production";
 
 const server = serve(
   {
-    fetch: createApp(db, auth, { webRoot: production ? webRoot : undefined })
-      .fetch,
+    fetch: createApp(db, auth, {
+      libraryDir: config.libraryDir,
+      webRoot: production ? webRoot : undefined,
+    }).fetch,
     port: config.port,
   },
   (info) =>

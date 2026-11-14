@@ -22,6 +22,13 @@
       "when": 1794671225930,
       "tag": "0002_nappy_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1794674565821,
+      "tag": "0003_stiff_the_stranger",
+      "breakpoints": true
     }
   ]
 }

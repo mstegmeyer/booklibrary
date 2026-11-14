@@ -6,7 +6,7 @@ import { errorBody } from "./errors.ts";
 type Session = Auth["$Infer"]["Session"];
 export type SessionUser = Session["user"];
 
-type Services = { db: Db; auth: Auth };
+type Services = { db: Db; auth: Auth; libraryDir: string };
 
 export type PublicEnv = {
   Variables: Services & { user: SessionUser | null };
