@@ -6,8 +6,13 @@ type Options = {
   torch?: boolean;
 };
 
-type Message = { action: string; on?: boolean };
-type State = { calls: Message[]; scanning: boolean; torch: boolean };
+type Message = { action: string; on?: boolean; light?: boolean };
+type State = {
+  calls: Message[];
+  scanning: boolean;
+  torch: boolean;
+  lightStatusBar: boolean;
+};
 
 /**
  * Stands in for the iOS shell (see apps/web/src/lib/app-shell.ts) before the
@@ -16,7 +21,12 @@ type State = { calls: Message[]; scanning: boolean; torch: boolean };
  */
 export async function installFakeShell(page: Page, options: Options = {}) {
   await page.addInitScript(({ camera = "granted", torch = true }: Options) => {
-    const state: State = { calls: [], scanning: false, torch: false };
+    const state: State = {
+      calls: [],
+      scanning: false,
+      torch: false,
+      lightStatusBar: false,
+    };
     const answer = (message: Message) => {
       switch (message.action) {
         case "startScan":
@@ -33,6 +43,9 @@ export async function installFakeShell(page: Page, options: Options = {}) {
         case "setTorch":
           if (!torch || !state.scanning) throw new Error("unavailable");
           state.torch = message.on === true;
+          return;
+        case "setLightStatusBar":
+          state.lightStatusBar = message.light === true;
           return;
       }
     };

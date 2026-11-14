@@ -24,13 +24,19 @@
  *   `"unavailable"` when there is no torch or no scan is running. Stopping the
  *   scan turns the torch off, so every scan starts with it off.
  *
+ * Status bar:
+ * - `setLightStatusBar(light)` shows the clock and icons above the page light,
+ *   for a screen that is dark at the top, or dark again. Loading a page makes
+ *   them dark.
+ *
  * `changeServer()` leaves the web interface for the shell's connect screen.
  */
 export type ScanError = "denied" | "unavailable";
 
 type Message =
   | { action: "changeServer" | "startScan" | "stopScan" | "checkTorch" }
-  | { action: "setTorch"; on: boolean };
+  | { action: "setTorch"; on: boolean }
+  | { action: "setLightStatusBar"; light: boolean };
 
 declare global {
   interface Window {
@@ -58,6 +64,8 @@ export const startScan = () => call({ action: "startScan" });
 export const stopScan = () => call({ action: "stopScan" });
 export const checkTorch = () => call({ action: "checkTorch" });
 export const setTorch = (on: boolean) => call({ action: "setTorch", on });
+export const setLightStatusBar = (light: boolean) =>
+  call({ action: "setLightStatusBar", light });
 
 export function onBarcode(listener: (code: string) => void): () => void {
   const handle = (event: Event) =>

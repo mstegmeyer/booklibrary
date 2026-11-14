@@ -13,6 +13,8 @@ final class Shell {
     /// Launching with a remembered address shows nothing until it is checked,
     /// so a reachable server opens without the connect screen flashing up.
     private(set) var isLaunching: Bool
+    /// Set by the web interface while its page is dark at the top.
+    var lightStatusBar = false
 
     init() {
         let saved = UserDefaults.standard.string(forKey: Self.addressKey) ?? ""
@@ -42,11 +44,13 @@ final class Shell {
 
     func changeServer() {
         server = nil
+        lightStatusBar = false
         problem = nil
     }
 
     func lostServer(_ error: Error) {
         server = nil
+        lightStatusBar = false
         problem = .unreachable(reason: error.localizedDescription)
     }
 }

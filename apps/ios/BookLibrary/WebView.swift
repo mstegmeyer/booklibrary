@@ -77,6 +77,9 @@ struct WebView: UIViewRepresentable {
             case "stopScan":
                 stopScan()
                 replyHandler(nil, nil)
+            case "setLightStatusBar":
+                shell.lightStatusBar = body["light"] as? Bool == true
+                replyHandler(nil, nil)
             case "checkTorch":
                 replyHandler(nil, Scanner.hasTorch ? nil : ScanError.unavailable.rawValue)
             case "setTorch":
@@ -133,6 +136,7 @@ struct WebView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
             stopScan()
+            shell.lightStatusBar = false
         }
 
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {

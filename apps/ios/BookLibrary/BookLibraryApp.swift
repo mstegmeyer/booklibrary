@@ -15,6 +15,8 @@ struct BookLibraryApp: App {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.ground)
+            // The interface is light only; a dark scheme turns the status bar light.
+            .preferredColorScheme(shell.lightStatusBar ? .dark : .light)
         }
     }
 }
