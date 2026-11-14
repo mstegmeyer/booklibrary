@@ -217,7 +217,13 @@ export function TitleSearch({ onNotRight, onManual, children }: LookupProps) {
   );
 }
 
-function Problem({ text, children }: { text: string; children: ReactNode }) {
+export function Problem({
+  text,
+  children,
+}: {
+  text: string;
+  children: ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-3">
       <p role="alert" className="text-sm">

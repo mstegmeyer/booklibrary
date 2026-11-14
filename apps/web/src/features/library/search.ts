@@ -22,6 +22,8 @@ export type LibrarySearch = {
   add?: boolean;
   /** Preselects how the added book is owned. */
   own?: (typeof owns)[number];
+  /** Opens the dialog's manual entry with this ISBN. */
+  isbn?: string;
 };
 
 const oneOf = <T extends string>(values: readonly T[], value: unknown) =>
@@ -41,14 +43,16 @@ export function parseLibrarySearch(
     sort: oneOf(["title", "author"] as const, search.sort),
     add: search.add === true || undefined,
     own: oneOf(owns, search.own),
+    isbn: text(search.isbn),
   };
 }
 
-export type LibraryFilters = Omit<LibrarySearch, "add" | "own">;
+export type LibraryFilters = Omit<LibrarySearch, "add" | "own" | "isbn">;
 
 export const filtersOf = ({
   add: _add,
   own: _own,
+  isbn: _isbn,
   ...filters
 }: LibrarySearch): LibraryFilters => filters;
 
