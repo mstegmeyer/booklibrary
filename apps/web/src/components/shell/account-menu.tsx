@@ -1,0 +1,99 @@
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ChevronsUpDown, LogOut, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { type Language, languages } from "../../i18n";
+import { authClient, sessionQuery } from "../../lib/session";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+
+function Avatar({ name, size }: { name: string; size: "sm" | "md" }) {
+  return (
+    <span
+      aria-hidden
+      className={
+        size === "sm"
+          ? "flex size-7 items-center justify-center rounded-full bg-ink font-semibold text-[13px] text-white"
+          : "flex size-[34px] items-center justify-center rounded-full bg-ink font-semibold text-sm text-white"
+      }
+    >
+      {name.charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
+/** The account menu: a full-width row in the sidebar, an avatar at phone width. */
+export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
+  const { t, i18n } = useTranslation();
+  const { data: session } = useSuspenseQuery(sessionQuery);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const name = session?.user.name ?? "";
+
+  const signOut = async () => {
+    await authClient.signOut();
+    queryClient.clear();
+    await navigate({ to: "/login" });
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label={t("account.menu", { name })}
+        className={
+          variant === "sidebar"
+            ? "flex h-11 w-full cursor-pointer items-center gap-2.5 rounded-lg px-2 text-left font-medium text-ink text-sm hover:bg-accent-tint/60"
+            : "flex size-11 cursor-pointer items-center justify-end"
+        }
+      >
+        {variant === "sidebar" ? (
+          <>
+            <Avatar name={name} size="sm" />
+            <span className="flex-1 truncate">{name}</span>
+            <ChevronsUpDown aria-hidden size={16} className="text-ink-muted" />
+          </>
+        ) : (
+          <Avatar name={name} size="md" />
+        )}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align={variant === "sidebar" ? "start" : "end"}>
+        <DropdownMenuLabel>{t("account.language")}</DropdownMenuLabel>
+        <DropdownMenuRadioGroup
+          value={i18n.resolvedLanguage}
+          onValueChange={(language) => i18n.changeLanguage(language)}
+        >
+          {Object.entries(languages).map(([code, label]) => (
+            <DropdownMenuRadioItem
+              key={code}
+              value={code}
+              lang={code as Language}
+            >
+              {label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+        <DropdownMenuSeparator />
+        {session?.user.role === "admin" && (
+          <DropdownMenuItem asChild>
+            <Link to="/users">
+              <Users aria-hidden size={16} />
+              {t("account.users")}
+            </Link>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onSelect={signOut}>
+          <LogOut aria-hidden size={16} />
+          {t("account.signOut")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

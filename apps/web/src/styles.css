@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-ground: #fbfbf9;
+  --color-surface: #ffffff;
+  --color-sidebar: #f2f3ef;
+  --color-sidebar-line: #d5d9d2;
+  --color-ink: #1b1e1c;
+  --color-ink-nav: #3c423e;
+  --color-ink-muted: #5a615c;
+  --color-border: #e2e4de;
+  --color-control: #8a908b;
+  --color-accent: #1f6b52;
+  --color-accent-hover: #174f3d;
+  --color-accent-tint: #dde9e2;
+  --color-accent-tint-light: #e1eee7;
+  --color-lent: #8a4b08;
+  --color-lent-tint: #fbebd3;
+  --color-danger: #9b2c2c;
+
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-serif: "Literata Variable", Georgia, serif;
+}
+
+@layer base {
+  body {
+    @apply bg-ground font-sans text-ink antialiased;
+  }
+
+  a {
+    @apply text-accent hover:text-accent-hover;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
