@@ -1,5 +1,7 @@
 import { createRouter } from "../api/router.ts";
 import { booksRoutes } from "./books/routes.ts";
+import { contactsRoutes } from "./contacts/routes.ts";
+import { loansRoutes } from "./loans/routes.ts";
 import { locationsRoutes } from "./locations/routes.ts";
 import { metadataRoutes } from "./metadata/routes.ts";
 import { usersRoutes } from "./users/routes.ts";
@@ -9,4 +11,6 @@ export const features = createRouter()
   .route("/users", usersRoutes)
   .route("/locations", locationsRoutes)
   .route("/books", booksRoutes)
-  .route("/metadata", metadataRoutes);
+  .route("/metadata", metadataRoutes)
+  .route("/contacts", contactsRoutes)
+  .route("/loans", loansRoutes);
