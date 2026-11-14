@@ -1,5 +1,5 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { ChevronsUpDown, LogOut, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { type Language, languages } from "../../i18n";
@@ -36,10 +36,18 @@ export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
   const { data: session } = useSuspenseQuery(sessionQuery);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const router = useRouter();
   const name = session?.user.name ?? "";
 
   const signOut = async () => {
-    await authClient.signOut();
+    // Load the login page's code before the URL changes. If the visitor leaves
+    // while that chunk is still loading, Safari aborts it and the router takes
+    // the failed import for a new deployment and reloads, hijacking their
+    // navigation.
+    await Promise.all([
+      authClient.signOut(),
+      router.loadRouteChunk(router.routesByPath["/login"]),
+    ]);
     queryClient.clear();
     await navigate({ to: "/login" });
   };
