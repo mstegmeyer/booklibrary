@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { isInApp } from "../../lib/app-shell";
 import { type NavKey, navItems } from "./nav";
 
 const tabs: NavKey[] = ["library", "reading", "loans", "statistics"];
@@ -30,8 +31,9 @@ export function TabBar() {
     >
       {tabs.slice(0, 2).map(tab)}
       <Link
-        to="/library"
-        search={{ add: true }}
+        {...(isInApp
+          ? { to: "/scan" }
+          : { to: "/library", search: { add: true } })}
         aria-label={t("nav.addBook")}
         className="mx-2.5 flex size-[46px] shrink-0 items-center justify-center rounded-full bg-accent text-white hover:bg-accent-hover hover:text-white"
       >
