@@ -15,6 +15,25 @@ export type Role = (typeof roles)[number];
 // a client sent.
 const clientAddressHeader = "x-book-library-client-address";
 
+/** Every endpoint of Better Auth's admin plugin. */
+const adminPaths = [
+  "create-user",
+  "list-users",
+  "get-user",
+  "set-role",
+  "set-user-password",
+  "update-user",
+  "ban-user",
+  "unban-user",
+  "list-user-sessions",
+  "revoke-user-session",
+  "revoke-user-sessions",
+  "impersonate-user",
+  "stop-impersonating",
+  "remove-user",
+  "has-permission",
+];
+
 export function createAuth(db: Db, config: Config) {
   return betterAuth({
     secret: config.authSecret,
@@ -25,14 +44,11 @@ export function createAuth(db: Db, config: Config) {
     basePath: "/api/auth",
     database: drizzleAdapter(db, { provider: "sqlite", schema }),
     emailAndPassword: { enabled: true, disableSignUp: true },
-    // The users API replaces these: it guards the last admin and ends the
-    // sessions of a user whose password was reset.
-    disabledPaths: [
-      "/admin/set-role",
-      "/admin/update-user",
-      "/admin/set-user-password",
-      "/admin/remove-user",
-    ],
+    // The users API replaces the admin plugin's HTTP endpoints: it guards the
+    // last admin and ends the sessions of a user whose password was reset.
+    // The server still calls some of them through auth.api, which this list
+    // does not affect.
+    disabledPaths: adminPaths.map((path) => `/admin/${path}`),
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
         if (ctx.path === "/change-password") {

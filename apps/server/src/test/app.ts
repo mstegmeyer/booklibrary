@@ -22,7 +22,8 @@ export function createTestApp() {
     LIBRARY_DIR: join(dataDir, "library"),
   });
   const db = openDatabase(config.dataDir);
-  const app = createApp(db, createAuth(db, config), {
+  const auth = createAuth(db, config);
+  const app = createApp(db, auth, {
     libraryDir: config.libraryDir,
   });
 
@@ -64,6 +65,7 @@ export function createTestApp() {
 
   return {
     app,
+    auth,
     db,
     libraryDir: config.libraryDir,
     request,

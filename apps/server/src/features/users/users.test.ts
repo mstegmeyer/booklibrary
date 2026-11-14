@@ -322,20 +322,20 @@ describe("users", () => {
   });
 
   it("leaves no way around these rules through Better Auth's admin API", async () => {
-    const { request, setupAdmin } = createTestApp();
+    const { auth, request, setupAdmin } = createTestApp();
     const token = await setupAdmin();
-    for (const path of [
-      "set-role",
-      "update-user",
-      "set-user-password",
-      "remove-user",
-    ]) {
-      const res = await request(`/api/auth/admin/${path}`, {
-        method: "POST",
+    const endpoints = Object.values(auth.api).filter((endpoint) =>
+      endpoint.path?.startsWith("/admin/"),
+    );
+    expect(endpoints).toHaveLength(15);
+    for (const { path, options } of endpoints) {
+      const method = [options.method].flat()[0];
+      const res = await request(`/api/auth${path}`, {
+        method,
         token,
-        body: {},
+        body: method === "GET" ? undefined : {},
       });
-      expect(res.status).toBe(404);
+      expect(res.status, path).toBe(404);
     }
   });
 });
