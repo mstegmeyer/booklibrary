@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { createBook } from "../catalogue.ts";
-import { expect, setupAdmin, test } from "../fixtures.ts";
+import { expect, openAccountMenu, setupAdmin, test } from "../fixtures.ts";
 import { setStatus } from "../reading.ts";
 
 // What the iPhone needs from the layout, as far as a browser shows it. The
@@ -116,6 +116,17 @@ test("the library's fields do not zoom the page", async ({ page }) => {
   await page.goto("/library");
   await expect(page.getByRole("searchbox")).toBeVisible();
   await expectFieldsZoomFree(page);
+});
+
+test("the account menu leads to the locations", async ({ page }) => {
+  await setupAdmin(page);
+  await page.goto("/library");
+
+  await openAccountMenu(page);
+  await page.getByRole("menuitem", { name: "Locations" }).click();
+
+  await expect(page).toHaveURL(/\/locations$/);
+  await expect(page.getByRole("heading", { name: "Locations" })).toBeVisible();
 });
 
 test("a very long word in a title stays on the book page", async ({ page }) => {

@@ -1,6 +1,13 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { ChevronsUpDown, LogOut, Server, UserRound, Users } from "lucide-react";
+import {
+  ChevronsUpDown,
+  LogOut,
+  MapPin,
+  Server,
+  UserRound,
+  Users,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { type Language, languages } from "../../i18n";
 import { changeServer, isInApp } from "../../lib/app-shell";
@@ -90,6 +97,15 @@ export function AccountMenu({ variant }: { variant: "sidebar" | "avatar" }) {
           ))}
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
+        {/* The tab bar has no room for Locations, so on phones it is here. */}
+        {variant === "avatar" && (
+          <DropdownMenuItem asChild>
+            <Link to="/locations">
+              <MapPin aria-hidden size={16} />
+              {t("nav.locations")}
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem asChild>
           <Link to="/account">
             <UserRound aria-hidden size={16} />
