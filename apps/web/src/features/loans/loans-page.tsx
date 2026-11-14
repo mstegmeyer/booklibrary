@@ -10,7 +10,6 @@ import { useFormat } from "../../lib/format";
 import { BookCover } from "../books/book-cover";
 import { fromIsoDate } from "../books/queries";
 import { PeopleCard } from "../contacts/people-card";
-import type { LibrarySearch } from "../library/search";
 import { LendBookDialog } from "./lend-dialog";
 import { LoanMenu, ReturnDialog } from "./loan-dialogs";
 import {
@@ -31,8 +30,7 @@ const totalOf = (query: LoansResult) => query.data?.pages[0]?.total ?? 0;
 /** Opens the add dialog of the Library for a book someone lent us. */
 const addBorrowed = {
   to: "/library",
-  // `own` is read by the add dialog, which another feature owns.
-  search: { add: true, own: "borrowed" } as LibrarySearch,
+  search: { add: true, own: "borrowed" },
 } as const;
 
 export function LoansPage() {

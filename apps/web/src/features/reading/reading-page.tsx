@@ -35,8 +35,11 @@ import {
   wantQuery,
 } from "./queries";
 
-// The add dialog reads these parameters (built by the catalogue feature).
-const addOutsideHref = "/library?add=true&own=reading-list";
+/** Opens the add dialog of the Library for a book that is only wanted. */
+const addOutside = {
+  to: "/library",
+  search: { add: true, own: "reading-list" },
+} as const;
 
 const tabs = ["reading", "want", "finished", "abandoned"] as const;
 type Tab = (typeof tabs)[number];
@@ -80,15 +83,15 @@ export function ReadingPage() {
             : undefined
         }
         actions={
-          <a
-            href={addOutsideHref}
+          <Link
+            {...addOutside}
             className={cn(
               buttonVariants({ variant: "secondary" }),
               "max-md:hidden",
             )}
           >
             {t("addOutside")}
-          </a>
+          </Link>
         }
       />
       <fieldset
@@ -117,13 +120,13 @@ export function ReadingPage() {
         {!isDesktop && tab === "reading" && (
           <>
             <WantSection reach="within" upNext />
-            <a
-              href={addOutsideHref}
+            <Link
+              {...addOutside}
               className="flex h-12 items-center justify-center gap-2 rounded-xl border border-control border-dashed font-medium text-[15px] text-ink no-underline hover:text-ink"
             >
               <Plus aria-hidden size={18} />
               {t("addOutside")}
-            </a>
+            </Link>
           </>
         )}
         {shows("want") && (
