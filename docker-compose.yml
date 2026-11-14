@@ -8,10 +8,10 @@ services:
       # The e-book files, as <author>/<title>.epub. This may be a host folder
       # that is synced elsewhere, e.g. ./Books:/library.
       - library-files:/library
-    environment:
-      # The public address, when the library is served over HTTPS through a
-      # reverse proxy. Leave it unset to accept whatever address is used.
-      # BASE_URL: https://books.example.net
+    # Set the public address when the library is served over HTTPS through a
+    # reverse proxy. Without it, whatever address is used is accepted.
+    # environment:
+    #   BASE_URL: https://books.example.net
     restart: unless-stopped
 
 volumes:
