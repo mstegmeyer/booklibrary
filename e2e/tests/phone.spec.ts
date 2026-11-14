@@ -111,6 +111,29 @@ test("sheets and dialogs keep clear of the safe areas", async ({ page }) => {
   await expectFieldsZoomFree(page);
 });
 
+test("the sort and filter sheet fits the phone in German", async ({ page }) => {
+  await german(page);
+  await setupAdmin(page);
+  await page.goto("/library");
+  const button = page.getByRole("button", { name: "Sortieren und filtern" });
+  expect(await button.boundingBox()).toMatchObject({ width: 44, height: 44 });
+  await button.click();
+
+  const sheet = page.getByRole("dialog", { name: "Sortieren und filtern" });
+  await expect(sheet).toBeVisible();
+  expect(await safeAreasOf(sheet)).toEqual(["bottom", "top"]);
+  await expectInside(sheet);
+  const box = await sheet.boundingBox();
+  expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(
+    page.viewportSize()?.height ?? 0,
+  );
+  for (const group of await sheet.getByRole("radiogroup").all())
+    await expectInside(group);
+  await expectFieldsZoomFree(page);
+  await sheet.getByRole("button", { name: "Fertig" }).scrollIntoViewIfNeeded();
+  await expectInside(sheet.getByRole("button", { name: "Zurücksetzen" }));
+});
+
 test("the library's fields do not zoom the page", async ({ page }) => {
   await setupAdmin(page);
   await page.goto("/library");
