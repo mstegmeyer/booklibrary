@@ -74,6 +74,7 @@ describe("ISBN lookup", () => {
       sources: ["dnb", "googlebooks"],
       bookId: null,
       genreId: expect.any(String),
+      format: "paperback",
     });
     expect(asked).toEqual(["dnb", "openlibrary", "googlebooks"]);
   });
@@ -222,7 +223,7 @@ describe("ISBN lookup", () => {
   });
 });
 
-describe("genre guess", () => {
+describe("genre and binding guesses", () => {
   async function setup() {
     const { request, setupAdmin } = createTestApp();
     const token = await setupAdmin();
@@ -262,6 +263,21 @@ describe("genre guess", () => {
     });
   });
 
+  it("states the binding, which the new copy takes", async () => {
+    const { call } = await setup();
+    const found = await call("/metadata/isbn/9783897484832");
+    expect(found).toMatchObject({ format: "hardcover" });
+    const book = await call("/books", "POST", {
+      title: found.title,
+      isbns: [found.isbn13],
+      copy: { format: found.format },
+    });
+    expect(book.copies).toMatchObject([{ format: "hardcover" }]);
+    expect(await call("/metadata/isbn/9781640973985")).toMatchObject({
+      format: null,
+    });
+  });
+
   it("guesses nothing for a book the library already has", async () => {
     const { call } = await setup();
     const book = await call("/books", "POST", {
@@ -269,9 +285,11 @@ describe("genre guess", () => {
       isbns: ["9783957334466"],
       copy: {},
     });
+    // Another copy of it still takes the binding.
     expect(await call("/metadata/isbn/9783957334466")).toMatchObject({
       bookId: book.id,
       genreId: null,
+      format: "paperback",
     });
   });
 });

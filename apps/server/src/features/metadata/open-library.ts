@@ -36,13 +36,30 @@ type Work = {
   editions?: { docs?: Edition[] };
 };
 
-/** Response of the Books API (`/api/books?jscmd=data`). */
+/**
+ * Response of the Read API (`/api/volumes/brief/isbn/…`): the Books API's
+ * `data` and the edition record, which alone has the physical format, in one
+ * request. An unknown ISBN gives an empty list.
+ */
+export type ReadApiResponse =
+  | {
+      records?: Record<
+        string,
+        { data?: Book; details?: { details?: { physical_format?: string } } }
+      >;
+    }
+  | [];
+
 export function parseBook(
-  json: Record<string, Book>,
+  json: ReadApiResponse,
   isbn13: string,
 ): Candidate | null {
-  const book = Object.values(json)[0];
+  const record = Array.isArray(json)
+    ? undefined
+    : Object.values(json.records ?? {})[0];
+  const book = record?.data;
   if (!book?.title) return null;
+  const binding = record?.details?.details?.physical_format;
   return candidate("openlibrary", book.title, {
     isbn13,
     subtitle: book.subtitle,
@@ -51,6 +68,7 @@ export function parseBook(
     publishedYear: yearOf(book.publish_date),
     coverUrl: book.cover?.large,
     categories: book.subjects?.map((subject) => subject.name),
+    bindings: binding ? [binding] : [],
   });
 }
 
@@ -103,12 +121,7 @@ export function openLibrary(
   return {
     name: "openlibrary",
     async byIsbn(isbn13) {
-      const url = new URL(`${baseUrl}/api/books`);
-      url.search = new URLSearchParams({
-        bibkeys: `ISBN:${isbn13}`,
-        jscmd: "data",
-        format: "json",
-      }).toString();
+      const url = new URL(`${baseUrl}/api/volumes/brief/isbn/${isbn13}.json`);
       return parseBook(await (await get(url)).json(), isbn13);
     },
     async search(query) {

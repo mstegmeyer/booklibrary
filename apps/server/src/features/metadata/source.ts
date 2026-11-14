@@ -22,6 +22,8 @@ export type Candidate = {
   sources: SourceName[];
   /** Subjects, genre terms and keywords; what the genre is guessed from. */
   categories: string[];
+  /** What the sources state about the edition's binding. */
+  bindings: string[];
 };
 
 export type Source = {
@@ -62,6 +64,7 @@ export function candidate(
     coverUrl: fields.coverUrl ?? null,
     sources: [source],
     categories: fields.categories ?? [],
+    bindings: fields.bindings ?? [],
   };
 }
 

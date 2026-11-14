@@ -1,36 +1,97 @@
 {
-  "ISBN:9781640973985": {
-    "url": "http://openlibrary.org/books/OL34146149M/Fodor's_San_Francisco",
-    "key": "/books/OL34146149M",
-    "title": "Fodor's San Francisco",
-    "subtitle": "With the Best of Napa and Sonoma",
-    "authors": [
-      {
-        "url": "http://openlibrary.org/authors/OL6822463A/Fodor's_Travel_Guides_(Firm)",
-        "name": "Fodor's Travel Guides (Firm)"
+  "records": {
+    "/books/OL34146149M": {
+      "isbns": ["9781640973985"],
+      "issns": [],
+      "lccns": [],
+      "oclcs": [],
+      "olids": ["OL34146149M"],
+      "publishDates": ["2021"],
+      "recordURL": "http://openlibrary.org/books/OL34146149M/Fodor's_San_Francisco",
+      "data": {
+        "url": "http://openlibrary.org/books/OL34146149M/Fodor's_San_Francisco",
+        "key": "/books/OL34146149M",
+        "title": "Fodor's San Francisco",
+        "subtitle": "With the Best of Napa and Sonoma",
+        "authors": [
+          {
+            "url": "http://openlibrary.org/authors/OL6822463A/Fodor's_Travel_Guides_(Firm)",
+            "name": "Fodor's Travel Guides (Firm)"
+          }
+        ],
+        "number_of_pages": 400,
+        "identifiers": {
+          "isbn_13": ["9781640973985"],
+          "openlibrary": ["OL34146149M"]
+        },
+        "publishers": [
+          {
+            "name": "Fodor's Travel"
+          }
+        ],
+        "publish_date": "2021",
+        "subjects": [
+          {
+            "name": "Travel",
+            "url": "https://openlibrary.org/subjects/travel"
+          }
+        ],
+        "cover": {
+          "small": "https://covers.openlibrary.org/b/id/14041408-S.jpg",
+          "medium": "https://covers.openlibrary.org/b/id/14041408-M.jpg",
+          "large": "https://covers.openlibrary.org/b/id/14041408-L.jpg"
+        }
+      },
+      "details": {
+        "bib_key": "isbn:9781640973985",
+        "info_url": "http://openlibrary.org/books/OL34146149M/Fodor's_San_Francisco",
+        "preview": "noview",
+        "preview_url": "http://openlibrary.org/books/OL34146149M/Fodor's_San_Francisco",
+        "thumbnail_url": "https://covers.openlibrary.org/b/id/14041408-S.jpg",
+        "details": {
+          "type": {
+            "key": "/type/edition"
+          },
+          "authors": [
+            {
+              "key": "/authors/OL6822463A",
+              "name": "Fodor's Travel Guides (Firm)"
+            }
+          ],
+          "isbn_13": ["9781640973985"],
+          "languages": [
+            {
+              "key": "/languages/eng"
+            }
+          ],
+          "number_of_pages": 400,
+          "publish_date": "2021",
+          "publishers": ["Fodor's Travel"],
+          "source_records": ["bwb:9781640973985", "amazon:1640973982"],
+          "subjects": ["Travel"],
+          "title": "Fodor's San Francisco",
+          "subtitle": "With the Best of Napa and Sonoma",
+          "full_title": "Fodor's San Francisco With the Best of Napa and Sonoma",
+          "works": [
+            {
+              "key": "/works/OL25463450W"
+            }
+          ],
+          "key": "/books/OL34146149M",
+          "covers": [14041408],
+          "latest_revision": 3,
+          "revision": 3,
+          "created": {
+            "type": "/type/datetime",
+            "value": "2021-09-30T14:43:09.701483"
+          },
+          "last_modified": {
+            "type": "/type/datetime",
+            "value": "2025-03-18T21:10:08.715294"
+          }
+        }
       }
-    ],
-    "number_of_pages": 400,
-    "identifiers": {
-      "isbn_13": ["9781640973985"],
-      "openlibrary": ["OL34146149M"]
-    },
-    "publishers": [
-      {
-        "name": "Fodor's Travel"
-      }
-    ],
-    "publish_date": "2021",
-    "subjects": [
-      {
-        "name": "Travel",
-        "url": "https://openlibrary.org/subjects/travel"
-      }
-    ],
-    "cover": {
-      "small": "https://covers.openlibrary.org/b/id/14041408-S.jpg",
-      "medium": "https://covers.openlibrary.org/b/id/14041408-M.jpg",
-      "large": "https://covers.openlibrary.org/b/id/14041408-L.jpg"
     }
-  }
+  },
+  "items": []
 }

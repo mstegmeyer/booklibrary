@@ -1,27 +1,37 @@
 {
-  "ISBN:9780140328721": {
-    "url": "http://openlibrary.org/books/OL7353617M/Fantastic_Mr._Fox",
-    "key": "/books/OL7353617M",
-    "title": "Fantastic Mr. Fox",
-    "authors": [
-      {
-        "url": "http://openlibrary.org/authors/OL34184A/Roald_Dahl",
-        "name": "Roald Dahl"
+  "records": {
+    "/books/OL7353617M": {
+      "isbns": ["9780140328721"],
+      "data": {
+        "url": "http://openlibrary.org/books/OL7353617M/Fantastic_Mr._Fox",
+        "key": "/books/OL7353617M",
+        "title": "Fantastic Mr. Fox",
+        "authors": [
+          {
+            "url": "http://openlibrary.org/authors/OL34184A/Roald_Dahl",
+            "name": "Roald Dahl"
+          }
+        ],
+        "number_of_pages": 96,
+        "identifiers": {
+          "goodreads": ["1507552"],
+          "librarything": ["6446"],
+          "isbn_10": ["0140328726"],
+          "isbn_13": ["9780140328721"],
+          "openlibrary": ["OL7353617M"]
+        },
+        "publish_date": "October 1, 1988",
+        "cover": {
+          "small": "https://covers.openlibrary.org/b/id/15152634-S.jpg",
+          "medium": "https://covers.openlibrary.org/b/id/15152634-M.jpg",
+          "large": "https://covers.openlibrary.org/b/id/15152634-L.jpg"
+        }
+      },
+      "details": {
+        "bib_key": "isbn:9780140328721",
+        "details": {}
       }
-    ],
-    "number_of_pages": 96,
-    "identifiers": {
-      "goodreads": ["1507552"],
-      "librarything": ["6446"],
-      "isbn_10": ["0140328726"],
-      "isbn_13": ["9780140328721"],
-      "openlibrary": ["OL7353617M"]
-    },
-    "publish_date": "October 1, 1988",
-    "cover": {
-      "small": "https://covers.openlibrary.org/b/id/15152634-S.jpg",
-      "medium": "https://covers.openlibrary.org/b/id/15152634-M.jpg",
-      "large": "https://covers.openlibrary.org/b/id/15152634-L.jpg"
     }
-  }
+  },
+  "items": []
 }

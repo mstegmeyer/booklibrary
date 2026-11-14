@@ -1,12 +1,57 @@
 {
-  "ISBN:9783749902484": {
-    "url": "http://openlibrary.org/books/OL49809078M/Bridgerton_-_Der_Duke_und_ich",
-    "key": "/books/OL49809078M",
-    "title": "Bridgerton - Der Duke und ich",
-    "identifiers": {
-      "isbn_10": ["3749902488"],
-      "isbn_13": ["9783749902484"],
-      "openlibrary": ["OL49809078M"]
+  "records": {
+    "/books/OL49809078M": {
+      "isbns": ["3749902488", "9783749902484"],
+      "issns": [],
+      "lccns": [],
+      "oclcs": [],
+      "olids": ["OL49809078M"],
+      "publishDates": [""],
+      "recordURL": "http://openlibrary.org/books/OL49809078M/Bridgerton_-_Der_Duke_und_ich",
+      "data": {
+        "url": "http://openlibrary.org/books/OL49809078M/Bridgerton_-_Der_Duke_und_ich",
+        "key": "/books/OL49809078M",
+        "title": "Bridgerton - Der Duke und ich",
+        "identifiers": {
+          "isbn_10": ["3749902488"],
+          "isbn_13": ["9783749902484"],
+          "openlibrary": ["OL49809078M"]
+        }
+      },
+      "details": {
+        "bib_key": "isbn:9783749902484",
+        "info_url": "http://openlibrary.org/books/OL49809078M/Bridgerton_-_Der_Duke_und_ich",
+        "preview": "noview",
+        "preview_url": "http://openlibrary.org/books/OL49809078M/Bridgerton_-_Der_Duke_und_ich",
+        "details": {
+          "type": {
+            "key": "/type/edition"
+          },
+          "isbn_10": ["3749902488"],
+          "isbn_13": ["9783749902484"],
+          "local_id": ["urn:bwbsku:O9-BUZ-867"],
+          "source_records": ["promise:bwb_daily_pallets_2023-10-20:O9-BUZ-867"],
+          "title": "Bridgerton - Der Duke und ich",
+          "full_title": "Bridgerton - Der Duke und ich",
+          "works": [
+            {
+              "key": "/works/OL36875524W"
+            }
+          ],
+          "key": "/books/OL49809078M",
+          "latest_revision": 1,
+          "revision": 1,
+          "created": {
+            "type": "/type/datetime",
+            "value": "2023-10-22T01:15:54.039242"
+          },
+          "last_modified": {
+            "type": "/type/datetime",
+            "value": "2023-10-22T01:15:54.039242"
+          }
+        }
+      }
     }
-  }
+  },
+  "items": []
 }

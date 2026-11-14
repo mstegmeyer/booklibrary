@@ -1,30 +1,90 @@
 {
-  "ISBN:9783442774241": {
-    "url": "http://openlibrary.org/books/OL61447857M/Zwischen_Welten",
-    "key": "/books/OL61447857M",
-    "title": "Zwischen Welten",
-    "authors": [
-      {
-        "url": "http://openlibrary.org/authors/OL7413462A/Simon_Urban",
-        "name": "Simon Urban"
+  "records": {
+    "/books/OL61447857M": {
+      "isbns": ["9783442774241"],
+      "issns": [],
+      "lccns": [],
+      "oclcs": [],
+      "olids": ["OL61447857M"],
+      "publishDates": ["2024"],
+      "recordURL": "http://openlibrary.org/books/OL61447857M/Zwischen_Welten",
+      "data": {
+        "url": "http://openlibrary.org/books/OL61447857M/Zwischen_Welten",
+        "key": "/books/OL61447857M",
+        "title": "Zwischen Welten",
+        "authors": [
+          {
+            "url": "http://openlibrary.org/authors/OL7413462A/Simon_Urban",
+            "name": "Simon Urban"
+          }
+        ],
+        "number_of_pages": 444,
+        "by_statement": "Juli Zeh",
+        "identifiers": {
+          "isbn_13": ["9783442774241"],
+          "openlibrary": ["OL61447857M"]
+        },
+        "publishers": [
+          {
+            "name": "Btb-Verlag"
+          }
+        ],
+        "publish_date": "2024",
+        "cover": {
+          "small": "https://covers.openlibrary.org/b/id/15201367-S.jpg",
+          "medium": "https://covers.openlibrary.org/b/id/15201367-M.jpg",
+          "large": "https://covers.openlibrary.org/b/id/15201367-L.jpg"
+        }
+      },
+      "details": {
+        "bib_key": "isbn:9783442774241",
+        "info_url": "http://openlibrary.org/books/OL61447857M/Zwischen_Welten",
+        "preview": "noview",
+        "preview_url": "http://openlibrary.org/books/OL61447857M/Zwischen_Welten",
+        "thumbnail_url": "https://covers.openlibrary.org/b/id/15201367-S.jpg",
+        "details": {
+          "works": [
+            {
+              "key": "/works/OL45046479W"
+            }
+          ],
+          "title": "Zwischen Welten",
+          "publishers": ["Btb-Verlag"],
+          "publish_date": "2024",
+          "key": "/books/OL61447857M",
+          "type": {
+            "key": "/type/edition"
+          },
+          "identifiers": {},
+          "covers": [15201367],
+          "languages": [
+            {
+              "key": "/languages/ger"
+            }
+          ],
+          "physical_format": "Taschenbuch",
+          "number_of_pages": 444,
+          "isbn_13": ["9783442774241"],
+          "contributors": [
+            {
+              "role": "Author name as appears on this edition",
+              "name": "Juli Zeh"
+            }
+          ],
+          "by_statement": "Juli Zeh",
+          "latest_revision": 4,
+          "revision": 4,
+          "created": {
+            "type": "/type/datetime",
+            "value": "2026-03-25T21:18:39.002951"
+          },
+          "last_modified": {
+            "type": "/type/datetime",
+            "value": "2026-03-25T21:25:59.650527"
+          }
+        }
       }
-    ],
-    "number_of_pages": 444,
-    "by_statement": "Juli Zeh",
-    "identifiers": {
-      "isbn_13": ["9783442774241"],
-      "openlibrary": ["OL61447857M"]
-    },
-    "publishers": [
-      {
-        "name": "Btb-Verlag"
-      }
-    ],
-    "publish_date": "2024",
-    "cover": {
-      "small": "https://covers.openlibrary.org/b/id/15201367-S.jpg",
-      "medium": "https://covers.openlibrary.org/b/id/15201367-M.jpg",
-      "large": "https://covers.openlibrary.org/b/id/15201367-L.jpg"
     }
-  }
+  },
+  "items": []
 }

@@ -1,173 +1,348 @@
 {
-  "ISBN:9781409150541": {
-    "url": "http://openlibrary.org/books/OL29171687M/Deal_Breaker",
-    "key": "/books/OL29171687M",
-    "title": "Deal Breaker",
-    "authors": [
-      {
-        "url": "http://openlibrary.org/authors/OL39821A/Harlan_Coben",
-        "name": "Harlan Coben"
+  "records": {
+    "/books/OL29171687M": {
+      "isbns": ["9781409150541"],
+      "issns": [],
+      "lccns": [],
+      "oclcs": [],
+      "olids": ["OL29171687M"],
+      "publishDates": ["2014"],
+      "recordURL": "http://openlibrary.org/books/OL29171687M/Deal_Breaker",
+      "data": {
+        "url": "http://openlibrary.org/books/OL29171687M/Deal_Breaker",
+        "key": "/books/OL29171687M",
+        "title": "Deal Breaker",
+        "authors": [
+          {
+            "url": "http://openlibrary.org/authors/OL39821A/Harlan_Coben",
+            "name": "Harlan Coben"
+          }
+        ],
+        "number_of_pages": 400,
+        "identifiers": {
+          "isbn_13": ["9781409150541"],
+          "openlibrary": ["OL29171687M"]
+        },
+        "classifications": {
+          "lc_classifications": ["PS3553.O225"]
+        },
+        "publishers": [
+          {
+            "name": "Orion Publishing Group, Limited"
+          }
+        ],
+        "publish_date": "2014",
+        "subjects": [
+          {
+            "name": "Sports agents",
+            "url": "https://openlibrary.org/subjects/sports_agents"
+          },
+          {
+            "name": "Quarterbacks (Football)",
+            "url": "https://openlibrary.org/subjects/quarterbacks_(football)"
+          },
+          {
+            "name": "Fiction",
+            "url": "https://openlibrary.org/subjects/fiction"
+          },
+          {
+            "name": "Football players",
+            "url": "https://openlibrary.org/subjects/football_players"
+          },
+          {
+            "name": "Myron Bolitar (Fictitious character)",
+            "url": "https://openlibrary.org/subjects/myron_bolitar_(fictitious_character)"
+          },
+          {
+            "name": "Extortion",
+            "url": "https://openlibrary.org/subjects/extortion"
+          },
+          {
+            "name": "Detective and mystery stories",
+            "url": "https://openlibrary.org/subjects/detective_and_mystery_stories"
+          },
+          {
+            "name": "Large type books",
+            "url": "https://openlibrary.org/subjects/large_type_books"
+          },
+          {
+            "name": "French fiction",
+            "url": "https://openlibrary.org/subjects/french_fiction"
+          },
+          {
+            "name": "Sportifs",
+            "url": "https://openlibrary.org/subjects/sportifs"
+          },
+          {
+            "name": "Romans, nouvelles",
+            "url": "https://openlibrary.org/subjects/romans,_nouvelles"
+          },
+          {
+            "name": "Footballeurs",
+            "url": "https://openlibrary.org/subjects/footballeurs"
+          },
+          {
+            "name": "Agents d'affaires (Sports)",
+            "url": "https://openlibrary.org/subjects/agents_d'affaires_(sports)"
+          },
+          {
+            "name": "Extorsion",
+            "url": "https://openlibrary.org/subjects/extorsion"
+          },
+          {
+            "name": "Fiction, mystery & detective, general",
+            "url": "https://openlibrary.org/subjects/fiction,_mystery_&_detective,_general"
+          },
+          {
+            "name": "Fiction, thrillers, suspense",
+            "url": "https://openlibrary.org/subjects/fiction,_thrillers,_suspense"
+          },
+          {
+            "name": "Bolitar, myron (fictitious character), fiction",
+            "url": "https://openlibrary.org/subjects/bolitar,_myron_(fictitious_character),_fiction"
+          },
+          {
+            "name": "Mystery and detective",
+            "url": "https://openlibrary.org/subjects/mystery_and_detective"
+          },
+          {
+            "name": "Fiction, thrillers, general",
+            "url": "https://openlibrary.org/subjects/fiction,_thrillers,_general"
+          },
+          {
+            "name": "Crime, fiction",
+            "url": "https://openlibrary.org/subjects/crime,_fiction"
+          },
+          {
+            "name": "Quarts-arrières",
+            "url": "https://openlibrary.org/subjects/quarts-arrières"
+          },
+          {
+            "name": "Bolitar, Myron (Personaje literario)",
+            "url": "https://openlibrary.org/subjects/bolitar,_myron_(personaje_literario)"
+          },
+          {
+            "name": "Novela",
+            "url": "https://openlibrary.org/subjects/novela"
+          },
+          {
+            "name": "Jugadores de fútbol americano",
+            "url": "https://openlibrary.org/subjects/jugadores_de_fútbol_americano"
+          },
+          {
+            "name": "Agentes de deportes",
+            "url": "https://openlibrary.org/subjects/agentes_de_deportes"
+          },
+          {
+            "name": "Chantaje",
+            "url": "https://openlibrary.org/subjects/chantaje"
+          },
+          {
+            "name": "New york (n.y.), fiction",
+            "url": "https://openlibrary.org/subjects/new_york_(n.y.),_fiction"
+          },
+          {
+            "name": "Fiction, suspense",
+            "url": "https://openlibrary.org/subjects/fiction,_suspense"
+          },
+          {
+            "name": "Series:Myron-Bolitar",
+            "url": "https://openlibrary.org/subjects/series:myron-bolitar"
+          }
+        ],
+        "subject_places": [
+          {
+            "name": "New York (N.Y.)",
+            "url": "https://openlibrary.org/subjects/place:new_york_(n.y.)"
+          },
+          {
+            "name": "United States",
+            "url": "https://openlibrary.org/subjects/place:united_states"
+          },
+          {
+            "name": "New York (State)",
+            "url": "https://openlibrary.org/subjects/place:new_york_(state)"
+          },
+          {
+            "name": "New York",
+            "url": "https://openlibrary.org/subjects/place:new_york"
+          }
+        ],
+        "subject_people": [
+          {
+            "name": "Myron Bolitar (Fictitious character)",
+            "url": "https://openlibrary.org/subjects/person:myron_bolitar_(fictitious_character)"
+          },
+          {
+            "name": "Myron Bolitar",
+            "url": "https://openlibrary.org/subjects/person:myron_bolitar"
+          }
+        ]
+      },
+      "details": {
+        "bib_key": "isbn:9781409150541",
+        "info_url": "http://openlibrary.org/books/OL29171687M/Deal_Breaker",
+        "preview": "noview",
+        "preview_url": "http://openlibrary.org/books/OL29171687M/Deal_Breaker",
+        "details": {
+          "publishers": ["Orion Publishing Group, Limited"],
+          "source_records": [
+            "bwb:9781409150541",
+            "promise:bwb_daily_pallets_2022-07-11"
+          ],
+          "title": "Deal Breaker",
+          "number_of_pages": 400,
+          "isbn_13": ["9781409150541"],
+          "languages": [
+            {
+              "key": "/languages/eng"
+            }
+          ],
+          "full_title": "Deal Breaker",
+          "lc_classifications": ["PS3553.O225"],
+          "publish_date": "2014",
+          "key": "/books/OL29171687M",
+          "authors": [
+            {
+              "key": "/authors/OL39821A",
+              "name": "Harlan Coben"
+            }
+          ],
+          "works": [
+            {
+              "key": "/works/OL79323W"
+            }
+          ],
+          "type": {
+            "key": "/type/edition"
+          },
+          "subjects": [
+            "Fiction, suspense",
+            "Fiction, thrillers, general",
+            "Bolitar, myron (fictitious character), fiction"
+          ],
+          "local_id": ["urn:bwbsku:KQ-814-572"],
+          "latest_revision": 4,
+          "revision": 4,
+          "created": {
+            "type": "/type/datetime",
+            "value": "2020-08-22T21:38:46.815901"
+          },
+          "last_modified": {
+            "type": "/type/datetime",
+            "value": "2026-03-26T20:51:47.463680"
+          }
+        }
       }
-    ],
-    "number_of_pages": 400,
-    "identifiers": {
-      "isbn_13": ["9781409150541"],
-      "openlibrary": ["OL29171687M"]
+    }
+  },
+  "items": [
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL29171687M",
+      "ol-edition-id": "OL13311841M",
+      "ol-work-id": "OL79323W",
+      "publishDate": "",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL13311841M/Motivo_de_ruptura/borrow",
+      "cover": {
+        "small": "https://covers.openlibrary.org/b/id/3330626-S.jpg",
+        "medium": "https://covers.openlibrary.org/b/id/3330626-M.jpg",
+        "large": "https://covers.openlibrary.org/b/id/3330626-L.jpg"
+      }
     },
-    "classifications": {
-      "lc_classifications": ["PS3553.O225"]
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL29171687M",
+      "ol-edition-id": "OL8889631M",
+      "ol-work-id": "OL79323W",
+      "publishDate": "",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL8889631M/Rupture_de_contrat/borrow",
+      "cover": {
+        "small": "https://covers.openlibrary.org/b/id/2153613-S.jpg",
+        "medium": "https://covers.openlibrary.org/b/id/2153613-M.jpg",
+        "large": "https://covers.openlibrary.org/b/id/2153613-L.jpg"
+      }
     },
-    "publishers": [
-      {
-        "name": "Orion Publishing Group, Limited"
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL29171687M",
+      "ol-edition-id": "OL30688265M",
+      "ol-work-id": "OL79323W",
+      "publishDate": "2016",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL30688265M/Bez_skrupułów/borrow",
+      "cover": {
+        "small": "https://covers.openlibrary.org/b/id/10486793-S.jpg",
+        "medium": "https://covers.openlibrary.org/b/id/10486793-M.jpg",
+        "large": "https://covers.openlibrary.org/b/id/10486793-L.jpg"
       }
-    ],
-    "publish_date": "2014",
-    "subjects": [
-      {
-        "name": "Sports agents",
-        "url": "https://openlibrary.org/subjects/sports_agents"
-      },
-      {
-        "name": "Quarterbacks (Football)",
-        "url": "https://openlibrary.org/subjects/quarterbacks_(football)"
-      },
-      {
-        "name": "Fiction",
-        "url": "https://openlibrary.org/subjects/fiction"
-      },
-      {
-        "name": "Football players",
-        "url": "https://openlibrary.org/subjects/football_players"
-      },
-      {
-        "name": "Myron Bolitar (Fictitious character)",
-        "url": "https://openlibrary.org/subjects/myron_bolitar_(fictitious_character)"
-      },
-      {
-        "name": "Extortion",
-        "url": "https://openlibrary.org/subjects/extortion"
-      },
-      {
-        "name": "Detective and mystery stories",
-        "url": "https://openlibrary.org/subjects/detective_and_mystery_stories"
-      },
-      {
-        "name": "Large type books",
-        "url": "https://openlibrary.org/subjects/large_type_books"
-      },
-      {
-        "name": "French fiction",
-        "url": "https://openlibrary.org/subjects/french_fiction"
-      },
-      {
-        "name": "Sportifs",
-        "url": "https://openlibrary.org/subjects/sportifs"
-      },
-      {
-        "name": "Romans, nouvelles",
-        "url": "https://openlibrary.org/subjects/romans,_nouvelles"
-      },
-      {
-        "name": "Footballeurs",
-        "url": "https://openlibrary.org/subjects/footballeurs"
-      },
-      {
-        "name": "Agents d'affaires (Sports)",
-        "url": "https://openlibrary.org/subjects/agents_d'affaires_(sports)"
-      },
-      {
-        "name": "Extorsion",
-        "url": "https://openlibrary.org/subjects/extorsion"
-      },
-      {
-        "name": "Fiction, mystery & detective, general",
-        "url": "https://openlibrary.org/subjects/fiction,_mystery_&_detective,_general"
-      },
-      {
-        "name": "Fiction, thrillers, suspense",
-        "url": "https://openlibrary.org/subjects/fiction,_thrillers,_suspense"
-      },
-      {
-        "name": "Bolitar, myron (fictitious character), fiction",
-        "url": "https://openlibrary.org/subjects/bolitar,_myron_(fictitious_character),_fiction"
-      },
-      {
-        "name": "Mystery and detective",
-        "url": "https://openlibrary.org/subjects/mystery_and_detective"
-      },
-      {
-        "name": "Fiction, thrillers, general",
-        "url": "https://openlibrary.org/subjects/fiction,_thrillers,_general"
-      },
-      {
-        "name": "Crime, fiction",
-        "url": "https://openlibrary.org/subjects/crime,_fiction"
-      },
-      {
-        "name": "Quarts-arri\u00e8res",
-        "url": "https://openlibrary.org/subjects/quarts-arri\u00e8res"
-      },
-      {
-        "name": "Bolitar, Myron (Personaje literario)",
-        "url": "https://openlibrary.org/subjects/bolitar,_myron_(personaje_literario)"
-      },
-      {
-        "name": "Novela",
-        "url": "https://openlibrary.org/subjects/novela"
-      },
-      {
-        "name": "Jugadores de f\u00fatbol americano",
-        "url": "https://openlibrary.org/subjects/jugadores_de_f\u00fatbol_americano"
-      },
-      {
-        "name": "Agentes de deportes",
-        "url": "https://openlibrary.org/subjects/agentes_de_deportes"
-      },
-      {
-        "name": "Chantaje",
-        "url": "https://openlibrary.org/subjects/chantaje"
-      },
-      {
-        "name": "New york (n.y.), fiction",
-        "url": "https://openlibrary.org/subjects/new_york_(n.y.),_fiction"
-      },
-      {
-        "name": "Fiction, suspense",
-        "url": "https://openlibrary.org/subjects/fiction,_suspense"
-      },
-      {
-        "name": "Series:Myron-Bolitar",
-        "url": "https://openlibrary.org/subjects/series:myron-bolitar"
+    },
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL29171687M",
+      "ol-edition-id": "OL47835614M",
+      "ol-work-id": "OL79323W",
+      "publishDate": "2011",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL47835614M/Rupture_de_contrat/borrow"
+    },
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL29171687M",
+      "ol-edition-id": "OL28228968M",
+      "ol-work-id": "OL79323W",
+      "publishDate": "2010",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL28228968M/Tian_shi_de_yin_si/borrow",
+      "cover": {
+        "small": "https://covers.openlibrary.org/b/id/10161154-S.jpg",
+        "medium": "https://covers.openlibrary.org/b/id/10161154-M.jpg",
+        "large": "https://covers.openlibrary.org/b/id/10161154-L.jpg"
       }
-    ],
-    "subject_places": [
-      {
-        "name": "New York (N.Y.)",
-        "url": "https://openlibrary.org/subjects/place:new_york_(n.y.)"
-      },
-      {
-        "name": "United States",
-        "url": "https://openlibrary.org/subjects/place:united_states"
-      },
-      {
-        "name": "New York (State)",
-        "url": "https://openlibrary.org/subjects/place:new_york_(state)"
-      },
-      {
-        "name": "New York",
-        "url": "https://openlibrary.org/subjects/place:new_york"
+    },
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL29171687M",
+      "ol-edition-id": "OL23064711M",
+      "ol-work-id": "OL79323W",
+      "publishDate": "2005",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL23064711M/Xue_se_jiao_yi/borrow",
+      "cover": {
+        "small": "https://covers.openlibrary.org/b/id/12594303-S.jpg",
+        "medium": "https://covers.openlibrary.org/b/id/12594303-M.jpg",
+        "large": "https://covers.openlibrary.org/b/id/12594303-L.jpg"
       }
-    ],
-    "subject_people": [
-      {
-        "name": "Myron Bolitar (Fictitious character)",
-        "url": "https://openlibrary.org/subjects/person:myron_bolitar_(fictitious_character)"
-      },
-      {
-        "name": "Myron Bolitar",
-        "url": "https://openlibrary.org/subjects/person:myron_bolitar"
+    },
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL29171687M",
+      "ol-edition-id": "OL35332592M",
+      "ol-work-id": "OL79323W",
+      "publishDate": "2003",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL35332592M/Rupture_de_contrat/borrow",
+      "cover": {
+        "small": "https://covers.openlibrary.org/b/id/12152445-S.jpg",
+        "medium": "https://covers.openlibrary.org/b/id/12152445-M.jpg",
+        "large": "https://covers.openlibrary.org/b/id/12152445-L.jpg"
       }
-    ]
-  }
+    }
+  ]
 }

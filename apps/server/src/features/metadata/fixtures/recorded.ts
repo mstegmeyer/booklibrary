@@ -59,8 +59,8 @@ export function recordedResponse(url: URL) {
         ]
       : [
           "openlibrary",
-          url.pathname.endsWith("/api/books")
-            ? `openlibrary-isbn-${isbn(params.get("bibkeys")?.slice(5))}.json`
+          url.pathname.includes("/api/volumes/brief/isbn/")
+            ? `openlibrary-isbn-${isbn(url.pathname.split("/").at(-1)?.replace(".json", ""))}.json`
             : params.get("q")?.startsWith("isbn:")
               ? `openlibrary-work-${isbn(params.get("q")?.slice(5))}.json`
               : "openlibrary-search.json",

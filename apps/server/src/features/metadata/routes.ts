@@ -26,6 +26,10 @@ export const Candidate = z
       description:
         "The built-in genre the sources' categories point to; null when they leave it unclear or `bookId` is set",
     }),
+    format: z.enum(["paperback", "hardcover"]).nullable().openapi({
+      description:
+        "The binding the sources state, for a copy; null when they say nothing or disagree",
+    }),
   })
   .openapi("MetadataCandidate");
 

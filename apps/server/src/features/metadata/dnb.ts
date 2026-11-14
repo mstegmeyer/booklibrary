@@ -71,6 +71,15 @@ function parseRecord(record: Element): Candidate | null {
     categories: ["650", "655", "689", "653"].flatMap((tag) =>
       datafields(record, tag).flatMap((field) => values(field, "a")),
     ),
+    // "Broschur : EUR 16.00 (DE)": the binding precedes the price.
+    bindings: [
+      ...datafields(record, "020")
+        .flatMap((field) => values(field, "c"))
+        .map((terms) => terms.split(" : ")[0] ?? ""),
+      ...datafields(record, "653")
+        .flatMap((field) => values(field, "a"))
+        .filter((keyword) => /^\((Produktform|VLB-PF|VLB-WN)\)/.test(keyword)),
+    ],
   });
 }
 

@@ -25,6 +25,7 @@ describe("Open Library", () => {
       coverUrl: "https://covers.openlibrary.org/b/id/15152634-L.jpg",
       sources: ["openlibrary"],
       categories: [],
+      bindings: [],
     });
   });
 
@@ -36,8 +37,16 @@ describe("Open Library", () => {
     expect(book?.categories).toEqual(["Travel"]);
   });
 
+  it("takes the edition's physical format as a binding statement", () => {
+    const book = parseBook(
+      json("openlibrary-isbn-9783442774241.json"),
+      "9783442774241",
+    );
+    expect(book?.bindings).toEqual(["Taschenbuch"]);
+  });
+
   it("returns null for an unknown ISBN", () => {
-    expect(parseBook({}, "9780000000002")).toBeNull();
+    expect(parseBook([], "9780000000002")).toBeNull();
   });
 
   it("parses search results from their best-matching edition", () => {
@@ -55,6 +64,7 @@ describe("Open Library", () => {
       coverUrl: "https://covers.openlibrary.org/b/id/8782586-L.jpg",
       sources: ["openlibrary"],
       categories: [],
+      bindings: [],
     });
   });
 });
@@ -75,6 +85,7 @@ describe("Google Books", () => {
           "https://books.google.com/books/content?id=fixture-mr-fox&printsec=frontcover&img=1&zoom=1&source=gbs_api",
         sources: ["googlebooks"],
         categories: [],
+        bindings: [],
       },
     ]);
   });
@@ -108,6 +119,7 @@ describe("DNB", () => {
         coverUrl: null,
         sources: ["dnb"],
         categories: [],
+        bindings: ["kart.", "kart."],
       },
     ]);
   });

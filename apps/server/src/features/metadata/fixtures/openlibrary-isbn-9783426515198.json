@@ -1,123 +1,200 @@
 {
-  "ISBN:9783426515198": {
-    "url": "http://openlibrary.org/books/OL28193935M/Eiszeit",
-    "key": "/books/OL28193935M",
-    "title": "Eiszeit",
-    "subtitle": "Ein neuer Fall f\u00fcr Carol Jordan und Tony Hill",
-    "authors": [
-      {
-        "url": "http://openlibrary.org/authors/OL34684A/Val_McDermid",
-        "name": "Val McDermid"
+  "records": {
+    "/books/OL28193935M": {
+      "isbns": ["3426515199", "9783426515198"],
+      "issns": [],
+      "lccns": [],
+      "oclcs": [],
+      "olids": ["OL28193935M"],
+      "publishDates": ["Nov 03, 2014"],
+      "recordURL": "http://openlibrary.org/books/OL28193935M/Eiszeit",
+      "data": {
+        "url": "http://openlibrary.org/books/OL28193935M/Eiszeit",
+        "key": "/books/OL28193935M",
+        "title": "Eiszeit",
+        "subtitle": "Ein neuer Fall für Carol Jordan und Tony Hill",
+        "authors": [
+          {
+            "url": "http://openlibrary.org/authors/OL34684A/Val_McDermid",
+            "name": "Val McDermid"
+          }
+        ],
+        "identifiers": {
+          "isbn_10": ["3426515199"],
+          "isbn_13": ["9783426515198"],
+          "openlibrary": ["OL28193935M"]
+        },
+        "publishers": [
+          {
+            "name": "Knaur Taschenbuch"
+          }
+        ],
+        "publish_date": "Nov 03, 2014",
+        "subjects": [
+          {
+            "name": "Murder",
+            "url": "https://openlibrary.org/subjects/murder"
+          },
+          {
+            "name": "Investigation",
+            "url": "https://openlibrary.org/subjects/investigation"
+          },
+          {
+            "name": "Detective Chief Inspector Jordan, Carol (Fictitious character)",
+            "url": "https://openlibrary.org/subjects/detective_chief_inspector_jordan,_carol_(fictitious_character)"
+          },
+          {
+            "name": "Serial murderers",
+            "url": "https://openlibrary.org/subjects/serial_murderers"
+          },
+          {
+            "name": "Clinical psychologists",
+            "url": "https://openlibrary.org/subjects/clinical_psychologists"
+          },
+          {
+            "name": "Doctor Hill, Tony (Fictitious character)",
+            "url": "https://openlibrary.org/subjects/doctor_hill,_tony_(fictitious_character)"
+          },
+          {
+            "name": "Fiction",
+            "url": "https://openlibrary.org/subjects/fiction"
+          },
+          {
+            "name": "Fiction, mystery & detective, general",
+            "url": "https://openlibrary.org/subjects/fiction,_mystery_&_detective,_general"
+          },
+          {
+            "name": "Fiction, thrillers, suspense",
+            "url": "https://openlibrary.org/subjects/fiction,_thrillers,_suspense"
+          },
+          {
+            "name": "Hill, tony, doctor (fictitious character), fiction",
+            "url": "https://openlibrary.org/subjects/hill,_tony,_doctor_(fictitious_character),_fiction"
+          },
+          {
+            "name": "Jordan, carol, detective chief inspector (fictitious character), fiction",
+            "url": "https://openlibrary.org/subjects/jordan,_carol,_detective_chief_inspector_(fictitious_character),_fiction"
+          },
+          {
+            "name": "Criminals, fiction",
+            "url": "https://openlibrary.org/subjects/criminals,_fiction"
+          },
+          {
+            "name": "Fiction, thrillers, general",
+            "url": "https://openlibrary.org/subjects/fiction,_thrillers,_general"
+          },
+          {
+            "name": "Fiction, suspense",
+            "url": "https://openlibrary.org/subjects/fiction,_suspense"
+          },
+          {
+            "name": "England, fiction",
+            "url": "https://openlibrary.org/subjects/england,_fiction"
+          },
+          {
+            "name": "Suspense fiction",
+            "url": "https://openlibrary.org/subjects/suspense_fiction"
+          },
+          {
+            "name": "Detective and mystery stories",
+            "url": "https://openlibrary.org/subjects/detective_and_mystery_stories"
+          },
+          {
+            "name": "Police psychologists",
+            "url": "https://openlibrary.org/subjects/police_psychologists"
+          },
+          {
+            "name": "Police",
+            "url": "https://openlibrary.org/subjects/police"
+          },
+          {
+            "name": "Mystery fiction",
+            "url": "https://openlibrary.org/subjects/mystery_fiction"
+          },
+          {
+            "name": "Psychological fiction",
+            "url": "https://openlibrary.org/subjects/psychological_fiction"
+          }
+        ],
+        "subject_places": [
+          {
+            "name": "England",
+            "url": "https://openlibrary.org/subjects/place:england"
+          }
+        ],
+        "notes": "Source title: Eiszeit: Ein neuer Fall für Carol Jordan und Tony Hill",
+        "cover": {
+          "small": "https://covers.openlibrary.org/b/id/10129913-S.jpg",
+          "medium": "https://covers.openlibrary.org/b/id/10129913-M.jpg",
+          "large": "https://covers.openlibrary.org/b/id/10129913-L.jpg"
+        }
+      },
+      "details": {
+        "bib_key": "isbn:9783426515198",
+        "info_url": "http://openlibrary.org/books/OL28193935M/Eiszeit",
+        "preview": "noview",
+        "preview_url": "http://openlibrary.org/books/OL28193935M/Eiszeit",
+        "thumbnail_url": "https://covers.openlibrary.org/b/id/10129913-S.jpg",
+        "details": {
+          "publishers": ["Knaur Taschenbuch"],
+          "subtitle": "Ein neuer Fall für Carol Jordan und Tony Hill",
+          "source_records": ["amazon:3426515199"],
+          "title": "Eiszeit",
+          "notes": {
+            "type": "/type/text",
+            "value": "Source title: Eiszeit: Ein neuer Fall für Carol Jordan und Tony Hill"
+          },
+          "isbn_13": ["9783426515198"],
+          "covers": [10129913],
+          "physical_format": "paperback",
+          "full_title": "Eiszeit Ein neuer Fall für Carol Jordan und Tony Hill",
+          "isbn_10": ["3426515199"],
+          "publish_date": "Nov 03, 2014",
+          "key": "/books/OL28193935M",
+          "authors": [
+            {
+              "key": "/authors/OL34684A",
+              "name": "Val McDermid"
+            }
+          ],
+          "works": [
+            {
+              "key": "/works/OL19358920W"
+            }
+          ],
+          "type": {
+            "key": "/type/edition"
+          },
+          "latest_revision": 3,
+          "revision": 3,
+          "created": {
+            "type": "/type/datetime",
+            "value": "2020-06-04T14:22:30.927686"
+          },
+          "last_modified": {
+            "type": "/type/datetime",
+            "value": "2024-02-27T20:59:20.163346"
+          }
+        }
       }
-    ],
-    "identifiers": {
-      "isbn_10": ["3426515199"],
-      "isbn_13": ["9783426515198"],
-      "openlibrary": ["OL28193935M"]
-    },
-    "publishers": [
-      {
-        "name": "Knaur Taschenbuch"
-      }
-    ],
-    "publish_date": "Nov 03, 2014",
-    "subjects": [
-      {
-        "name": "Murder",
-        "url": "https://openlibrary.org/subjects/murder"
-      },
-      {
-        "name": "Investigation",
-        "url": "https://openlibrary.org/subjects/investigation"
-      },
-      {
-        "name": "Detective Chief Inspector Jordan, Carol (Fictitious character)",
-        "url": "https://openlibrary.org/subjects/detective_chief_inspector_jordan,_carol_(fictitious_character)"
-      },
-      {
-        "name": "Serial murderers",
-        "url": "https://openlibrary.org/subjects/serial_murderers"
-      },
-      {
-        "name": "Clinical psychologists",
-        "url": "https://openlibrary.org/subjects/clinical_psychologists"
-      },
-      {
-        "name": "Doctor Hill, Tony (Fictitious character)",
-        "url": "https://openlibrary.org/subjects/doctor_hill,_tony_(fictitious_character)"
-      },
-      {
-        "name": "Fiction",
-        "url": "https://openlibrary.org/subjects/fiction"
-      },
-      {
-        "name": "Fiction, mystery & detective, general",
-        "url": "https://openlibrary.org/subjects/fiction,_mystery_&_detective,_general"
-      },
-      {
-        "name": "Fiction, thrillers, suspense",
-        "url": "https://openlibrary.org/subjects/fiction,_thrillers,_suspense"
-      },
-      {
-        "name": "Hill, tony, doctor (fictitious character), fiction",
-        "url": "https://openlibrary.org/subjects/hill,_tony,_doctor_(fictitious_character),_fiction"
-      },
-      {
-        "name": "Jordan, carol, detective chief inspector (fictitious character), fiction",
-        "url": "https://openlibrary.org/subjects/jordan,_carol,_detective_chief_inspector_(fictitious_character),_fiction"
-      },
-      {
-        "name": "Criminals, fiction",
-        "url": "https://openlibrary.org/subjects/criminals,_fiction"
-      },
-      {
-        "name": "Fiction, thrillers, general",
-        "url": "https://openlibrary.org/subjects/fiction,_thrillers,_general"
-      },
-      {
-        "name": "Fiction, suspense",
-        "url": "https://openlibrary.org/subjects/fiction,_suspense"
-      },
-      {
-        "name": "England, fiction",
-        "url": "https://openlibrary.org/subjects/england,_fiction"
-      },
-      {
-        "name": "Suspense fiction",
-        "url": "https://openlibrary.org/subjects/suspense_fiction"
-      },
-      {
-        "name": "Detective and mystery stories",
-        "url": "https://openlibrary.org/subjects/detective_and_mystery_stories"
-      },
-      {
-        "name": "Police psychologists",
-        "url": "https://openlibrary.org/subjects/police_psychologists"
-      },
-      {
-        "name": "Police",
-        "url": "https://openlibrary.org/subjects/police"
-      },
-      {
-        "name": "Mystery fiction",
-        "url": "https://openlibrary.org/subjects/mystery_fiction"
-      },
-      {
-        "name": "Psychological fiction",
-        "url": "https://openlibrary.org/subjects/psychological_fiction"
-      }
-    ],
-    "subject_places": [
-      {
-        "name": "England",
-        "url": "https://openlibrary.org/subjects/place:england"
-      }
-    ],
-    "notes": "Source title: Eiszeit: Ein neuer Fall f\u00fcr Carol Jordan und Tony Hill",
-    "cover": {
-      "small": "https://covers.openlibrary.org/b/id/10129913-S.jpg",
-      "medium": "https://covers.openlibrary.org/b/id/10129913-M.jpg",
-      "large": "https://covers.openlibrary.org/b/id/10129913-L.jpg"
     }
-  }
+  },
+  "items": [
+    {
+      "enumcron": false,
+      "match": "similar",
+      "status": "lendable",
+      "fromRecord": "/books/OL28193935M",
+      "ol-edition-id": "OL29138777M",
+      "ol-work-id": "OL19358920W",
+      "publishDate": "2013",
+      "contributor": "",
+      "itemURL": "http://openlibrary.org/books/OL29138777M/Cross_and_Burn/borrow",
+      "cover": {
+        "small": "https://covers.openlibrary.org/b/id/10745112-S.jpg",
+        "medium": "https://covers.openlibrary.org/b/id/10745112-M.jpg",
+        "large": "https://covers.openlibrary.org/b/id/10745112-L.jpg"
+      }
+    }
+  ]
 }

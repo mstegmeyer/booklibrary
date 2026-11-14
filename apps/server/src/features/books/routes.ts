@@ -227,6 +227,7 @@ async function candidateOf(upload: Upload): Promise<CandidateValue | null> {
         coverUrl: null,
         sources: ["epub"],
         categories: [],
+        bindings: [],
       }
     : null;
   const isbn = epub?.isbns[0];
