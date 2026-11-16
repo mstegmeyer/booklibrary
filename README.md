@@ -4,9 +4,44 @@ A self-hosted library for the books in your household. One instance holds one
 library shared by everyone who lives with you: which books you own and where
 they stand, who borrowed what, and what each of you is reading.
 
-> **Early development.** The foundation is in place (accounts, the app shell and
-> the API skeleton); cataloguing, loans, reading and statistics are being built.
-> Expect breaking changes.
+<p align="center">
+  <img src="docs/screenshots/library.webp" width="100%" alt="The library as a grid of book covers, with filters for place, format, availability, reading status and genre">
+</p>
+
+- **Add a book by its ISBN.** Scan the barcode with the iPhone app or type the
+  number. Title, authors, cover, genre and binding come from Open Library and
+  the Deutsche Nationalbibliothek, and from Google Books if you set an API key.
+- **Know where every copy is.** Places can be nested as deep as you like (room,
+  shelf, box), and a book can have several copies.
+- **Track reading per person.** Want to read, reading, read or abandoned, with
+  progress by page and statistics per year for each person and the whole
+  household. Books you read but do not own count too.
+- **Keep track of loans.** Who has which of your books and since when, and what
+  you borrowed from whom.
+- **Keep e-books in order.** Upload EPUB and PDF files; they are stored as
+  `<author>/<title>` in a folder you can sync to an e-reader.
+- **English and German**, in the browser and in the iPhone app.
+
+<p align="center">
+  <img src="docs/screenshots/book.webp" width="49%" alt="A book's page with its copies, the reader's progress and what the rest of the household read">
+  <img src="docs/screenshots/statistics.webp" width="49%" alt="Statistics: books and pages per month, books per year and by genre">
+</p>
+<p align="center">
+  <img src="docs/screenshots/reading.webp" width="49%" alt="The reading page with the current books, the reading list and the wishlist">
+  <img src="docs/screenshots/loans.webp" width="49%" alt="Loans: books lent out, books borrowed and the people involved">
+</p>
+<p align="center">
+  <img src="docs/screenshots/phone-library.webp" width="24%" alt="The library on a phone">
+  <img src="docs/screenshots/phone-book.webp" width="24%" alt="A book's page on a phone">
+  <img src="docs/screenshots/phone-add.webp" width="24%" alt="Adding a book by its ISBN on a phone, with genre and format filled in">
+  <img src="docs/screenshots/phone-filter.webp" width="24%" alt="Sorting and filtering the library on a phone">
+</p>
+
+The screenshots show a made-up household; the book covers belong to their
+publishers.
+
+> **Young project.** It is usable, but expect breaking changes between
+> versions.
 
 ## Quick start with Docker Compose
 
