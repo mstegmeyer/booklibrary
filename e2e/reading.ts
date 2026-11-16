@@ -3,13 +3,15 @@ import { type APIRequestContext, expect } from "@playwright/test";
 // Seeding helpers for reading: they call the API as the user signed in to
 // `request` (`page.request` after `setupAdmin`, or `signIn` below).
 
+/** `date` is the day the status changed; the server's today when left out. */
 export async function setStatus(
   request: APIRequestContext,
   bookId: string,
   status: "want" | "reading" | "abandoned",
+  date?: string,
 ) {
   const res = await request.put(`/api/v1/reading/books/${bookId}`, {
-    data: { status },
+    data: { status, date },
   });
   expect(res.status()).toBe(200);
 }

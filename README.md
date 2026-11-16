@@ -143,10 +143,16 @@ pnpm dev          # API on :3000, web app on :5173 with hot reload
 | `pnpm typecheck`   | TypeScript in every package                                         |
 | `pnpm test`        | Vitest unit and integration tests                                   |
 | `pnpm e2e`         | Builds, then runs Playwright against the production server          |
+| `pnpm screenshots` | Builds, then retakes the screenshots at the top of this page        |
 | `pnpm db:generate` | Generates a migration after changing `apps/server/src/db/schema.ts` |
 
 Before the first `pnpm e2e`, install the browsers:
 `pnpm --filter @book-library/e2e exec playwright install chromium webkit`.
+
+`pnpm screenshots` fills a fresh server with the made-up household from
+`e2e/screenshots/demo-library.ts` and writes the pictures to
+`docs/screenshots`. It takes the covers from Open Library, so it needs the
+network.
 
 The API is described by OpenAPI at `/api/v1/openapi.json`.
 

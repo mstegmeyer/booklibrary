@@ -36,6 +36,7 @@ Everything runs through pnpm, which also provides the pinned Node runtime.
 - Import `test` from `e2e/fixtures.ts`: each test gets its own production server with an empty `DATA_DIR`, so tests must not depend on each other.
 - `setupAdmin(page)` creates the admin through the API and leaves the page signed in; `createMember(page)` adds a member.
 - Every spec runs in two projects: desktop Chromium and an iPhone-sized WebKit. Use role-based locators; hidden duplicates (sidebar vs. tab bar) are then ignored.
+- `pnpm screenshots` retakes the README's screenshots (`e2e/screenshots/`, written to `docs/screenshots/`). It is not a test: it asks the real catalogues for covers. Run it after a change that shows on the Library, book, Reading, Statistics or Loans pages.
 
 ## Commits
 

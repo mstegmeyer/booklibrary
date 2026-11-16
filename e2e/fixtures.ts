@@ -15,10 +15,10 @@ export const admin = {
 
 /**
  * Starts the production server on a free port with an empty DATA_DIR and
- * library folder. Its metadata lookups go to `metadataEnv` (the stub), never
- * to the real catalogues.
+ * library folder. Its metadata lookups go where `metadataEnv` points: tests
+ * pass the stub's, so that they never reach the real catalogues.
  */
-async function startInstance(metadataEnv: Record<string, string>) {
+export async function startInstance(metadataEnv: Record<string, string>) {
   const dataDir = await mkdtemp(join(tmpdir(), "book-library-e2e-"));
   const libraryDir = join(dataDir, "library");
   const server = spawn(process.execPath, [serverMain], {
@@ -44,7 +44,7 @@ async function startInstance(metadataEnv: Record<string, string>) {
   return { url: `http://localhost:${port}`, server, dataDir, libraryDir };
 }
 
-async function stopInstance(server: ChildProcess, dataDir: string) {
+export async function stopInstance(server: ChildProcess, dataDir: string) {
   const exited = new Promise((resolve) => server.once("exit", resolve));
   server.kill();
   await exited;

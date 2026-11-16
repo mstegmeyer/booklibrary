@@ -19,6 +19,7 @@
     "typecheck": "pnpm --recursive typecheck",
     "test": "pnpm --recursive test",
     "e2e": "pnpm build && pnpm --filter @book-library/e2e e2e",
+    "screenshots": "pnpm build && pnpm --filter @book-library/e2e screenshots",
     "db:generate": "pnpm --filter @book-library/server db:generate"
   },
   "devDependencies": {
