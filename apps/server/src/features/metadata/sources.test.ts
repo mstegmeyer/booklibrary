@@ -29,6 +29,23 @@ describe("Open Library", () => {
     });
   });
 
+  it("takes the cover id -1 as no cover", () => {
+    const record = {
+      data: {
+        title: "One Hundred Years of Solitude",
+        cover: { large: "https://covers.openlibrary.org/b/id/-1-L.jpg" },
+      },
+    };
+    expect(
+      parseBook({ records: { "/books/OL1M": record } }, "9780060883287")
+        ?.coverUrl,
+    ).toBeNull();
+    expect(
+      parseSearch({ docs: [{ title: "One Hundred Years", cover_i: -1 }] })[0]
+        ?.coverUrl,
+    ).toBeNull();
+  });
+
   it("takes the subjects as categories", () => {
     const book = parseBook(
       json("openlibrary-isbn-9781640973985.json"),

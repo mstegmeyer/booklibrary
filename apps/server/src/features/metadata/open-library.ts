@@ -50,6 +50,11 @@ export type ReadApiResponse =
     }
   | [];
 
+// Open Library records "no cover" as the id -1 and still builds a URL from it.
+const hasCover = (id: number | undefined): id is number => !!id && id > 0;
+const coverIdOf = (url: string | undefined) =>
+  Number(/\/b\/id\/(-?\d+)-/.exec(url ?? "")?.[1]);
+
 export function parseBook(
   json: ReadApiResponse,
   isbn13: string,
@@ -66,7 +71,7 @@ export function parseBook(
     authors: book.authors?.map((a) => a.name),
     pageCount: book.number_of_pages,
     publishedYear: yearOf(book.publish_date),
-    coverUrl: book.cover?.large,
+    coverUrl: hasCover(coverIdOf(book.cover?.large)) ? book.cover?.large : null,
     categories: book.subjects?.map((subject) => subject.name),
     bindings: binding ? [binding] : [],
   });
@@ -78,7 +83,7 @@ export function parseSearch(
   coversUrl = "https://covers.openlibrary.org",
 ): Candidate[] {
   const coverUrl = (id: number | undefined) =>
-    id ? `${coversUrl}/b/id/${id}-L.jpg` : null;
+    hasCover(id) ? `${coversUrl}/b/id/${id}-L.jpg` : null;
   return (json.docs ?? []).flatMap((work) => {
     const edition = work.editions?.docs?.[0];
     const title = edition?.title ?? work.title;
@@ -146,7 +151,7 @@ export function openLibrary(
       }).toString();
       const json: { docs?: Work[] } = await (await get(url)).json();
       const id = json.docs?.[0]?.cover_i;
-      return id ? `${coversUrl}/b/id/${id}-L.jpg` : null;
+      return hasCover(id) ? `${coversUrl}/b/id/${id}-L.jpg` : null;
     },
   };
 }
