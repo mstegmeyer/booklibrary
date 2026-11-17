@@ -55,7 +55,7 @@ export function createApp(
 
   app.doc("/api/v1/openapi.json", {
     openapi: "3.1.0",
-    info: { title: "Book Library API", version },
+    info: { title: "Hootshelf API", version },
   });
 
   const routes = app

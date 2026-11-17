@@ -414,7 +414,7 @@ test.describe("inside the app", () => {
   test("denied camera access points to the Settings app", async ({ page }) => {
     await openScanner(page, { camera: "denied" });
     await expect(sheet(page).getByRole("alert")).toHaveText(
-      /allow camera access for Book Library in the iOS Settings app/,
+      /allow camera access for Hootshelf in the iOS Settings app/,
     );
     await expect(
       page.getByText("Hold the barcode on the back cover inside the frame"),

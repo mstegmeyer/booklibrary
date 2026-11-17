@@ -17,6 +17,6 @@ export default {
   added_other: "{{count}} Bücher in dieser Sitzung hinzugefügt",
   done: "Fertig",
   denied:
-    "Book Library darf die Kamera nicht verwenden. Um zu scannen, erlaube Book Library den Kamerazugriff in der Einstellungen-App von iOS.",
+    "Hootshelf darf die Kamera nicht verwenden. Um zu scannen, erlaube Hootshelf den Kamerazugriff in der Einstellungen-App von iOS.",
   unavailable: "Dieses Gerät hat keine Kamera zum Scannen.",
 } satisfies Translation<"scan">;

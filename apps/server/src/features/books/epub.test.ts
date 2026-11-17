@@ -96,7 +96,7 @@ describe.each([2, 3] as const)("EPUB %i", (version) => {
       "OEBPS/text/chapter.xhtml",
       "OEBPS/fonts/serif.otf",
       "OEBPS/images/cover.png",
-      "OEBPS/book-library-cover.jpg",
+      "OEBPS/hootshelf-cover.jpg",
     ]);
   });
 });
@@ -114,7 +114,7 @@ it("replaces a JPEG cover in place", async () => {
   });
   expect(unzipSync(written)["OEBPS/images/cover.jpg"]).toEqual(jpeg);
   expect(Object.keys(unzipSync(written))).not.toContain(
-    "OEBPS/book-library-cover.jpg",
+    "OEBPS/hootshelf-cover.jpg",
   );
 });
 

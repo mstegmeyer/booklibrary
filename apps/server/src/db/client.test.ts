@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 function tempDir() {
-  const dir = mkdtempSync(join(tmpdir(), "book-library-migrate-"));
+  const dir = mkdtempSync(join(tmpdir(), "hootshelf-migrate-"));
   dirs.push(dir);
   return dir;
 }

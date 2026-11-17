@@ -1,7 +1,7 @@
 import type { Translation } from "../../i18n/types";
 
 export default {
-  appName: "Book Library",
+  appName: "Hootshelf",
   nav: {
     main: "Hauptnavigation",
     library: "Bibliothek",

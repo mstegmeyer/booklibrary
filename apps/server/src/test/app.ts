@@ -15,7 +15,7 @@ afterEach(() => {
 
 /** A fresh app on an empty temporary database. */
 export function createTestApp() {
-  const dataDir = mkdtempSync(join(tmpdir(), "book-library-test-"));
+  const dataDir = mkdtempSync(join(tmpdir(), "hootshelf-test-"));
   dirs.push(dataDir);
   const config = loadConfig({
     DATA_DIR: dataDir,

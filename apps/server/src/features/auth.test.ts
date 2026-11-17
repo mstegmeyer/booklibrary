@@ -152,7 +152,7 @@ describe("auth", () => {
       expect(
         await signInAddress(
           undefined,
-          { "x-book-library-client-address": "203.0.113.9" },
+          { "x-hootshelf-client-address": "203.0.113.9" },
           "192.0.2.7",
         ),
       ).toBe("192.0.2.7");

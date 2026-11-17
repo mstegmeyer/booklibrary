@@ -19,7 +19,7 @@ export const admin = {
  * pass the stub's, so that they never reach the real catalogues.
  */
 export async function startInstance(metadataEnv: Record<string, string>) {
-  const dataDir = await mkdtemp(join(tmpdir(), "book-library-e2e-"));
+  const dataDir = await mkdtemp(join(tmpdir(), "hootshelf-e2e-"));
   const libraryDir = join(dataDir, "library");
   const server = spawn(process.execPath, [serverMain], {
     env: {

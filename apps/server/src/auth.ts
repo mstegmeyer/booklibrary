@@ -13,7 +13,7 @@ export type Role = (typeof roles)[number];
 // Better Auth takes the client address for rate limiting from a request
 // header. The server sets this one on every auth request, replacing any value
 // a client sent.
-const clientAddressHeader = "x-book-library-client-address";
+const clientAddressHeader = "x-hootshelf-client-address";
 
 /** Every endpoint of Better Auth's admin plugin. */
 const adminPaths = [

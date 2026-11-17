@@ -15,7 +15,7 @@ const scan = {
   added_other: "{{count}} books added in this session",
   done: "Done",
   denied:
-    "Book Library may not use the camera. To scan, allow camera access for Book Library in the iOS Settings app.",
+    "Hootshelf may not use the camera. To scan, allow camera access for Hootshelf in the iOS Settings app.",
   unavailable: "This device has no camera to scan with.",
 };
 

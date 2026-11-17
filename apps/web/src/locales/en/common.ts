@@ -1,5 +1,5 @@
 const common = {
-  appName: "Book Library",
+  appName: "Hootshelf",
   nav: {
     main: "Main",
     library: "Library",

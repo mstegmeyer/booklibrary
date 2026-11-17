@@ -17,8 +17,7 @@ const server = serve(
     }).fetch,
     port: config.port,
   },
-  (info) =>
-    console.log(`Book Library ${version} listening on port ${info.port}`),
+  (info) => console.log(`Hootshelf ${version} listening on port ${info.port}`),
 );
 
 // As PID 1 in a container Node ignores SIGTERM unless it is handled.

@@ -32,7 +32,7 @@ export type Source = {
   search: (query: string) => Promise<Candidate[]>;
 };
 
-export const userAgent = `BookLibrary/${version}`;
+export const userAgent = `Hootshelf/${version}`;
 export const timeoutMs = 5000;
 
 export async function get(url: URL) {

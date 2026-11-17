@@ -255,10 +255,10 @@ function setCover(epub: Epub, jpeg: Uint8Array) {
   const ids = new Set(
     elements(opf, ns.opf, "item").map((item) => item.getAttribute("id")),
   );
-  const id = uniqueName((name) => ids.has(name), "book-library-cover", "");
+  const id = uniqueName((name) => ids.has(name), "hootshelf-cover", "");
   const href = uniqueName(
     (name) => epub.entries.has(resolve(epub, name)),
-    "book-library-cover",
+    "hootshelf-cover",
     ".jpg",
   );
   const item = opf.createElementNS(
