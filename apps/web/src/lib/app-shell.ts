@@ -42,7 +42,7 @@ declare global {
   interface Window {
     webkit?: {
       messageHandlers?: {
-        bookLibrary?: {
+        hootshelf?: {
           postMessage(message: Message): Promise<unknown>;
         };
       };
@@ -50,7 +50,7 @@ declare global {
   }
 }
 
-const handler = window.webkit?.messageHandlers?.bookLibrary;
+const handler = window.webkit?.messageHandlers?.hootshelf;
 
 export const isInApp = handler !== undefined;
 
@@ -70,6 +70,6 @@ export const setLightStatusBar = (light: boolean) =>
 export function onBarcode(listener: (code: string) => void): () => void {
   const handle = (event: Event) =>
     listener((event as CustomEvent<string>).detail);
-  window.addEventListener("booklibrary:barcode", handle);
-  return () => window.removeEventListener("booklibrary:barcode", handle);
+  window.addEventListener("hootshelf:barcode", handle);
+  return () => window.removeEventListener("hootshelf:barcode", handle);
 }

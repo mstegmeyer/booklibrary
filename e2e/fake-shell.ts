@@ -53,7 +53,7 @@ export async function installFakeShell(page: Page, options: Options = {}) {
     Object.defineProperty(window, "webkit", {
       value: {
         messageHandlers: {
-          bookLibrary: {
+          hootshelf: {
             postMessage: async (message: Message) => {
               state.calls.push(message);
               answer(message);
@@ -70,7 +70,7 @@ export async function installFakeShell(page: Page, options: Options = {}) {
     scan: (code: string) =>
       page.evaluate((code) => {
         window.dispatchEvent(
-          new CustomEvent("booklibrary:barcode", { detail: code }),
+          new CustomEvent("hootshelf:barcode", { detail: code }),
         );
       }, code),
     state: () =>

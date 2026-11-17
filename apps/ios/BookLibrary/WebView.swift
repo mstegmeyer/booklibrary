@@ -14,7 +14,7 @@ struct WebView: UIViewRepresentable {
     func makeUIView(context: Context) -> ScannerHostView {
         let coordinator = context.coordinator
         let configuration = WKWebViewConfiguration()
-        configuration.userContentController.addScriptMessageHandler(coordinator, contentWorld: .page, name: "bookLibrary")
+        configuration.userContentController.addScriptMessageHandler(coordinator, contentWorld: .page, name: "hootshelf")
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = coordinator
         webView.uiDelegate = coordinator
@@ -46,7 +46,7 @@ struct WebView: UIViewRepresentable {
             scanner.onCode = { [weak self] code in
                 self?.scanFeedback.impactOccurred()
                 self?.webView?.callAsyncJavaScript(
-                    "window.dispatchEvent(new CustomEvent('booklibrary:barcode', { detail: code }))",
+                    "window.dispatchEvent(new CustomEvent('hootshelf:barcode', { detail: code }))",
                     arguments: ["code": code], in: nil, in: .page
                 )
             }
