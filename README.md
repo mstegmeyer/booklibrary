@@ -1,4 +1,4 @@
-# Hootshelf
+# <img src="apps/web/public/favicon.svg" width="40" alt="" align="top"> Hootshelf
 
 A self-hosted library for the books in your household. One instance holds one
 library shared by everyone who lives with you: which books you own and where
@@ -209,6 +209,9 @@ apps/ios      iOS app shell (SwiftUI, WKWebView)
 e2e           Playwright end-to-end tests
 docs/design   Exported design boards, the visual reference for the web app
 ```
+
+The logo is `apps/web/public/favicon.svg`. The iOS app icon is
+`docs/design/app-icon.svg`, exported as a 1024-pixel PNG without transparency.
 
 ## Licence
 
