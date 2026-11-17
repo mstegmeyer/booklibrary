@@ -8,7 +8,7 @@ struct ConnectView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 10) {
-                Image("BookMark").resizable().frame(width: 24, height: 24).accessibilityHidden(true)
+                Image("Mark").resizable().frame(width: 28, height: 28).accessibilityHidden(true)
                 Text("Hootshelf").font(.system(size: 18, weight: .semibold, design: .serif))
             }
             VStack(alignment: .leading, spacing: 8) {
