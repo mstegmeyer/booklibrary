@@ -1,5 +1,5 @@
 {
-  "name": "book-library",
+  "name": "hootshelf",
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-only",
@@ -12,15 +12,15 @@
     }
   },
   "scripts": {
-    "dev": "pnpm --parallel --filter @book-library/server --filter @book-library/web dev",
+    "dev": "pnpm --parallel --filter @hootshelf/server --filter @hootshelf/web dev",
     "build": "pnpm --recursive build",
     "lint": "biome check .",
     "format": "biome check --write .",
     "typecheck": "pnpm --recursive typecheck",
     "test": "pnpm --recursive test",
-    "e2e": "pnpm build && pnpm --filter @book-library/e2e e2e",
-    "screenshots": "pnpm build && pnpm --filter @book-library/e2e screenshots",
-    "db:generate": "pnpm --filter @book-library/server db:generate"
+    "e2e": "pnpm build && pnpm --filter @hootshelf/e2e e2e",
+    "screenshots": "pnpm build && pnpm --filter @hootshelf/e2e screenshots",
+    "db:generate": "pnpm --filter @hootshelf/server db:generate"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.7",

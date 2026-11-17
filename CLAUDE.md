@@ -9,7 +9,7 @@ Everything runs through pnpm, which also provides the pinned Node runtime.
 
 - `pnpm dev` · `pnpm build` · `pnpm lint` (`pnpm format` to fix) · `pnpm typecheck` · `pnpm test` · `pnpm e2e`
 - `pnpm db:generate` after editing `apps/server/src/db/schema.ts`; commit the generated SQL in `apps/server/drizzle/`. Migrations run on server start.
-- Run one server test file: `pnpm --filter @book-library/server exec vitest run src/features/users`
+- Run one server test file: `pnpm --filter @hootshelf/server exec vitest run src/features/users`
 
 ## Server (`apps/server`)
 

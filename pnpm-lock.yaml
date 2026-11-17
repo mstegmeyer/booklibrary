@@ -276,7 +276,7 @@ importers:
         specifier: 3.7.0
         version: 3.7.0
     devDependencies:
-      '@book-library/server':
+      '@hootshelf/server':
         specifier: workspace:*
         version: link:../server
       '@tailwindcss/vite':

@@ -14,7 +14,7 @@ COPY e2e/package.json e2e/
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build \
-  && pnpm --filter @book-library/server deploy --prod /out/server
+  && pnpm --filter @hootshelf/server deploy --prod /out/server
 
 FROM node:${NODE_VERSION}-alpine
 ENV NODE_ENV=production \

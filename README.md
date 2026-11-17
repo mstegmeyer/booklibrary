@@ -147,7 +147,7 @@ pnpm dev          # API on :3000, web app on :5173 with hot reload
 | `pnpm db:generate` | Generates a migration after changing `apps/server/src/db/schema.ts` |
 
 Before the first `pnpm e2e`, install the browsers:
-`pnpm --filter @book-library/e2e exec playwright install chromium webkit`.
+`pnpm --filter @hootshelf/e2e exec playwright install chromium webkit`.
 
 `pnpm screenshots` fills a fresh server with the made-up household from
 `e2e/screenshots/demo-library.ts` and writes the pictures to
@@ -182,7 +182,7 @@ xcodebuild build -project apps/ios/BookLibrary.xcodeproj -scheme BookLibrary \
 ```
 
 In the simulator, `http://localhost:3000` reaches a server started on the same
-Mac with `pnpm build` and `NODE_ENV=production pnpm --filter @book-library/server start`.
+Mac with `pnpm build` and `NODE_ENV=production pnpm --filter @hootshelf/server start`.
 The simulator has no camera, so scanning only works on a device.
 
 To put the app on your iPhone, the build has to be signed with your own Apple

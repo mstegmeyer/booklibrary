@@ -1,4 +1,4 @@
-import type { AppType } from "@book-library/server";
+import type { AppType } from "@hootshelf/server";
 import { hc } from "hono/client";
 
 /** Typed client for `/api/v1`, generated from the server's route types. */

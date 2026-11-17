@@ -1,5 +1,5 @@
 {
-  "name": "@book-library/e2e",
+  "name": "@hootshelf/e2e",
   "private": true,
   "type": "module",
   "scripts": {
