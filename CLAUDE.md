@@ -1,4 +1,4 @@
-# Book Library
+# Hootshelf
 
 Household book library: Hono API + React SPA in a pnpm monorepo. See README.md
 for setup.

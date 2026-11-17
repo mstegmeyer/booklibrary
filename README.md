@@ -1,4 +1,4 @@
-# Book Library
+# Hootshelf
 
 A self-hosted library for the books in your household. One instance holds one
 library shared by everyone who lives with you: which books you own and where
