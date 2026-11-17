@@ -114,7 +114,7 @@ next to the example. Compose merges it in, and git ignores it:
 
 ```yaml
 services:
-  book-library:
+  hootshelf:
     environment:
       GOOGLE_BOOKS_API_KEY: your-key
 ```
