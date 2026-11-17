@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		B0000000000000000000A001 /* BookLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0000000000000000000A001 /* Hootshelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hootshelf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0000000000000000000A002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0000000000000000000A003 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B0000000000000000000B001 /* BookLibrary */ = {
+		B0000000000000000000B001 /* Hootshelf */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BookLibrary;
+			path = Hootshelf;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -34,7 +34,7 @@
 		B0000000000000000000D001 = {
 			isa = PBXGroup;
 			children = (
-				B0000000000000000000B001 /* BookLibrary */,
+				B0000000000000000000B001 /* Hootshelf */,
 				B0000000000000000000A002 /* Info.plist */,
 				B0000000000000000000A003 /* Signing.xcconfig */,
 				B0000000000000000000D002 /* Products */,
@@ -44,7 +44,7 @@
 		B0000000000000000000D002 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B0000000000000000000A001 /* BookLibrary.app */,
+				B0000000000000000000A001 /* Hootshelf.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -52,9 +52,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B0000000000000000000E001 /* BookLibrary */ = {
+		B0000000000000000000E001 /* Hootshelf */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0000000000000000000F002 /* Build configuration list for PBXNativeTarget "BookLibrary" */;
+			buildConfigurationList = B0000000000000000000F002 /* Build configuration list for PBXNativeTarget "Hootshelf" */;
 			buildPhases = (
 				B0000000000000000000C002 /* Sources */,
 				B0000000000000000000C001 /* Frameworks */,
@@ -65,11 +65,11 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B0000000000000000000B001 /* BookLibrary */,
+				B0000000000000000000B001 /* Hootshelf */,
 			);
-			name = BookLibrary;
-			productName = BookLibrary;
-			productReference = B0000000000000000000A001 /* BookLibrary.app */;
+			name = Hootshelf;
+			productName = Hootshelf;
+			productReference = B0000000000000000000A001 /* Hootshelf.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -82,7 +82,7 @@
 				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2720;
 			};
-			buildConfigurationList = B0000000000000000000F001 /* Build configuration list for PBXProject "BookLibrary" */;
+			buildConfigurationList = B0000000000000000000F001 /* Build configuration list for PBXProject "Hootshelf" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -97,7 +97,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B0000000000000000000E001 /* BookLibrary */,
+				B0000000000000000000E001 /* Hootshelf */,
 			);
 		};
 /* End PBXProject section */
@@ -237,7 +237,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Book Library";
+				INFOPLIST_KEY_CFBundleDisplayName = Hootshelf;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -246,7 +246,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.stegmeyer.booklibrary;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.stegmeyer.hootshelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -265,7 +265,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Book Library";
+				INFOPLIST_KEY_CFBundleDisplayName = Hootshelf;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -274,7 +274,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.stegmeyer.booklibrary;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.stegmeyer.hootshelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -287,7 +287,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B0000000000000000000F001 /* Build configuration list for PBXProject "BookLibrary" */ = {
+		B0000000000000000000F001 /* Build configuration list for PBXProject "Hootshelf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0000000000000000000F101 /* Debug */,
@@ -296,7 +296,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B0000000000000000000F002 /* Build configuration list for PBXNativeTarget "BookLibrary" */ = {
+		B0000000000000000000F002 /* Build configuration list for PBXNativeTarget "Hootshelf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0000000000000000000F201 /* Debug */,

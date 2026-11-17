@@ -49,8 +49,8 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Book Library uses the camera to scan the barcodes on your books.</string>
+	<string>Hootshelf uses the camera to scan the barcodes on your books.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Book Library connects to your library's server when it runs in your home network.</string>
+	<string>Hootshelf connects to your library's server when it runs in your home network.</string>
 </dict>
 </plist>

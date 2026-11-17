@@ -28,7 +28,7 @@ jobs:
       - name: Build for the simulator without signing
         run: >
           xcodebuild build
-          -project apps/ios/BookLibrary.xcodeproj
-          -scheme BookLibrary
+          -project apps/ios/Hootshelf.xcodeproj
+          -scheme Hootshelf
           -destination 'generic/platform=iOS Simulator'
           CODE_SIGNING_ALLOWED=NO

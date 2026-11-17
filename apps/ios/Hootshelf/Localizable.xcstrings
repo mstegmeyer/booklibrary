@@ -1,7 +1,7 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Book Library" : {
+    "Hootshelf" : {
       "shouldTranslate" : false
     },
     "Connect" : {
@@ -29,9 +29,9 @@
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Serveradresse" } }
       }
     },
-    "The server at this address is not a Book Library server." : {
+    "The server at this address is not a Hootshelf server." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unter dieser Adresse läuft kein Book-Library-Server." } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unter dieser Adresse läuft kein Hootshelf-Server." } }
       }
     },
     "The server cannot be reached. Check the address and that the server is running." : {

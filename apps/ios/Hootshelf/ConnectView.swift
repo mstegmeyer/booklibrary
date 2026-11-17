@@ -9,7 +9,7 @@ struct ConnectView: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 10) {
                 Image("BookMark").resizable().frame(width: 24, height: 24).accessibilityHidden(true)
-                Text("Book Library").font(.system(size: 18, weight: .semibold, design: .serif))
+                Text("Hootshelf").font(.system(size: 18, weight: .semibold, design: .serif))
             }
             VStack(alignment: .leading, spacing: 8) {
                 Text("Connect to your library")
@@ -73,8 +73,8 @@ struct ConnectView: View {
             String(localized: "This address is outside your home network, so the connection needs HTTPS. Use an address that starts with https://.")
         case .unreachable(let reason):
             String(localized: "The server cannot be reached. Check the address and that the server is running.") + "\n" + reason
-        case .notBookLibrary:
-            String(localized: "The server at this address is not a Book Library server.")
+        case .notHootshelf:
+            String(localized: "The server at this address is not a Hootshelf server.")
         }
     }
 }

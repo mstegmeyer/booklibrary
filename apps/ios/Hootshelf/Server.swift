@@ -5,7 +5,7 @@ enum ConnectProblem: Equatable {
     case invalidAddress
     case needsHTTPS
     case unreachable(reason: String)
-    case notBookLibrary
+    case notHootshelf
 }
 
 enum Server {
@@ -50,7 +50,7 @@ enum Server {
             || homeDomains.contains { host.hasSuffix("." + $0) }
     }
 
-    /// Asks the server for `/api/v1/instance`, which every Book Library server
+    /// Asks the server for `/api/v1/instance`, which every Hootshelf server
     /// answers without sign-in.
     static func check(_ origin: URL) async -> ConnectProblem? {
         if origin.scheme == "http", !isLocalNetwork(origin.host() ?? "") { return .needsHTTPS }
@@ -63,7 +63,7 @@ enum Server {
             let (data, response) = try await URLSession.shared.data(for: request)
             guard (response as? HTTPURLResponse)?.statusCode == 200,
                   (try? JSONDecoder().decode(Instance.self, from: data)) != nil
-            else { return .notBookLibrary }
+            else { return .notHootshelf }
             return nil
         } catch {
             return .unreachable(reason: error.localizedDescription)

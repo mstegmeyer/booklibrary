@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct BookLibraryApp: App {
+struct HootshelfApp: App {
     @State private var shell = Shell()
 
     var body: some Scene {

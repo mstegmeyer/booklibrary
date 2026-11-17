@@ -173,11 +173,11 @@ Addresses inside your home network may use plain HTTP: private IP addresses
 app assumes `https://`.
 
 You need Xcode 26 or later. To run it in the simulator, open
-`apps/ios/BookLibrary.xcodeproj`, choose an iPhone simulator and press Run, or
+`apps/ios/Hootshelf.xcodeproj`, choose an iPhone simulator and press Run, or
 build from the command line:
 
 ```sh
-xcodebuild build -project apps/ios/BookLibrary.xcodeproj -scheme BookLibrary \
+xcodebuild build -project apps/ios/Hootshelf.xcodeproj -scheme Hootshelf \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
@@ -195,7 +195,7 @@ DEVELOPMENT_TEAM = ABCDE12345
 
 Choosing the team in Xcode under Signing & Capabilities works as well, but
 Xcode then writes it into `project.pbxproj`; move it to `Local.xcconfig` before
-committing. If the bundle identifier `dev.stegmeyer.booklibrary` is taken for
+committing. If the bundle identifier `dev.stegmeyer.hootshelf` is taken for
 your team, change it under Signing & Capabilities. Then connect your iPhone,
 choose it as the run destination and press Run; the first time, allow the
 developer in Settings → General → VPN & Device Management.
